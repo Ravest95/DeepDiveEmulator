@@ -100,5 +100,5 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 
 To connect you need to press SHIFT + TAB, right click on the person and select "Send Invite", other people will need to exept it. (Its a bit tricky to acept the invite. If you can see the menu when you press SHIFT + TAB you need to turn off RivaTuner Statistics Server before launch, I think you can start it after the game starts. Every time you want to change the Deep Dive mission in the program you need to restart the game, othe people don't need to do that).
 
-# Legal stuff.
-I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using this program. If you are afraid damaging/loosing account don't use the program. This is for educational purposes and thats it.
+# Legal stuff
+I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using this program. If you are afraid of damaging/loosing account don't use the program. This is for educational purposes only.
