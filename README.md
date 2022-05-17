@@ -1,8 +1,8 @@
 # DeepDiveEmulator
-This project is aimed to add the ability to replay old deep dive missions in singleplayer or multiplayer for the game Deep Rock Galactic. I want to recreate the deep dives 1 to 0.95. Why 0.95? To limit the number or versions, you need to download. That will result in small changes like the position of some stones/grass, some enemies like Glyphid Brood Nexus. Thats it really, other things like Misson Name, Region, Mission Type, Warnings, Anomaly and most importantly Level terrain will be 100% same as it was back in the past.
+This project is aimed to find an ability to replay old deep dive missions in singleplayer or multiplayer for the game Deep Rock Galactic. I want to recreate the deep dives 1 to 0.95. Why 0.95? To limit the number or versions, you need to download. That will result in small changes like the position of some stones/grass, some enemies like Glyphid Brood Nexus. Thats it really, other things like Misson Name, Region, Mission Type, Warnings, Anomaly and most importantly Level terrain will be 100% same as it was back in the past.
 
-Originally taken from here: https://github.com/0P3N50URC3-F0R3V3R/blackbeard#blackbeard-event-emulator (I don't know how github stuff works and I have no idea how to link to the project, sorry to stupid for that).
-I didn't take original program functionality (It is broken on new versions of the game) just updated "server emulation" part, added info on the deep dives maybe made installation a bit easier.
+Originally made here: https://github.com/0P3N50URC3-F0R3V3R/blackbeard#blackbeard-event-emulator (I don't know how github stuff works and I have no idea how to link to the project, sorry too stupid for that).
+I didn't take original program functionality (It is broken on new versions of the game) just redid/updated "server emulation" part, added info on the deep dives maybe made installation a bit easier. I use XAMPP (Open source package for emulating the game server - https://www.apachefriends.org/ru/index.html) and Golber Emulator (Steam emulator that emulates steam online features on LAN - https://gitlab.com/Mr_Goldberg/goldberg_emulator).
 
 # How it works:
 Basically, to create a deep dive mission game gets information from the site. You will block that connection and emulate you own site with the information you want.
@@ -99,3 +99,6 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 (Other people who want to play with you will need to download old version, install Goldber Emulator and block the connection like you, they dont need to install DeepDiveEmulator and they dont need to install certificates. In addition to that yo uwill need to use tools that convert LAN to VPN like: Hamachi or Radmin VPN).
 
 To connect you need to press SHIFT + TAB, right click on the person and select "Send Invite", other people will need to exept it. (Its a bit tricky to acept the invite. If you can see the menu when you press SHIFT + TAB you need to turn off RivaTuner Statistics Server before launch, I think you can start it after the game starts. Every time you want to change the Deep Dive mission in the program you need to restart the game, othe people don't need to do that).
+
+# Legal stuff.
+I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using this program. If you are afraid damaging/loosing account don't use the program. This is for educational purposes and thats it.
