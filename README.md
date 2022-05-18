@@ -16,7 +16,8 @@ Drawbacks/Limitation:
 # How to install the program:
 - Click on the green Code button and press Download ZIP.
 - Extract the folder wherever you want.
-- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder).
+- You can rename the "DeepDiveEmulator-main" to something you want.
+- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder or rename it).
 - Open DeepDiveEmulator\Certificates.
 - For every file here you will need to do two things:
 
