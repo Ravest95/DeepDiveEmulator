@@ -5,7 +5,7 @@ Originally made here: https://github.com/0P3N50URC3-F0R3V3R/blackbeard#blackbear
 I didn't take original program functionality (It is broken on new versions of the game) just redid/updated "server emulation" part, added info on the deep dives maybe made installation a bit easier. I use XAMPP (Open source package for emulating the game server - https://www.apachefriends.org/ru/index.html) and Golber Emulator (Steam emulator that emulates steam online features on LAN - https://gitlab.com/Mr_Goldberg/goldberg_emulator).
 
 # How it works:
-Basically, to create a deep dive mission game gets information from the site. You will block that connection and emulate you own site with the information you want.
+Basically, to create a deep dive mission game gets information from the site. You will block that connection and emulate your own site with the information you want.
 
 Drawbacks/Limitation:
 - Installation is a bit tricky, and you will probably trigger virus warning. This is because of many things like: Creating fake website, using fake certificates (btw they will expire in 100 years in case you are imortal), using Goldberg Emulator to convert Steam connection to LAN. If you are afraid of this don't use the program.
@@ -57,9 +57,7 @@ b) Open it, press "Install Certificate...", select "Local Machine" (this is diff
 
 steam://nav/console
 
-- Press "Open"
-
-(This will open a console in the Steam).
+- Press "Open". (This will open a console in the Steam).
 
 - Type in:
 
