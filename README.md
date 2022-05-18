@@ -94,7 +94,7 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 - Open "steam_settings\settings\user_steam_id.txt".
 - Change "16341198025109786" to your SteamId. (This is done to keep your progress, or you will start from 0. You can find the SteamId by opening your steam profile in the browser and looking into the URL. Open your Steam profile Right Click and copy URL page, then paste it in the browser).
 
-(Other people who want to play with you will need to download old version, install Goldber Emulator and block the connection like you, they dont need to install DeepDiveEmulator and they dont need to install certificates. In addition to that yo uwill need to use tools that convert LAN to VPN like: Hamachi or Radmin VPN).
+(Other people who want to play with you will need to download old version, install Goldber Emulator and block the connection like you, they don't need to install DeepDiveEmulator and they don't need to install certificates. In addition to that you all need to use tools that convert LAN to VPN like: Hamachi or Radmin VPN).
 
 To connect you need to press SHIFT + TAB, right click on the person and select "Send Invite", other people will need to exept it. (Its a bit tricky to acept the invite. If you can see the menu when you press SHIFT + TAB you need to turn off RivaTuner Statistics Server before launch, I think you can start it after the game starts. Every time you want to change the Deep Dive mission in the program you need to restart the game, othe people don't need to do that).
 
