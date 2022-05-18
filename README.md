@@ -43,11 +43,11 @@ b) Open it, press "Install Certificate...", select "Local Machine" (this is diff
 - In the new menu press "Start" on the right of the "Apache".
 
 # How to change the Deep Dive missions:
-(You can do it without closing program or restarting the server but you need to restart the game).
 - Open "DeepDiveEmulator\List.xlsx". (This is Excel file with all information about deep dives).
 - Copy the command from the "Command" tab for the Deep Dive you need. (If you can't see the tab press the + sign above the "Information" tab).
-- Open "DeepDiveEmulator\xampp\htdocs\drg.ghostship.dk\events\deepdive" and "DeepDiveEmulator\xampp\htdocs\services.ghostship.dk\deepdive"
+- Open "DeepDiveEmulator\xampp\htdocs\drg.ghostship.dk\events\deepdive" and "DeepDiveEmulator\xampp\htdocs\services.ghostship.dk\deepdive" with any text editor.
 - Remove the old command, add new one for both files and save them.
+- Restart the game if it was open. (In multiplayer other people don't need to do that).
 
 # How to download old versions of the game:
 (If the guide below won't work, you will need to use https://github.com/SteamRE/DepotDownloader/releases).
