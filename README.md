@@ -96,6 +96,7 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 - Change "Player" to anything you want. (This is you name in the game).
 - Open "steam_settings\settings\user_steam_id.txt".
 - Change "16341198025109786" to your SteamId. (This is done to keep your progress, or you will start from 0. You can find the SteamId by opening your steam profile in the browser and looking into the URL. Open your Steam profile Right Click and copy URL page, then paste it in the browser).
+- You need to start the game from "Deep Rock Galactic - 1.35.64089.0\Engine\Binaries\ThirdParty\Steamworks\Steamv147\Win64\steamclient_loader.exe"
 
 (Other people who want to play with you will need to download old version, install Goldber Emulator and block the connection like you, they don't need to install DeepDiveEmulator and they don't need to install certificates. In addition to that you all need to use tools that convert LAN to VPN like: Hamachi or Radmin VPN).
 
