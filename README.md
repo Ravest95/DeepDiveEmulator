@@ -88,6 +88,7 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 - Move the "depot_548431" anyware you want.
 - Rename the folder to anything you want. ("Deep Rock Galactic - 1.36.70906.0" is good for tracking the version).
 - Copy the folder "Deep Rock Galactic\FSD\Saved" from your original game location (Make a copy don't just move it. This will copy your progress and settings. Remember that some version may change settings anyway. To open original game folder open Steam, Right click on the game, select "Properties", "Local Files", "Browse").
+- You need to start the game from "Deep Rock Galactic\Engine\Binaries\ThirdParty\Steamworks\Steamv147\Win64\steamclient_loader.exe"
 
 - Open the "DeepDiveEmulator\Goldberg Emulator".
 - Copy every file to the "Deep Rock Galactic - 1.36.70906.0\Engine\Binaries\ThirdParty\Steamworks\Steamv151\Win64". ("Steamv151" can look different depending on the version of the game).
