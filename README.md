@@ -16,8 +16,8 @@ Drawbacks/Limitation:
 # How to install the program:
 - Click on the green Code button and press Download ZIP.
 - Extract the folder wherever you want.
-- You can rename the "DeepDiveEmulator-main" to something you want.
-- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder or rename it).
+- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder).
+- Wait untill message "Press any key to continue . . ." will pop up and press any key.
 - Open DeepDiveEmulator\Certificates.
 - For every file here you will need to do two things:
 
@@ -31,7 +31,7 @@ b) Open it, press "Install Certificate...", select "Local Machine" (this is diff
 - Open hosts file with any text editor.
 - After everything add too lines below and save the file. (You will probably need Admin rights to do that. Try to copy the file on the desktop, edit it and copy it back, overwriting the file.)
 
-127.0.0.1 services.ghostship.dk
+127.0.0.1 drg.ghostship.dk
 
 127.0.0.1 services.ghostship.dk
 
