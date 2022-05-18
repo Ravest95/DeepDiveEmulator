@@ -1,5 +1,5 @@
 # DeepDiveEmulator
-This project is aimed to find an ability to replay old deep dive missions in singleplayer or multiplayer for the game Deep Rock Galactic. I want to recreate the deep dives 1 to 0.95. Why 0.95? To limit the number or versions, you need to download. That will result in small changes like the position of some stones/grass, some enemies like Glyphid Brood Nexus. Thats it really, other things like Misson Name, Region, Mission Type, Warnings, Anomaly and most importantly Level terrain will be 100% same as it was back in the past.
+This project is aimed for finding an ability to replay old deep dive missions in singleplayer or multiplayer for the game Deep Rock Galactic. I want to recreate the deep dives 1 to 0.95. Why 0.95? To limit the number or versions, you need to download. That will result in small changes like the position of some stones/grass, some enemies like Glyphid Brood Nexus. Thats it really, other things like Misson Name, Region, Mission Type, Warnings, Anomaly and most importantly Level terrain will be 100% same as it was back in the past.
 
 Originally made here: https://github.com/0P3N50URC3-F0R3V3R/blackbeard#blackbeard-event-emulator (I don't know how github stuff works and I have no idea how to link to the project, sorry too stupid for that).
 I didn't take original program functionality (It is broken on new versions of the game) just redid/updated "server emulation" part, added info on the deep dives maybe made installation a bit easier. I use XAMPP (Open source package for emulating the game server - https://www.apachefriends.org/ru/index.html) and Golber Emulator (Steam emulator that emulates steam online features on LAN - https://gitlab.com/Mr_Goldberg/goldberg_emulator).
@@ -16,7 +16,8 @@ Drawbacks/Limitation:
 # How to install the program:
 - Click on the green Code button and press Download ZIP.
 - Extract the folder wherever you want.
-- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder).
+- Rename the "DeepDiveEmulator-main" to whatever you want.
+- Launch the DeepDiveEmulator\xampp\setup_xampp.bat. (You will need to do it every time you move the program to new folder or rename it).
 - Wait untill message "Press any key to continue . . ." will pop up and press any key.
 - Open DeepDiveEmulator\Certificates.
 - For every file here you will need to do two things:
