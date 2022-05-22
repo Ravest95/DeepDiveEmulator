@@ -85,7 +85,7 @@ EXAMPLE: download_depot 548430 548431 6260931986219987085
 - You can start the game the same way you start it normaly. (Remember that if game will receive update, your game will be updated automaticly to the newest version.)
 
 # How to play in multiplayer:
-- Move the "depot_548431" anyware you want.
+- Move the "depot_548431" anywhere you want.
 - Rename the folder to anything you want. ("Deep Rock Galactic - 1.36.70906.0" is good for tracking the version).
 - Copy the folder "Deep Rock Galactic\FSD\Saved" from your original game location (Make a copy don't just move it. This will copy your progress and settings. Remember that some version may change settings anyway. To open original game folder open Steam, Right click on the game, select "Properties", "Local Files", "Browse").
 - You need to start the game from "Deep Rock Galactic\Engine\Binaries\ThirdParty\Steamworks\Steamv147\Win64\steamclient_loader.exe"
