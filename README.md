@@ -16,13 +16,13 @@ Drawbacks/Limitation:
 - You will need to type commands manually to change the Deep Dive mission.
 - Deep Dive replication is not 100% accurate. (It depends on several things. You will have region, missions, objectives, warnings, anomalies, terrain, position of resources same as it was in the past.)
 
-a) Version of the game. (Affects every aspect of deep dive. To limit the number of versions you need to download I write every version you need for 95% accuracy. It may not have the same objective/enemy position.)
+a) Version of the game. (Affects every aspect of the Deep Dive. To limit the number of versions you need to download I wrote every version you need for 95% accuracy. It may not have the same objective/enemy position but other things will be the same.)
 
 b) Date and time when you started the Deep Dive. (Not tested 100%. Date and time will effect the objective/enemy position.)
 
 c) Event that took place during the Deep Dive. (Events will affect the objective/enemy position.)
 
-d) Random generation. (Some objectives like Black boxe on Salvage operation will have different position, no matter what you do.)
+d) Random generation. (Some objectives like Black box on Salvage operation will have different position, no matter what you do.)
 
 - Certificates that are used for website recreation will expire in 100 years. (In case you are immortal.)
 
@@ -38,6 +38,7 @@ d) Random generation. (Some objectives like Black boxe on Salvage operation will
 - Change the Deep Dive mission. (Host.)
 - Download an old version of the game. (Everyone.)
 - Install Goldberg Emulator. (Everyone.)
+- Start any VPN (This will be on you. Use Hamachi or Radmin.)
 - Start the game using Goldberg Emulator. (Everyone.)
 
 # How to install XAMPP:
