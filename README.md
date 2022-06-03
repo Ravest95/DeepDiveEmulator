@@ -54,8 +54,7 @@ b) Open it, press "Install Certificate...", select "Local Machine" (this part is
 - Restart your PC.
 
 # How to block connection for the game:
-- Open "DeepDiveEmulator\Hosts File Folder.lnk".
-- Open "hosts" file with any text editor.
+- Launch "DeepDiveEmulator\Shortcut - Hosts.bat" and use any text editor.
 - Add two lines after everything in the file and save it. (You will probably need admin rights to do that. Try to copy the file on the desktop, edit it and copy it back, overwriting the file.)
 
 127.0.0.1 drg.ghostship.dk
@@ -67,15 +66,16 @@ b) Open it, press "Install Certificate...", select "Local Machine" (this part is
 (If you want to restore the connection, remove those two lines from file and restart PC.)
 
 # How to start XAMPP:
-- Launch "DeepDiveEmulator\xampp\xampp-control.exe".
+- Launch "DeepDiveEmulator\Shortcut - XAMPP.bat".
 - Press "Start" on the right of the "Apache".
 
 # How to change the Deep Dive missions:
 - Open "DeepDiveEmulator\List.xlsx". (This is Excel file with all information about deep dives, you can press "+" or "-" above the tabs to see/hide info).
 - Copy the command from the "Command" tab for the Deep Dive you need.
-- Open "DeepDiveEmulator\xampp\htdocs\drg.ghostship.dk\events\deepdive" and "DeepDiveEmulator\xampp\htdocs\services.ghostship.dk\deepdive" with any text editor.
-- Remove the old command, add new one for both files and save them.
-- Restart the game.
+- Launch "DeepDiveEmulator\Shortcut - Deep Dive - drg.ghostship.dk.bat" and use any text editor.
+- Launch "DeepDiveEmulator\Shortcut - Deep Dive - services.ghostship.dk.bat" and use any text editor.
+- For both files remove the old command, add new one and save them.
+- Restart the game. (In case of multiplayer only host needs to restart the game.)
 
 # How to download an old version of the game:
 (If the guide below won't work, you will need to use https://github.com/SteamRE/DepotDownloader/releases).
@@ -116,10 +116,10 @@ download_depot 548430 548431 6260931986219987085
 - Open "steam_settings\settings\user_steam_id.txt".
 - Change "00000000000000000" to your Steam Id.
 - Open Steam
-- Right click on Deep Rock galactic, select "Properties", "Local Files", "Browse"
+- Right click on Deep Rock Galactic, select "Properties", "Local Files", "Browse"
 - Open "FSD" folder.
 - Copy "Saved" folder.
-- Paste it into "Deep Rock Galactic - 1.36.70906.0". (This will copy you progress and settings.)
+- Paste it into "Deep Rock Galactic - 1.36.70906.0". (This will copy you progress and settings. Be advised that some game versions will change the settings anyway.)
 
 # How to start the game using Goldberg Emulator.
 - Start the game from "Deep Rock Galactic - 1.35.64089.0\Engine\Binaries\ThirdParty\Steamworks\Steamv147\Win64\steamclient_loader.exe". (Create a shortcut for quick excess.)
