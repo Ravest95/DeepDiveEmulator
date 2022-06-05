@@ -27,15 +27,15 @@ d) Random generation. (Some objectives like Black box on Salvage operation will 
 - Certificates that are used for website recreation will expire in 100 years. (In case you are immortal.)
 
 # How to download:
-- Click on the green "Code" button and press Download ZIP.
+- Click on the green "Code" button and press "Download ZIP".
 - Extract the folder wherever you want.
 - Rename the "DeepDiveEmulator-main" to whatever you want.
 
 # How to install:
 - Install XAMPP. (Only host need to do this in multiplayer.)
-- Block connection for the game. (Host.)
-- Start XAMPP. (Host.)
-- Change the Deep Dive mission. (Host.)
+- Block connection for the game. (Only host.)
+- Start XAMPP. (Only host.)
+- Change the Deep Dive mission. (Only host.)
 - Download an old version of the game. (Everyone.)
 - Install Goldberg Emulator. (Everyone.)
 - Start any VPN (This will be on you. Use Hamachi or Radmin.)
