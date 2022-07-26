@@ -13,7 +13,7 @@ Limitations:
 - You will need to install unofficial website certificates. (Requerd for the game to pick up information from you website. Maybe you will get warnings from windows).
 - You will not be able to use any mods. (You can't use mods offline in nornal game or download mods for old game versions, even if you wanted to use them).
 - You will need to type commands manually to change the Deep Dive mission.
-- You need to install Golberg Emulator (Maybe you will get warnings from windows).
+- You need to install Golberg Emulator. (Maybe you will get warnings from windows).
 
 # INSTALLATION AND USE:
 Some steps are requerd to do once, others every time you want to use the tool. In addition to that they are devided in two categories: "EVERYONE" (every person must do them) and "HOST" (only lobby host need to do that, this also includes people who want to start Weekly Assignments). Also check "WARNING / INFORMATION" section in every step.
@@ -77,11 +77,12 @@ INSTALLATION FOR EVERYONE FOR OLD VERSION TO FIND MANIFEST:
 
 INSTALLATION FOR EVERYONE FOR OLD VERSION USING STEAM CONSOLE:
 - Open Steam.
-- Open your this link:
+- Copy this command into URL for your Web Browser:
 
 steam://nav/console
 
-- Press "Open Steam". (This will open console inside Steam).
+- Press "Enter".
+- Click "Open Steam" button. (This will open console inside Steam).
 - Type in this command:
 - 
 download_depot 548430 548431 [MANIFEST]
