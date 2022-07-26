@@ -1,11 +1,11 @@
-# DeepDiveEmulator
+﻿# DeepDiveEmulator
 Main focus of this project is to add an ability to replay any Deep Dive in singleplayer or multiplayer for the game Deep Rock Galactic with every parameter that they had at the time of release. Name, region, objectives, warnings, anomalies, enemies, resources and most importantly terrain will stay 95% the same as the were back in the past (some randomness can still persist). In addition to that some other finctions preserved too: creation of random Deep Dives, creation of random  Weekly Assignments, restarting Events.
 
 Programs used in the project:
 - XAMPP - 3.3.0
 - Golber Emulator - a855cde6
 
-# How it works:
+# HOW IT WORKS:
 To create a Deep Dive mission game gets information from the website. You will block that connection and emulate your own website with the information you want. This way will get access to any Deep Dive on any version and you need specific version to recreate Deep Dives exactly how it was before. Thats why modification or in-game console won't work on Deep Dives older that one to three months old.
 
 Limitations:
