@@ -70,11 +70,27 @@ INSTALLATION FOR EVERYONE FOR CURRENT VERSION:
 - Go back one folder to "Deep Rock Galactic".
 - Copy "Deep Rock Galactic" folder wherever you want and rename it. (I will refer to is as "Deep Rock Galactic - VERSION". Suggested name "Deep Rock Galactic - Current").
 
+INSTALLATION FOR EVERYONE FOR OLD VERSION TO FIND MANIFEST:
+- Open "DeepDiveEmulator\List.xlsx".
+- Find out what version you need. (Look at the colour for major updates. Sometimes there can be different shades of colour, that means you need another version for those Deep Dives or you can skip them).
+- Copy the manifest on the right of the version you need.
+
 INSTALLATION FOR EVERYONE FOR OLD VERSION USING STEAM CONSOLE:
-- Copy manifest for the game version you need.
 - Open Steam.
-- Open your Web Browser.
+- Open your this link:
+
+steam://nav/console
+
+- Press "Open Steam". (This will open console inside Steam).
+- Type in this command:
 - 
+download_depot 548430 548431 [MANIFEST]
+
+- Change [MANIFEST] to manifest from "List.xlsx".
+- Press Enter.
+- Wait until "Depot download complete" message will pop up.
+- Open the folder that is written on the right of the "Depot download complete" up to "depot_548431".
+- Move the "depot_548431" folder and rename it. (I will refer to is as "Deep Rock Galactic - VERSION". Suggested name "Deep Rock Galactic - 1.35.69455.0").
 
 INSTALLATION FOR EVERYONE FOR OLD VERSION USING DEPOTDOWNLOADER: (Needs your Steam account name and password).
 - Open this link:
@@ -84,11 +100,18 @@ https://github.com/SteamRE/DepotDownloader/releases
 - Click on "depotdownloader.zip" on up-to-date tool.
 - Extract archive wherever you want and rename it. (I will refer to is as "DepotDownloader").
 - Copy "DeepDiveEmulator\DepotDownloader\DepotDownloader.bat" to "DepotDownloader".
-- Edit "DepotDownloader.bat" with any text editor.
-- Change [Manifest]
+- Edit "DepotDownloader\DepotDownloader.bat" with any text editor.
+- Change [MANIFEST] to manifest from "List.xlsx".
+- Change [ACCOUNT_NAME] to your Steam name. (This is account name, not the nickname).
+- Change [PASSWORD] to your Steam password.
+- Save the file and exit.
+- Start "DepotDownloader\DepotDownloader.bat".
+- Enter your Steam Guard password if you have it.
+- Wait until program will close itself.
+- Move the folder inside "DepotDownloader\depots\548431" and rename it. (I will refer to is as "Deep Rock Galactic - VERSION". Suggested name "Deep Rock Galactic - 1.35.69455.0").
 
 WARNING / INFORMATION:
-Old game versions are required for recreating old deep dives. Sometimes Steam Console or DepotDownloader won't work you will need to use other method.
+Old game versions are required for recreating old deep dives. You can press "+" to see more information about Deep Dives like: original Deep Dive game version, Deep Dive parameters, Deep Dive seed. Sometimes Steam Console or DepotDownloader won't work you will need to use other method.
 
 # PROGRESS:
 INSTALLATION FOR EVERYONE:
@@ -161,7 +184,7 @@ USE FOR HOST TO CHANGE ASSIGNMENT:
 - Change the existing number between quotation marks to the same number.
 
 WARNING / INFORMATION:
-Every time you change files you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). You dont actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version use what type of website.
+Every time you change files you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). Some events or absence of them will influence the deep dive generation. You dont actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version use what type of website.
 
 # LEGAL STUFF:
 This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging/loosing your account or any vital data don't install / use this project.
