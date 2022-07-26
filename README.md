@@ -48,21 +48,53 @@ INSTALLATION:
 WARNINGS / INFORMATION:
 Must be done by HOST! XAMPP must be started with "Apache" turned green for the tool to work.
 
+
+
+
+# PROGRESS:
+INSTALLATION FOR EVERYONE:
+- Open Steam.
+- Right click on "Deep Rock Galactic".
+- Select “Properties”, “Local Files”, “Browse”.
+- Open "FSD" fodler.
+- Copy "Saved" folder. (Make sure to copy, NOT move).
+- Paste copied folder to "Deep Rock Galactic - 1.35.69455.0\FSD".
+- Open "Deep Rock Galactic - 1.35.69455.0\FSD\Saved\SaveGames".
+- Rename most resent file to "Player".
+- Delete other files in "Deep Rock Galactic - 1.35.69455.0\FSD".
+
+WARNINGS / INFORMATION:
+Even if you use your current version you still need to rename save file.
+
+# GOLDBERG EMULATOR:
+INSTALLATION FOR EVERYONE:
+- Open "DeepDiveEmulator\Goldberg Emulator"
+- Copy all files here.
+- Paste files into "Deep Rock Galactic - VERSION\Engine\Binaries\ThirdParty\Steamworks\Steamv151\Win64". ("Steamv151" can have different name - "Steamv149", "Steamv147").
+- Open "Deep Rock Galactic - VERSION\Engine\Binaries\ThirdParty\Steamworks\Steamv151\Win64\steam_settings\settings\account_name.txt"
+- Change "Player" to anything you want. (This is your name inside the game).
+- Open "Deep Rock Galactic - VERSION\Engine\Binaries\ThirdParty\Steamworks\Steamv151\Win64".
+- Create shortcut for "steamclient_loader.exe".
+
+# SINGLEPLAYER:
+USE:
+- Start the game using shortcut.
+
 # MULTIPLAYER:
-INSTALLATION:
+INSTALLATION FOR EVERYONE:
 - Install Virtual Private Network of your choice. (For example: Hamachi, Radmin VPN).
 
 USE FOR HOST:
 - Start the game using shortcut.
-- Press "Shift + Tab". (This will open Golber Emulator overlay).
+- Press "Shift + Tab". (This will open Golberg Emulator overlay).
 - Right click on the person name in "Friends" list.
 - Select "Invite".
 
 USE FOR EVERYONE:
 - Start the game using shortcut.
-- Wait when you will receive invite.
+- Wait when you will receive the invite.
 - Press "ESC".
 - Select "Join" button.
 
 WARNINGS / INFORMATION:
-Virtual Private Network program is required in order to play with friends. If Golber Emulator overlay will not appear the problem is in another program that uses overlay, for example: RivaTuner Statistics Server, MSI Afterburner.
+Virtual Private Network program is required in order to play with friends. If Golberg Emulator overlay will not appear the problem is in another program that uses overlay, for example: RivaTuner Statistics Server, MSI Afterburner.
