@@ -84,7 +84,7 @@ steam://nav/console
 - Press "Enter".
 - Click "Open Steam" button. (This will open console inside Steam).
 - Type in this command:
-- 
+
 download_depot 548430 548431 [MANIFEST]
 
 - Change [MANIFEST] to manifest from "List.xlsx".
@@ -179,7 +179,7 @@ USE FOR HOST TO CHANGE EVENT:
 
 USE FOR HOST TO CHANGE ASSIGNMENT:
 - Launch "Shortcut - DeepDiveEmulator - Assignment - drg.ghostship.dk".
-- Change the existing number between quotation marks to whatever you want. (Number must be in range from 0 to 4,294,967,295. If you want to have same assignments with the host use same number).
+- Change the existing number between ":" and "," to whatever you want. (Number must be in range from 0 to 4,294,967,295. If you want to have same assignments with the host use same number).
 - Launch "Shortcut - DeepDiveEmulator - Assignment - services.ghostship.dk".
 - Remove everything and add command you copied.
 - Change the existing number between quotation marks to the same number.
