@@ -188,4 +188,4 @@ WARNING / INFORMATION:
 Every time you change the files; you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). Some events or absence of them will influence the deep dive generation. You don't actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version use what type of website.
 
 # LEGAL STUFF:
-This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging/loosing your account or any vital data don't install / use this project.
+This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging / loosing your account or any vital data don't install / use this project.
