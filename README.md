@@ -84,7 +84,7 @@ steam://nav/console
 - Press "Enter".
 - Click "Open Steam" button. (This will open console inside Steam).
 - Type in this command:
-- 
+
 download_depot 548430 548431 [MANIFEST]
 
 - Change [MANIFEST] to manifest from "List.xlsx".
@@ -179,7 +179,7 @@ USE FOR HOST TO CHANGE EVENT:
 
 USE FOR HOST TO CHANGE ASSIGNMENT:
 - Launch "Shortcut - DeepDiveEmulator - Assignment - drg.ghostship.dk".
-- Change the existing number between quotation marks to whatever you want. (Number must be in range from 0 to 4,294,967,295. If you want to have same assignments with the host use same number).
+- Change the existing number between ":" and "," to whatever you want. (Number must be in range from 0 to 4,294,967,295. If you want to have same assignments with the host use same number).
 - Launch "Shortcut - DeepDiveEmulator - Assignment - services.ghostship.dk".
 - Remove everything and add command you copied.
 - Change the existing number between quotation marks to the same number.
@@ -188,4 +188,4 @@ WARNING / INFORMATION:
 Every time you change the files; you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). Some events or absence of them will influence the deep dive generation. You don't actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version use what type of website.
 
 # LEGAL STUFF:
-This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging/loosing your account or any vital data don't install / use this project.
+This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging / loosing your account or any vital data don't install / use this project.
