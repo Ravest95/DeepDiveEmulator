@@ -27,10 +27,10 @@ INSTALLATION FOR EVERYONE:
 INSTALLATION FOR HOST:
 - Launch "DeepDiveEmulator\Shortcut - Hosts.bat" and select any text editor.
 - Add lines:
-`
-127.0.0.1 drg.ghostship.dk
-127.0.0.1 services.ghostship.dk
-`
+```
+127.0.0.1	drg.ghostship.dk
+127.0.0.1	services.ghostship.dk
+```
 - Save the file and exit. (You probably need admin rights to do that. Try to copy the file on the desktop, edit it and copy it back, overwriting the file).
 
 USE FOR HOST TO TURN ON:
