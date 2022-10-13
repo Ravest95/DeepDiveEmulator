@@ -1,2 +1,2 @@
 @echo off
-start "" /d "%~dp0xampp" "setup_xampp.bat"
+start "" /d "%~dp0XAMPP" "setup_xampp.bat"

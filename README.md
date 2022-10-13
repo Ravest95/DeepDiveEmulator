@@ -10,13 +10,13 @@ To create a Deep Dive mission game gets information from the website. You will b
 
 Limitations:
 - Installation is manual.
-- You will need to install unofficial website certificates. (Required for the game to pick up information from you website. Maybe you will get warnings from windows).
+- You will need to install unofficial website certificates. (Required for the game to pick up information from you website. Maybe you will get warnings from Windows).
 - You will not be able to use any mods. (You can't use mods offline in normal game or download mods for old game versions, even if you wanted to use them).
 - You will need to type commands manually to change the Deep Dive mission.
-- You need to install Goldberg Emulator. (Maybe you will get warnings from windows).
+- You need to install Goldberg Emulator. (Maybe you will get warnings from Windows).
 
 # INSTALLATION AND USE:
-Some steps are required to do once, others every time you want to use the tool. In addition to that they are divided in two categories: "EVERYONE" (every person must do them) and "HOST" (only lobby host need to do that, this also includes people who want to start Weekly Assignments). Also check "WARNING / INFORMATION" section in every step.
+Some steps are required to do once, others every time you want to use the tool. In addition to that they are divided in two categories: "EVERYONE" (every person must do them) and "HOST" (only lobby host need to do that, this also includes people who want to start Weekly Priority Assignments). Also check "WARNING" section in every step.
 
 # DOWNLOAD:
 INSTALLATION FOR EVERYONE:
@@ -25,22 +25,21 @@ INSTALLATION FOR EVERYONE:
 
 # BLOCK CONNECTION:
 INSTALLATION FOR HOST:
-- Launch "DeepDiveEmulator\Shortcut - Hosts.bat" and use any text editor.
-- Add two lines:
-
+- Launch "DeepDiveEmulator\Shortcut - Hosts.bat" and select any text editor.
+- Add lines:
+`
 127.0.0.1 drg.ghostship.dk
-
 127.0.0.1 services.ghostship.dk
-
+`
 - Save the file and exit. (You probably need admin rights to do that. Try to copy the file on the desktop, edit it and copy it back, overwriting the file).
 
 USE FOR HOST TO TURN ON:
-- Remove "#" before the lines.
+- Remove `#` in front of each line.
 
 USE FOR HOST TO TURN OFF:
-- Add "#" before the lines.
+- Add `#` in front of each line.
 
-WARNING / INFORMATION:
+WARNING:
 Connection must be blocked in order for the tool to work. Adding these lines will block the normal connection for the game on Steam.
 
 # XAMPP:
@@ -77,41 +76,33 @@ INSTALLATION FOR EVERYONE FOR OLD VERSION TO FIND MANIFEST:
 
 INSTALLATION FOR EVERYONE FOR OLD VERSION USING STEAM CONSOLE:
 - Open Steam.
-- Copy this command into URL for your Web Browser:
-
-steam://nav/console
-
+- Copy `steam://nav/console` and paste it as URL in your Web Browser:
 - Press "Enter".
 - Click "Open Steam" button. (This will open console inside Steam).
-- Type in this command:
-
-download_depot 548430 548431 [MANIFEST]
-
-- Change [MANIFEST] to manifest from "List.xlsx".
-- Press Enter.
+- Copy `download_depot 548430 548431 [MANIFEST]` and paste it in Steam console. (Don't press "Enter" yet).
+- Open "DeepDiveEmulator\List.xlsx" and copy value from "Manifest Custom" tab for the Deep Dive you want. (You can use value from "Manifest Standard" instead to recreate Deep Dive 100% perfectly).
+- Change `[MANIFEST]` to value you copied from "DeepDiveEmulator\List.xlsx".
+- Press "Enter".
 - Wait until "Depot download complete" message will pop up.
 - Open the folder that is written on the right of the "Depot download complete" up to "depot_548431".
 - Move the "depot_548431" folder and rename it. (I will refer to is as "Deep Rock Galactic - VERSION". Suggested name "Deep Rock Galactic - 1.35.69455.0").
 
 INSTALLATION FOR EVERYONE FOR OLD VERSION USING DEPOTDOWNLOADER: (Needs your Steam account name and password).
-- Open this link:
-
-https://github.com/SteamRE/DepotDownloader/releases
-
+- Open `https://github.com/SteamRE/DepotDownloader/releases` link:
 - Click on "depotdownloader.zip" on up-to-date tool.
 - Extract archive wherever you want and rename it. (I will refer to is as "DepotDownloader").
 - Copy "DeepDiveEmulator\DepotDownloader\DepotDownloader.bat" to "DepotDownloader".
 - Edit "DepotDownloader\DepotDownloader.bat" with any text editor.
-- Change [MANIFEST] to manifest from "List.xlsx".
-- Change [ACCOUNT_NAME] to your Steam name. (This is account name, not the nickname).
-- Change [PASSWORD] to your Steam password.
+- Change `[MANIFEST]` to manifest from "List.xlsx".
+- Change `[ACCOUNT_NAME]` to your Steam name. (This is account name, not the nickname).
+- Change `[PASSWORD]` to your Steam password.
 - Save the file and exit.
 - Start "DepotDownloader\DepotDownloader.bat".
 - Enter your Steam Guard password if you have it.
 - Wait until program will close itself.
 - Move the folder inside "DepotDownloader\depots\548431" and rename it. (I will refer to is as "Deep Rock Galactic - VERSION". Suggested name "Deep Rock Galactic - 1.35.69455.0").
 
-WARNING / INFORMATION:
+WARNING:
 Old game versions are required for recreating old deep dives. You can press "+" to see more information about Deep Dives like: original Deep Dive game version, Deep Dive parameters, Deep Dive seed. Sometimes Steam Console or DepotDownloader won't work you will need to use other method.
 
 # PROGRESS:
@@ -126,7 +117,7 @@ INSTALLATION FOR EVERYONE:
 - Rename most resent file to "Player".
 - Delete other files in "Deep Rock Galactic - 1.35.69455.0\FSD".
 
-WARNING / INFORMATION:
+WARNING:
 Even if you use your current version you still need to rename save file.
 
 # GOLDBERG EMULATOR:
@@ -159,33 +150,37 @@ USE FOR EVERYONE:
 - Press "ESC".
 - Select "Join" button.
 
-WARNING / INFORMATION:
+WARNING:
 Virtual Private Network program is required in order to play with friends. If Goldberg Emulator overlay will not appear the problem is in another program that uses overlay, for example: RivaTuner Statistics Server, MSI Afterburner.
 
 # CONTROLS:
 USE FOR HOST TO CHANGE DEEP DIVE:
-- Copy command from "Command Deep Dive" for the Deep Dive you want.
-- Launch "Shortcut - DeepDiveEmulator - Deep Dive - drg.ghostship.dk".
-- Remove everything and add command you copied.
-- Launch "Shortcut - DeepDiveEmulator - Deep Dive - services.ghostship.dk".
-- Remove everything and add command you copied.
+- Open "DeepDiveEmulator\List.xlsx" and copy command from "Command Deep Dive" tab for the Deep Dive you want.
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Deep Dive - drg.ghostship.dk.bat".
+- Remove everything in the file and add command you copied.
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Deep Dive - services.ghostship.dk.bat".
+- Remove everything in the file and add command you copied.
 
 USE FOR HOST TO CHANGE EVENT:
-- Copy command from "Command Event" for the Deep Dive you want.
-- Launch "Shortcut - DeepDiveEmulator - Event - drg.ghostship.dk".
-- Remove everything and add command you copied.
-- Launch "Shortcut - DeepDiveEmulator - Event - services.ghostship.dk".
-- Remove everything and add command you copied.
+- Open "DeepDiveEmulator\List.xlsx" and copy command from "Command Event" tab for the Deep Dive you want.
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Event - drg.ghostship.dk.bat".
+- Remove everything in the file and add the command you copied.
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Event - services.ghostship.dk.bat".
+- Remove everything in the file and add the command you copied.
 
 USE FOR HOST TO CHANGE ASSIGNMENT:
-- Launch "Shortcut - DeepDiveEmulator - Assignment - drg.ghostship.dk".
-- Change the existing number between ":" and "," to whatever you want. (Number must be in range from 0 to 4,294,967,295. If you want to have same assignments with the host use same number).
-- Launch "Shortcut - DeepDiveEmulator - Assignment - services.ghostship.dk".
-- Remove everything and add command you copied.
-- Change the existing number between quotation marks to the same number.
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Assignment - drg.ghostship.dk.bat".
+- Change `0` to any number you want between `0` and `4,294,967,295`. If you want to have same assignments with the host, use the same value as the host).
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Assignment - services.ghostship.dk".
+- Change `0` to any number you want between `0` and `4,294,967,295`.
 
-WARNING / INFORMATION:
-Every time you change the files; you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). Some events or absence of them will influence the deep dive generation. You don't actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version use what type of website.
+USE FOR HOST TO CHANGE FREE BEERS:
+- Launch "DeepDiveEmulator\Shortcut - DeepDiveEmulator - Free Beers.bat".
+- Swap `false` with `true` to enable Free Beers
+- Swap `true` with `false` to disable Free Beers.
+
+WARNING:
+Every time you change the files you need to restart the game. (People who don’t have XAMPP installed don’t need to do that). Some events or absence of them will influence the deep dive generation. You don't actually need to change drg.ghostship.dk and services.ghostship.dk at the same time, it is made to so you would not care about what game version uses what type of website.
 
 # LEGAL STUFF:
-This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging / loosing your account or any vital data don't install / use this project.
+This project assembled for educational purposes only. I did not use any code from the game. I am not responsible for any harm that comes to your account or anything that comes from using the programs from this project. If you are afraid of damaging/loosing your account or any vital data don't install / use this project.

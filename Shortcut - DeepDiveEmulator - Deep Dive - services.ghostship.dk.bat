@@ -1,2 +1,2 @@
 @echo off
-start "" /d "%~dp0xampp\htdocs\services.ghostship.dk" "deepdive"
+start "" /d "%~dp0XAMPP\htdocs\services.ghostship.dk" "deepdive"

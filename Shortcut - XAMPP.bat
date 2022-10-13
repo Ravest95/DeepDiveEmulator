@@ -1,2 +1,2 @@
 @echo off
-start "" /d "%~dp0xampp" "xampp-control.exe"
+start "" /d "%~dp0XAMPP" "xampp-control.exe"
