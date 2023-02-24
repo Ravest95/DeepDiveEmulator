@@ -1,22 +1,29 @@
 ﻿# DeepDiveEmulator
-Main focus of this project is to add an ability to replay any Deep Dive in singleplayer or multiplayer for the game Deep Rock Galactic with every parameter that they had at the time of release. Name, region, objectives, warnings, anomalies, enemies, resources and most importantly terrain will stay 95% the same as the were back in the past (some randomness can still persist). In addition to that some other functions preserved too: creation of random Deep Dives, creation of random  Weekly Assignments, restarting Events.
+Main focus of the project is to add an ability for the game Deep Rock Galactic to replay any Deep Dive in singleplayer or multiplayer with every parameter they had at the time of release. Name, region, objectives, warnings, anomalies, enemies, resources and most importantly terrain will stay 95% the same as the were back in the past (some randomness can still persist due to nature of the game). In addition some other functions preserved too: creation of random Deep Dives, creation of random  Weekly Assignments, restarting Events.
 
 Programs used in the project:
 - XAMPP - 3.3.0
 - Goldberg Emulator - a855cde6
 
-# HOW IT WORKS:
-To create a Deep Dive mission game gets information from the website. You will block that connection and emulate your own website with the information you want. This way will get access to any Deep Dive on any version, and you need a specific version to recreate Deep Dives exactly how it was before. Thats why modification or in-game console won't work on Deep Dives older that one to three months old.
-
 Limitations:
 - Installation is manual.
 - You will need to install unofficial website certificates. (Required for the game to pick up information from you website. Maybe you will get warnings from Windows).
-- You will not be able to use any mods. (You can't use mods offline in normal game or download mods for old game versions, even if you wanted to use them).
+- You will not be able to use mods. (You can't download old versions of the mods).
 - You will need to type commands manually to change the Deep Dive mission.
-- You need to install Goldberg Emulator. (Maybe you will get warnings from Windows).
+- You need to install Goldberg Emulator to remove always online requirement and keep ability for getting information from website. (Maybe you will get warnings from Windows).
+
+# FREQUENTLY ASKED QUESTIONS:
+HOW THIS PROJECT WORKS?
+To create a Deep Dive mission game gets information from the website. You will block that connection and emulate your own website with the information you want.
+
+WHY USE THIS PROJECT WHEN A MODIFICATION FOR REPLAYING MISSIONS EXIST?
+Modification will work only for deep dives in the current update. If you try to start deep dive from last year on the modern game version, new elements will interfere with cave generation, resulting in completely different mission. You need to download the version of the game when that deep dive was released or at least version that is close to it, but you can't download old modification for it.
+
+CAN I BE BANNED?
+No. Game does not have any anti-cheat, it also is not dependant on any kind of central server for major functionality (you can play offline, and progress will be preserved in online too). You can't be banned at all. In addition to that if you will use the project, all connection will be blocked (apart from local area network).
 
 # INSTALLATION AND USE:
-Some steps are required to do once, others every time you want to use the tool. In addition to that they are divided in two categories: "EVERYONE" (every person must do them) and "HOST" (only lobby host need to do that, this also includes people who want to start Weekly Priority Assignments). Also check "WARNING" section in every step.
+Some steps are required to do once, others every time you want to use the tool. In addition to that they are divided in two categories: "EVERYONE" (every person must do them) and "HOST" (only lobby host need to do that, this also includes people who want to start Weekly Priority Assignments alongside host). Also check "WARNING" section in every step.
 
 # DOWNLOAD:
 INSTALLATION FOR EVERYONE:
@@ -40,7 +47,7 @@ USE FOR HOST TO TURN OFF:
 - Add `#` in front of each line.
 
 WARNING:
-Connection must be blocked in order for the tool to work. Adding these lines will block the normal connection for the game on Steam.
+Connection must be blocked in order for the tool to work. Adding these lines will block the normal connection for the game on Steam (you will not be able to join anyone in the game while connection is off).
 
 # XAMPP:
 INSTALLATION FOR HOST:
@@ -58,7 +65,7 @@ USE FOR HOST TO TURN OFF:
 - Select first "Stop" button. ("Apache" must turn grey).
 - Right click on the XAMPP's tray icon and select "Quit" button.
 
-WARNING / INFORMATION:
+WARNING:
 XAMPP must be started for the tool to work.
 
 # GAME VERSION:
