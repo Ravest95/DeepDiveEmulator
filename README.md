@@ -17,9 +17,11 @@ HOW THIS PROJECT WORKS?
 
 To create a Deep Dive mission game gets information from the website. You will block that connection and emulate your own website with the information you want.
 
+
 WHY USE THIS PROJECT WHEN A MODIFICATION FOR REPLAYING MISSIONS EXIST?
 
 Modification will work only for deep dives in the current update. If you try to start deep dive from last year on the modern game version, new elements will interfere with cave generation, resulting in completely different mission. You need to download the version of the game when that deep dive was released or at least version that is close to it, but you can't download old modification for it.
+
 
 CAN I BE BANNED?
 
