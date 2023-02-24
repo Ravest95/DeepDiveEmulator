@@ -14,12 +14,15 @@ Limitations:
 
 # FREQUENTLY ASKED QUESTIONS:
 HOW THIS PROJECT WORKS?
+
 To create a Deep Dive mission game gets information from the website. You will block that connection and emulate your own website with the information you want.
 
 WHY USE THIS PROJECT WHEN A MODIFICATION FOR REPLAYING MISSIONS EXIST?
+
 Modification will work only for deep dives in the current update. If you try to start deep dive from last year on the modern game version, new elements will interfere with cave generation, resulting in completely different mission. You need to download the version of the game when that deep dive was released or at least version that is close to it, but you can't download old modification for it.
 
 CAN I BE BANNED?
+
 No. Game does not have any anti-cheat, it also is not dependant on any kind of central server for major functionality (you can play offline, and progress will be preserved in online too). You can't be banned at all. In addition to that if you will use the project, all connection will be blocked (apart from local area network).
 
 # INSTALLATION AND USE:
