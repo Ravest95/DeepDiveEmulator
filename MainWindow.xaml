@@ -1,0 +1,486 @@
+﻿<Window x:Class="DeepDiveEmulator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeepDiveEmulator"
+        mc:Ignorable="d"
+        Title="DeepDiveEmulator" Width="1280" Height="800" 
+        MinWidth="800" MinHeight="600" WindowStyle="None" ResizeMode="CanMinimize" Background="#FF202020" Initialized="Window_Initialized" Closed="Window_Closed" LocationChanged="Window_LocationChanged" SizeChanged="Window_SizeChanged" FontFamily="Arial" FontSize="14" Icon="/DeepDiveEmulator.ico">
+    <Window.Resources>
+        <Style x:Key="RectBorderStyle" TargetType="Rectangle">
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="Fill" Value="Transparent" />
+            <Setter Property="Tag" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
+            <EventSetter Event="MouseLeftButtonDown" Handler="Resize_Init"/>
+            <EventSetter Event="MouseLeftButtonUp" Handler="Resize_End"/>
+            <EventSetter Event="MouseMove" Handler="Resizeing_Form"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid x:Name="TitleBar" MouseDown="StackPanel_MouseDown"  VerticalAlignment="Top" Margin="0"  Background="#FF202020" Height="26">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Image x:Name="HeaderIcon" Width="22" Height="22" HorizontalAlignment="Left" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="2,2,2,2" Source="/DeepDiveEmulator.ico" />
+            <Label Content="DeepDiveEmulator" Foreground="Silver" Height="26" FontFamily="Arial" FontSize="14" Grid.ColumnSpan="2" Margin="26,0,0,0" Grid.RowSpan="2"/>
+            <StackPanel Grid.Column="2" VerticalAlignment="Top"  Orientation="Horizontal" HorizontalAlignment="Center" Grid.RowSpan="2">
+                <Button x:Name="MinimizeButton" Style="{DynamicResource MinimizeButtonStyle}" Click="MinimizeWindow" KeyboardNavigation.IsTabStop="False" />
+                <Button x:Name="MaximizeButton" Style="{DynamicResource MaximizeButtonStyle}" Click="MaximizeClick" KeyboardNavigation.IsTabStop="False" />
+                <Button x:Name="CloseButton"  Style="{DynamicResource CloseButtonStyle}" Click="CloseButton_Click" KeyboardNavigation.IsTabStop="False" />
+            </StackPanel>
+        </Grid>
+        <!-- Sides -->
+        <Rectangle x:Name="RisizeSideLeft" Width="4" HorizontalAlignment="Left" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="RisizeSideRight" Width="4" HorizontalAlignment="Right" Cursor="SizeWE" Style="{StaticResource RectBorderStyle}"/>
+        <Rectangle x:Name="RisizeSideTop" Height="4" VerticalAlignment="Top" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="RisizeSideBottom" Height="4" VerticalAlignment="Bottom" Cursor="SizeNS" Style="{StaticResource RectBorderStyle}" />
+        <!-- Corners -->
+        <Rectangle x:Name="RisizeSideTopLeft" Width="4" Height="4" HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="RisizeSideTopRight" Width="4" Height="4" HorizontalAlignment="Right" VerticalAlignment="Top" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="RisizeSideBottomLeft" Width="4" Height="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Cursor="SizeNESW" Style="{StaticResource RectBorderStyle}" />
+        <Rectangle x:Name="RisizeSideBottomRight" Width="4" Height="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Cursor="SizeNWSE" Style="{StaticResource RectBorderStyle}" />
+        <TabControl Background="#FF404040" Margin="4,26,4,4" BorderThickness="4,0,4,4" Padding="0" BorderBrush="#FF202020">
+            <TabItem Header="Services">
+                <Grid x:Name="GridServices">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.25*"/>
+                        <RowDefinition Height="0.15*"/>
+                    </Grid.RowDefinitions>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="290" Width="337" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Label Content="IP Address" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="Silver" FontWeight="Normal" Canvas.Top="60" Canvas.Left="16"/>
+                                <TextBox x:Name="TBoxIP" Width="128" Height="26" Canvas.Left="97" TextChanged="TBoxIP_TextChanged" VerticalAlignment="Center" Canvas.Top="60"/>
+                                <Label Content="Website Redirects" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="0" Foreground="Silver" FontWeight="Normal" Canvas.Left="0"/>
+                                <Button x:Name="ButtonRedsAdd" Width="96" Height="26" Canvas.Top="30" Content="Add" Click="ButtonRedsAdd_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="16">
+                                    <Button.ToolTip>
+                                        <ToolTip>
+                                            Add Webiste Redirects to the system.
+                                        </ToolTip>
+                                    </Button.ToolTip>
+                                </Button>
+                                <Button x:Name="ButtonRedsRemove" Width="96" Height="26" Canvas.Left="116" Canvas.Top="30" Content="Remove" Click="ButtonRedsRemove_Click" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <CheckBox x:Name="CBoxRedsChange" Height="26" Canvas.Top="90" Padding="0" VerticalContentAlignment="Center" Background="Silver" BorderBrush="#FF202020" BorderThickness="2" Foreground="#FF202020" FontSize="14" Click="CBoxRedsChange_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="16">
+                                    <Label Content="Add/Remove Website Redirects on launch/close" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                                <Label Content="Website Certificates" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="132" Foreground="Silver" FontWeight="Normal" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonCertsAdd" Width="96" Height="26" Canvas.Left="16" Canvas.Top="162" Content="Add" Click="ButtonCertsAdd_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonCertsRemove" Width="96" Height="26" Canvas.Left="116" Canvas.Top="162" Content="Remove" Click="ButtonCertsRemove_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonRedsOpenFolder" Width="96" Height="26" Canvas.Left="216" Canvas.Top="30" Content="Open Folder" Click="ButtonRedsOpenFolder_Click" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <Button x:Name="ButtonCertsOpenFile" Width="96" Height="26" Canvas.Left="216" Canvas.Top="162" Content="Open Folder" Click="ButtonCertsOpenFile_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Label Content="Server" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="204" Foreground="Silver" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonServStart" Width="96" Height="26" Canvas.Left="16" Canvas.Top="234" Content="Start" Click="ButtonServStart_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonServStop" Width="96" Height="26" Canvas.Left="116" Canvas.Top="234" Content="Stop" Click="ButtonServStop_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <CheckBox Style="{DynamicResource CheckBoxStyle1}" x:Name="CBoxServStart" BorderThickness="2" Height="26" VerticalContentAlignment="Center" Padding="0" BorderBrush="#FF202020" Background="Silver" FontSize="14" Foreground="#FF202020" Canvas.Top="264" Click="CBoxServStart_Click" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="16">
+                                    <Label Content="Start Server on launch" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Grid.Row="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="86" Width="213" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <CheckBox x:Name="CBoxRedsAdded" BorderThickness="2,2,2,2" Focusable="False" IsHitTestVisible="False" HorizontalAlignment="Center" Canvas.Top="0" VerticalAlignment="Top" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="#FF404040" FontSize="14" Canvas.Left="0">
+                                    <Label Content="Website Redirects are added" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                                <CheckBox x:Name="CBoxCertsAdded" BorderThickness="2,2,2,2" Focusable="False" IsHitTestVisible="False" Canvas.Top="30" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="#FF404040" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" Canvas.Left="0">
+                                    <Label Content="Website Certificates are added" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                                <CheckBox x:Name="CBoxServRunning" BorderThickness="2,2,2,2" Focusable="False" IsHitTestVisible="False" Canvas.Top="60" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="#FF404040" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" Canvas.Left="0">
+                                    <Label Content="Server is running" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Grid.Row="2" Padding="8,8,8,8">
+                        <TextBlock TextWrapping="Wrap" Text="Program requires to be launched with &quot;Run as administrator&quot; for automatic installation and checking current services status." Foreground="#FFFF4040" FontWeight="Normal" FontSize="14"/>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Game">
+                <Grid x:Name="GridGame">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.55*"/>
+                        <RowDefinition Height="0.3*"/>
+                        <RowDefinition Height="0.15*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.6*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="218" Width="540" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,8,8,8">
+                                <Label Content="Deep Rock Galactic" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Left="0" Canvas.Top="0" Foreground="Silver" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Label Content="Executable Path" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" Canvas.Top="30" VerticalAlignment="Top" Foreground="Silver" FontWeight="Normal" Canvas.Left="16"/>
+                                <TextBox x:Name="TBoxPath" Width="288" Height="26" Canvas.Left="152" Canvas.Top="30" TextChanged="TBoxPath_TextChanged" Tag="Path to FSD-Win64-Shipping.exe"/>
+                                <Button x:Name="ButtonPathBrowse" Width="96" Height="26" Canvas.Left="444" Canvas.Top="30" Content="Browse" Click="ButtonPathBrowse_Click"/>
+                                <Label Content="Launch Game" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="60" Foreground="Silver" FontWeight="Normal" Canvas.Left="16"/>
+                                <Button x:Name="ButtonGameLaunch" Width="96" Height="26" Canvas.Left="152" Canvas.Top="60" Content="Launch" Click="ButtonGameLaunch_Click"/>
+                                <Label Content="Goldberg Steam Emulator" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Left="0" Canvas.Top="102" Foreground="Silver" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Label Content="Player Id" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="132" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxPlrId" Width="160" Height="26" Canvas.Left="152" Canvas.Top="132" TextChanged="TBoxPlrId_TextChanged"/>
+                                <Label Content="Player Name" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="162" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxPlrName" Width="160" Height="26" Canvas.Left="152" Canvas.Top="162" TextChanged="TBoxPlrName_TextChanged" LostFocus="TBoxPlrName_LostFocus"/>
+                                <Label Content="Launch Parameters" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="192" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxLnchParams" Width="160" Height="26" Canvas.Left="152" Canvas.Top="192" TextChanged="TBoxLnchParams_TextChanged"/>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Grid.Row="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="116" Width="374" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Label Content="Version Number" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="0" Foreground="Silver" FontWeight="Normal" Canvas.Left="0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxVerNumber" Width="160" Height="26" Canvas.Left="114" Canvas.Top="0"/>
+                                <Button x:Name="ButtonVerNumber" Width="96" Height="26" Canvas.Left="278" Canvas.Top="0" Content="Copy" Click="ButtonVerNumber_Click"/>
+                                <Label Content="Version Name" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="30" Foreground="Silver" FontWeight="Normal" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxVerName" Width="160" Height="26" Canvas.Left="114" Canvas.Top="30" TextChanged="TBoxVerName_TextChanged"/>
+                                <Button x:Name="ButtonVerName" Width="96" Height="26" Canvas.Left="278" Canvas.Top="30" Content="Copy" Click="ButtonVerName_Click"/>
+                                <Label Content="Steam Manifest" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="60" Foreground="Silver" FontWeight="Normal" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxVerManifest" Width="160" Height="26" Canvas.Left="114" Canvas.Top="60" TextChanged="TBoxVerManifest_TextChanged"/>
+                                <Button x:Name="ButtonVerManifest" Width="96" Height="26" Canvas.Left="278" Canvas.Top="60" Content="Copy" Click="ButtonVerManifest_Click"/>
+                                <Label Content="Color" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="90" Foreground="Silver" FontWeight="Normal" Canvas.Left="0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxVerColor" Width="160" Height="26" Canvas.Left="114" Canvas.Top="90" IsEnabled="False"/>
+                                <Button x:Name="ButtonVerColor" Width="96" Height="26" Canvas.Left="278" Canvas.Top="90" Content="Copy" Click="ButtonVerColor_Click"/>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Padding="8,8,8,8" Grid.Row="2">
+                        <TextBlock TextWrapping="Wrap" Text="Due to inability to turn off updates for the game in Steam, you must create a copy of the game folder and launch the game from the program." Foreground="#FFFF4040" FontWeight="Normal" FontSize="14"/>
+                    </Border>
+                    <Border BorderThickness="0" Background="#FF202020" Margin="8,8,8,8" Grid.Column="1" Grid.RowSpan="3">
+                        <TabControl BorderThickness="4,0,4,4" Background="#FF404040" BorderBrush="#FF202020">
+                            <TabItem Header="Game Versions">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.5*"/>
+                                        <ColumnDefinition Width="0.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="42"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="38"/>
+                                        <RowDefinition Height="38"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox x:Name="TBoxVerSearch" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="8,8,8,8" TextChanged="TBoxVerSearch_TextChanged" Tag="Search: Number, Name"/>
+                                    <ListView x:Name="ListViewGameVersions" Grid.ColumnSpan="2" Grid.Row="1" Margin="8,0,8,0" SelectionMode="Single" BorderThickness="2" BorderBrush="#FF202020" Background="#FF404040" Foreground="Silver" HorizontalContentAlignment="Stretch" FontSize="16" FontWeight="Bold" SelectionChanged="ListViewGameVersions_SelectionChanged">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Background="{Binding Brush}">
+                                                    <Label Content="{Binding IdFake}" Foreground="Silver" Width="114" Height="28"/>
+                                                    <Label Content="{Binding Name}" Foreground="Silver" Height="28"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                    <Button x:Name="ButtonVerDeselect" Grid.Row="2" Grid.ColumnSpan="2" Margin="8,8,8,4" Content="Deselect" Click="ButtonVerDeselect_Click"/>
+                                    <Button x:Name="ButtonVerAdd" Grid.Row="3" Margin="8,4,4,8" Content="Add" IsEnabled="False"/>
+                                    <Button x:Name="ButtonVerRemove" Grid.Column="1" Grid.Row="3" Margin="4,4,8,8" Content="Remove" IsEnabled="False"/>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Deep Dive">
+                <Grid x:Name="GridDeepDive">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.25*"/>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.15*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.6*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="72" Width="275" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Label Content="Seed" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" Canvas.Top="0" VerticalAlignment="Top" Foreground="Silver" FontWeight="Normal" Canvas.Left="0"/>
+                                <TextBox x:Name="TBoxDDSeed" Width="128" Height="26" Canvas.Left="47" Canvas.Top="0" TextChanged="TBoxDeepDiveSeed_TextChanged" LostFocus="TBoxDeepDiveSeed_LostFocus"/>
+                                <Button x:Name="ButtonDDSeed" Width="96" Height="26" Canvas.Left="179" Canvas.Top="0" Content="Generate" Click="ButtonDeepDiveSeed_Click"/>
+                                <CheckBox x:Name="CBoxLostDeepDives" BorderThickness="2" Height="26" VerticalContentAlignment="Center" Padding="0" BorderBrush="#FF202020" Background="Silver" FontSize="14" Foreground="#FF202020" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="46" Canvas.Left="0" Click="CBoxLostDeepDives_Click">
+                                    <Label Content="Show Lost Deep Dives" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderThickness="0" Background="#FF202020" Grid.Row="1" Margin="8,8,8,8">
+                        <TabControl BorderThickness="4,0,4,4" Padding="0" Background="#FF404040" BorderBrush="#FF202020">
+                            <TabItem Header="Normal">
+                                <Grid>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <Canvas ClipToBounds="true" Height="218" Width="628" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                            <Label Content="Tag" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26"/>
+                                            <TextBox x:Name="TBoxDDNorTag" Width="192" Height="26" Canvas.Left="58" Canvas.Top="0" TextChanged="TBoxDDNorTag_TextChanged"/>
+                                            <Label Content="Name" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Top="42"/>
+                                            <TextBox x:Name="TBoxDDNorName" Width="192" Height="26" Canvas.Left="58" Canvas.Top="42"/>
+                                            <Label Content="Region" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="72" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                            <ComboBox x:Name="CBoxDDNorReg" Width="192" Height="26" Canvas.Top="72" Canvas.Left="58"/>
+                                            <Label Content="Mission" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                            <ComboBox x:Name="CBoxDDNorMisT1" Width="128" Height="26" Canvas.Top="132" Canvas.Left="16"/>
+                                            <TextBox x:Name="TBoxDDNorMisV1" Width="32" Height="26" Canvas.Left="148" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDNorMisT2" Width="128" Height="26" Canvas.Left="16" Canvas.Top="162"/>
+                                            <TextBox x:Name="TBoxDDNorMisV2" Width="32" Height="26" Canvas.Left="148" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDNorMisT3" Width="128" Height="26" Canvas.Left="16" Canvas.Top="192"/>
+                                            <TextBox x:Name="TBoxDDNorMisV3" Width="32" Height="26" Canvas.Left="148" Canvas.Top="192"/>
+                                            <Label Content="Side Objective" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="168"/>
+                                            <ComboBox x:Name="CBoxDDNorObjT1" Width="144" Height="26" Canvas.Left="184" Canvas.Top="132"/>
+                                            <TextBox x:Name="TBoxDDNorObjV1" Width="32" Height="26" Canvas.Left="332" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDNorObjT2" Width="144" Height="26" Canvas.Left="184" Canvas.Top="162"/>
+                                            <TextBox x:Name="TBoxDDNorObjV2" Width="32" Height="26" Canvas.Top="162" Canvas.Left="332"/>
+                                            <ComboBox x:Name="CBoxDDNorObjT3" Width="144" Height="26" Canvas.Left="184" Canvas.Top="192"/>
+                                            <TextBox x:Name="TBoxDDNorObjV3" Width="32" Height="26" Canvas.Top="192" Canvas.Left="332"/>
+                                            <Label Content="Warning" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" Canvas.Left="352" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <ComboBox x:Name="CBoxDDNorWar1" Width="128" Height="26" Canvas.Left="368" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDNorWar2" Width="128" Height="26" Canvas.Left="368" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDNorWar3" Width="128" Height="26" Canvas.Left="368" Canvas.Top="192"/>
+                                            <Label Content="Anomaly" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" Canvas.Left="484" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <ComboBox x:Name="CBoxDDNorAno1" Width="128" Height="26" Canvas.Left="500" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDNorAno2" Width="128" Height="26" Canvas.Left="500" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDNorAno3" Width="128" Height="26" Canvas.Left="500" Canvas.Top="192"/>
+                                        </Canvas>
+                                    </ScrollViewer>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Elite">
+                                <Grid>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <Canvas ClipToBounds="true" Height="218" Width="628" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,8,8,8">
+                                            <Label Content="Tag" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26"/>
+                                            <TextBox x:Name="TBoxDDEliTag" Width="192" Height="26" Canvas.Left="58" Canvas.Top="0" TextChanged="TBoxDDEliTag_TextChanged"/>
+                                            <Label Content="Name" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Top="42"/>
+                                            <TextBox x:Name="TBoxDDEliName" Width="192" Height="26" Canvas.Left="58" Canvas.Top="42"/>
+                                            <Label Content="Region" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="72" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <ComboBox x:Name="CBoxDDEliReg" Width="192" Height="26" Canvas.Top="72" Canvas.Left="58"/>
+                                            <Label Content="Mission" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <ComboBox x:Name="CBoxDDEliMisT1" Width="128" Height="26" Canvas.Top="132" Canvas.Left="16"/>
+                                            <TextBox x:Name="TBoxDDEliMisV1" Width="32" Height="26" Canvas.Left="148" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDEliMisT2" Width="128" Height="26" Canvas.Left="16" Canvas.Top="162"/>
+                                            <TextBox x:Name="TBoxDDEliMisV2" Width="32" Height="26" Canvas.Left="148" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDEliMisT3" Width="128" Height="26" Canvas.Left="16" Canvas.Top="192"/>
+                                            <TextBox x:Name="TBoxDDEliMisV3" Width="32" Height="26" Canvas.Left="148" Canvas.Top="192"/>
+                                            <Label Content="Side Objective" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" HorizontalAlignment="Left" VerticalAlignment="Center" Canvas.Left="168"/>
+                                            <ComboBox x:Name="CBoxDDEliObjT1" Width="144" Height="26" Canvas.Left="184" Canvas.Top="132"/>
+                                            <TextBox x:Name="TBoxDDEliObjV1" Width="32" Height="26" Canvas.Left="332" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDEliObjT2" Width="144" Height="26" Canvas.Left="184" Canvas.Top="162"/>
+                                            <TextBox x:Name="TBoxDDEliObjV2" Width="32" Height="26" Canvas.Top="162" Canvas.Left="332"/>
+                                            <ComboBox x:Name="CBoxDDEliObjT3" Width="144" Height="26" Canvas.Left="184" Canvas.Top="192"/>
+                                            <TextBox x:Name="TBoxDDEliObjV3" Width="32" Height="26" Canvas.Top="192" Canvas.Left="332"/>
+                                            <Label Content="Warning" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" Canvas.Left="352" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <ComboBox x:Name="CBoxDDEliWar1" Width="128" Height="26" Canvas.Left="368" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDEliWar2" Width="128" Height="26" Canvas.Left="368" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDEliWar3" Width="128" Height="26" Canvas.Left="368" Canvas.Top="192"/>
+                                            <Label Content="Anomaly" VerticalContentAlignment="Center" FontSize="14" Foreground="Silver" FontWeight="Normal" Height="26" Canvas.Top="102" Canvas.Left="484" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <ComboBox x:Name="CBoxDDEliAno1" Width="128" Height="26" Canvas.Left="500" Canvas.Top="132"/>
+                                            <ComboBox x:Name="CBoxDDEliAno2" Width="128" Height="26" Canvas.Left="500" Canvas.Top="162"/>
+                                            <ComboBox x:Name="CBoxDDEliAno3" Width="128" Height="26" Canvas.Left="500" Canvas.Top="192"/>
+                                        </Canvas>
+                                    </ScrollViewer>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Grid.Row="2" Padding="8,8,8,8">
+                        <TextBlock TextWrapping="Wrap" Foreground="#FFFF4040" FontWeight="Normal" FontSize="14" Text="Deep Dive and Deep Dive Elite are created using the seed number. Every game version will interpret the seed differently on its own and using Event, resulting in completely different Deep Dive. To maintain original Deep Dive parameters, you must use the original or compatible game version and original Event. A panel that contains Deep Dive parameters, will not influence Deep Dive in any way. It is a way to record information, not change it."/>
+                    </Border>
+                    <Border BorderThickness="0" Background="#FF202020" Grid.Column="1" Grid.RowSpan="3" Margin="8,8,8,8">
+                        <TabControl BorderThickness="4,0,4,4" Background="#FF404040" BorderBrush="#FF202020">
+                            <TabItem Header="Deep Dives">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.5*"/>
+                                        <ColumnDefinition Width="0.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="42"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="38"/>
+                                        <RowDefinition Height="38"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox x:Name="TBoxDeepDiveSearch" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="8,8,8,8" TextChanged="TBoxDeepDiveSearch_TextChanged" Cursor="" Tag="Search: Number, Tag, Name, Seed, Mission Parameter"/>
+                                    <ListView x:Name="ListViewDeepDives" SelectionMode="Single" Grid.ColumnSpan="2" Grid.Row="1" Margin="8,0,8,0" BorderThickness="2" BorderBrush="#FF202020" Background="#FF404040" Foreground="Silver" FontSize="16" FontWeight="Bold" SelectionChanged="ListViewDeepDives_SelectionChanged">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Background="{Binding Brush}">
+                                                    <Label Content="{Binding IdFake}" Width="56" Height="28" Foreground="Silver" HorizontalAlignment="Center" />
+                                                    <Label Content="{Binding Date}" Width="0" Height="28" Foreground="Silver" HorizontalAlignment="Center" />
+                                                    <Label Content="{Binding NameNormal}" Width="160" Height="28" Foreground="Silver" HorizontalAlignment="Center" />
+                                                    <Label Content="{Binding NameElite}" Height="28" Foreground="Silver" HorizontalAlignment="Center" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                    <Button x:Name="ButtonDeepDiveDeselect" Grid.Row="2" Grid.ColumnSpan="2" Margin="8,8,8,4" Content="Deselect" Click="ButtonDeepDiveDeselect_Click"/>
+                                    <Button x:Name="ButtonDeepDiveAdd" Grid.Row="3" Margin="8,4,4,8" Content="Add" Click="ButtonDeepDiveAdd_Click" IsEnabled="False"/>
+                                    <Button x:Name="ButtonDeepDiveRemove" Grid.Column="1" Grid.Row="3" Margin="4,4,8,8" Content="Remove" IsEnabled="False"/>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Event">
+                <Grid x:Name="GridEvent">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.25*"/>
+                        <RowDefinition Height="0.6*"/>
+                        <RowDefinition Height="0.15*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.6*"/>
+                        <ColumnDefinition Width="0.4*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Padding="8,8,8,8">
+                        <Canvas ClipToBounds="true">
+                            <Label Content="Command" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" Canvas.Top="0" VerticalAlignment="Top" Foreground="Silver" FontWeight="Normal" Canvas.Left="0"/>
+                            <TextBox x:Name="TBoxEventCommand" Width="128" Height="26" Canvas.Left="79" Canvas.Top="0" TextChanged="TextBoxEventCommand_TextChanged"/>
+                            <Button x:Name="ButtonEventCommand" Width="96" Height="26" Canvas.Left="211" Canvas.Top="0" Content="Clear" Click="ButtonEventCommandClear_Click"/>
+                            <CheckBox x:Name="CBoxFreeBeers" BorderThickness="2" Canvas.Top="30" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="Silver" FontSize="14" Canvas.Left="0" Foreground="#FF202020" HorizontalAlignment="Center" VerticalAlignment="Center" Click="CheckBoxFreeBeers_Click">
+                                <Label Content="Free Beers" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                            </CheckBox>
+                            <CheckBox x:Name="CBoxLostEvents" BorderThickness="2" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="Silver" FontSize="14" Foreground="#FF202020" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="0" Canvas.Top="72" Click="CBoxLostEvents_Click">
+                                <Label Content="Show Lost Events" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                            </CheckBox>
+                        </Canvas>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Padding="8,8,8,8" Grid.Row="1">
+                        <ListView x:Name="ListViewEventItems" BorderThickness="2,2,2,2" BorderBrush="#FF202020" Background="#FF404040" Foreground="Silver" FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding Type}" Width="176" Height="28" Foreground="Silver" HorizontalAlignment="Center"/>
+                                        <Label Content="{Binding Name}" Height="28" Foreground="Silver" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                        </ListView>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8" Grid.Row="2" Padding="8,8,8,8">
+                        <TextBlock TextWrapping="Wrap" Foreground="#FFFF4040" FontWeight="Normal" FontSize="14" Text="Event is created using the command (after Event №10) or using game files (before Event #10). Every game version has its own list, consisting of one or several supported Events. Certain Events will influence Deep Dive creation."/>
+                    </Border>
+                    <Border BorderThickness="0" Background="#FF202020" Margin="8,8,8,8" Grid.Column="1" Grid.RowSpan="3">
+                        <TabControl BorderThickness="4,0,4,4" Background="#FF404040" BorderBrush="#FF202020">
+                            <TabItem Header="Events">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.5*"/>
+                                        <ColumnDefinition Width="0.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="42"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="38"/>
+                                        <RowDefinition Height="38"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBox x:Name="TextBoxEventSearch" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Margin="8,8,8,8" TextChanged="TextBoxEventSearch_TextChanged" Tag="Search: Number, Year, Name"/>
+                                    <ListView x:Name="ListViewEvent" Grid.ColumnSpan="2" Grid.Row="1" Margin="8,0,8,0" BorderThickness="2,2,2,2" BorderBrush="#FF202020" Background="#FF404040" Foreground="Silver" FontSize="16" FontWeight="Bold" SelectionChanged="ListViewEvent_SelectionChanged">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Background="{Binding Brush}">
+                                                    <Label Content="{Binding IdFake}" Width="48" Height="28" Foreground="Silver" HorizontalAlignment="Center"/>
+                                                    <Label Content="{Binding Year}" Width="48" Height="28" Foreground="Silver" HorizontalAlignment="Center"/>
+                                                    <Label Content="{Binding Name}" Height="28" Foreground="Silver" HorizontalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                    </ListView>
+                                    <Button x:Name="ButtonEventDeselect" Grid.Row="2" Grid.ColumnSpan="2" Margin="8,8,8,4" Content="Deselect" Click="ButtonEventDeselect_Click"/>
+                                    <Button x:Name="ButtonEventAdd" Grid.Row="3" Margin="8,4,4,8" Content="Add" IsEnabled="False"/>
+                                    <Button x:Name="ButtonEventRemove" Grid.Column="1" Grid.Row="3" Margin="4,4,8,8" Content="Remove" IsEnabled="False"/>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Assignment">
+                <Grid x:Name="GridAssignment">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.85*"/>
+                        <RowDefinition Height="0.15*"/>
+                    </Grid.RowDefinitions>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="26" Width="276" Margin="8,8,8,8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Label Content="Seed" VerticalContentAlignment="Center" FontSize="14" Height="26" HorizontalAlignment="Left" Canvas.Top="0" VerticalAlignment="Top" Foreground="Silver" FontWeight="Normal" Canvas.Left="0"/>
+                                <TextBox x:Name="TBoxAssSeed" Width="128" Height="26" Canvas.Left="47" Canvas.Top="0" TextChanged="TBoxAssSeed_TextChanged" LostFocus="TBoxAssSeed_LostFocus"/>
+                                <Button x:Name="ButtonAssSeed" Width="96" Height="26" Canvas.Left="179" Content="Generate" Click="ButtonAssSeed_Click"/>
+
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                    <Border BorderBrush="#FF202020" BorderThickness="4" Margin="8" Grid.Row="1" Padding="8">
+                        <TextBlock TextWrapping="Wrap" Foreground="#FFFF4040" Text="Weekly Priority Assignment and Weekly Core Hunt are created using the Seed number. Missions that are used in the assignment are generated randomly by the game." FontWeight="Normal" FontSize="14"/>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Grid>
+                    <Border BorderBrush="#FF202020" BorderThickness="4" Margin="8">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <Canvas ClipToBounds="true" Height="214" Width="321" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <Label Content="Window" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Left="0" Canvas.Top="0" Foreground="Silver" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Label Content="Position X" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="30" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="TBoxPosX" Width="128" Height="26" Canvas.Left="93" Canvas.Top="30" TextChanged="TBoxPosX_TextChanged" LostFocus="TBoxPosX_LostFocus"/>
+                                <Label Content="Position Y" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="60" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <Button x:Name="ButtonPosApply" Width="96" Height="26" Canvas.Left="225" Canvas.Top="30" Content="Apply" Click="ButtonPositionApply_Click"/>
+                                <TextBox x:Name="TBoxPosY" Width="128" Height="26" Canvas.Left="93" Canvas.Top="60" TextChanged="TBoxPosY_TextChanged" LostFocus="TBoxPosY_LostFocus"/>
+                                <Label Content="Size X" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="90" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <TextBox x:Name="TBoxSizeX" Width="128" Height="26" Canvas.Left="93" Canvas.Top="90" TextChanged="TBoxSizeX_TextChanged" LostFocus="TBoxSizeX_LostFocus"/>
+                                <Label Content="Size Y" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Top="120" Foreground="Silver" FontWeight="Normal" Canvas.Left="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <Button x:Name="ButtonSizeApply" Width="96" Height="26" Canvas.Left="225" Canvas.Top="90" Content="Apply" Click="ButtonSizeApply_Click"/>
+                                <TextBox x:Name="TBoxSizeY" Width="128" Height="26" Canvas.Left="93" Canvas.Top="120" TextChanged="TBoxSizeY_TextChanged" LostFocus="TBoxSizeY_LostFocus"/>
+                                <Label Content="Tabs" VerticalContentAlignment="Center" FontSize="14" Height="26" Canvas.Left="0" Canvas.Top="162" Foreground="Silver" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                                <CheckBox x:Name="CBoxHideNotes" BorderThickness="2" Canvas.Top="188" Height="26" VerticalContentAlignment="Center" Padding="0,0,0,0" BorderBrush="#FF202020" Background="Silver" FontSize="14" Foreground="#FF202020" Canvas.Left="16" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CBoxHideNotes_Click">
+                                    <Label Content="Hide Notes" Height="26" Padding="4,0,0,0" VerticalContentAlignment="Center" Foreground="Silver" FontWeight="Normal" FontSize="14"/>
+                                </CheckBox>
+                            </Canvas>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Help">
+                <Grid>
+                    <Border BorderBrush="#FF202020" BorderThickness="4,4,4,4" Margin="8,8,8,8">
+                        <RichTextBox x:Name="Help" IsReadOnly="True" Background="{x:Null}" BorderThickness="0" Foreground="#FFE0E0E0" BorderBrush="{x:Null}" Margin="8,8,8,8">
+                            <FlowDocument>
+                                <Paragraph>
+                                    <Run Text="RichTextBox"/>
+                                </Paragraph>
+                            </FlowDocument>
+                        </RichTextBox>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

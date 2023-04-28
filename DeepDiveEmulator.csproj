@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <None Remove="Data\**" />
+    <Page Remove="Data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="DeepDiveEmulator.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="DeepDiveEmulator.ico" />
+  </ItemGroup>
+
+</Project>
