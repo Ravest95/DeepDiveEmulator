@@ -29,6 +29,7 @@ using DataFormats = System.Windows.DataFormats;
 using static System.Windows.Forms.DataFormats;
 using System.Collections;
 using ListViewItem = System.Windows.Controls.ListViewItem;
+using System.Windows.Shapes;
 
 namespace DeepDiveEmulator
 {
@@ -1639,6 +1640,23 @@ namespace DeepDiveEmulator
                 return false;
             }
         }
+        // Steam.
+        public void Steam_OpenConsole()
+        {
+            Process.Start("explorer.exe", "steam://nav/console");
+        }
+        public bool Steam_CheckRunning()
+        {
+            Process[] processes = Process.GetProcessesByName("Steam");
+            if (processes.Length > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         // Game.
         public bool? Game_Path_Check(string inputPath)
         {
@@ -2089,6 +2107,7 @@ namespace DeepDiveEmulator
         }
         public void BoxDeepDideInfo_Enable(bool inputEnable)
         {
+            /*
             // Normal.
             TBoxDDNorName.IsEnabled = inputEnable;
             CBoxDDNorReg.IsEnabled = inputEnable;
@@ -2131,6 +2150,7 @@ namespace DeepDiveEmulator
             CBoxDDEliAno1.IsEnabled = inputEnable;
             CBoxDDEliAno2.IsEnabled = inputEnable;
             CBoxDDEliAno3.IsEnabled = inputEnable;
+            */
         }
         public void BoxDeepDideInfo_Set(DataDeepDive inputDeepDive)
         {
@@ -2204,7 +2224,12 @@ namespace DeepDiveEmulator
                 {
                     nameElite = dataDeepDivesSorted[key].Elite.Tag;
                 }
-                ItemsDeepDive.Add(new ItemDeepDive {IdFake = dataDeepDivesSorted[key].IdFake, Date = dataDeepDivesSorted[key].Date, NameNormal = nameNormal, NameElite = nameElite, Brush = dataDeepDivesSorted[key].Brush});
+                Brush brushBorder = new SolidColorBrush(Color.FromArgb(255, 32, 32, 32));
+                if (dataDeepDivesSorted[key].Event != "")
+                {
+                    brushBorder = new SolidColorBrush(Color.FromArgb(255, 192, 192, 64));
+                }
+                ItemsDeepDive.Add(new ItemDeepDive {IdFake = dataDeepDivesSorted[key].IdFake, Date = dataDeepDivesSorted[key].Date, NameNormal = nameNormal, NameElite = nameElite, BrushBackground = dataDeepDivesSorted[key].Brush, BrushBorder = brushBorder});
             }
             int idReal = Data_DeepDives_Get_IdReal(dataDeepDivesSorted, SettingsCurrent.DeepDive.SelectedIdFake);
             ListViewDeepDives.SelectedIndex = idReal;
@@ -2599,6 +2624,70 @@ namespace DeepDiveEmulator
             TimerServRunning_Stop();
         }
         // Tab Game.
+        private void BtnCmdCopy_Click(object sender, RoutedEventArgs e)
+        {
+            if (SettingsCurrent.Game.SelectedIdReal >= 0 && Data.GameVersions[SettingsCurrent.Game.SelectedIdReal].Manifest != "")
+            {
+                Clipboard.SetText("download_depot 548430 548431 " + Data.GameVersions[SettingsCurrent.Game.SelectedIdReal].Manifest);
+            }
+            else
+            {
+                string title = this.Title;
+                string message = "Game version is not selected";
+                System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void BtnSteamOpen_Click(object sender, RoutedEventArgs e)
+        {
+            if (Steam_CheckRunning() == true)
+            {
+                Steam_OpenConsole();
+            }
+            else
+            {
+                string title = this.Title;
+                string message = "Steam is not launched";
+                System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        private void TBoxPlrId_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string playerId = TBoxPlrId.Text;
+            // Check to avoid double trigger.
+            if (playerId != SettingsCurrent.Game.PlayerId)
+            {
+                Settings_Game_PlayerId_Save(playerId);
+            }
+        }
+        private void TBoxPlrName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string playerName = TBoxPlrName.Text;
+            // Check to avoid double trigger.
+            if (playerName != "" && playerName != SettingsCurrent.Game.PlayerName)
+            {
+                Settings_Game_PlayerName_Save(playerName);
+            }
+        }
+        private void TBoxPlrName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            string setting = TBoxPlrName.Text;
+            //
+            if (setting == "")
+            {
+                Settings_Game_PlayerName_Save(setting);
+                //
+                TBoxPlrName.Text = SettingsDefault.Game.PlayerName;
+            }
+        }
+        private void TBoxLnchParams_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string command = TBoxLnchParams.Text;
+            // Check to avoid double trigger.
+            if (command != SettingsCurrent.Game.Command)
+            {
+                Settings_Game_Command_Save(command);
+            }
+        }
         private void TBoxPath_TextChanged(object sender, TextChangedEventArgs e)
         {
             string path = TBoxPath.Text;
@@ -2620,7 +2709,7 @@ namespace DeepDiveEmulator
                 }
             }
         }
-        private void ButtonPathBrowse_Click(object sender, RoutedEventArgs e)
+        private void BtnPathBrowse_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
             var result = dialog.ShowDialog();
@@ -2650,7 +2739,7 @@ namespace DeepDiveEmulator
                 }
             }
         }
-        private void ButtonGameLaunch_Click(object sender, RoutedEventArgs e)
+        private void BtnGameLaunch_Click(object sender, RoutedEventArgs e)
         {
             string path;
             if (SettingsCurrent.Game.SelectedIdReal >= 0)
@@ -2695,52 +2784,6 @@ namespace DeepDiveEmulator
                 System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        private void TBoxPlrId_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string playerId = TBoxPlrId.Text;
-            // Check to avoid double trigger.
-            if (playerId != SettingsCurrent.Game.PlayerId)
-            {
-                Settings_Game_PlayerId_Save(playerId);
-            }
-        }
-        private void TBoxPlrName_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string playerName = TBoxPlrName.Text;
-            // Check to avoid double trigger.
-            if (playerName != "" && playerName != SettingsCurrent.Game.PlayerName)
-            {
-                Settings_Game_PlayerName_Save(playerName);
-            }
-        }
-        private void TBoxPlrName_LostFocus(object sender, RoutedEventArgs e)
-        {
-            string setting = TBoxPlrName.Text;
-            //
-            if (setting == "")
-            {
-                Settings_Game_PlayerName_Save(setting);
-                //
-                TBoxPlrName.Text = SettingsDefault.Game.PlayerName;
-            }
-        }
-        private void TBoxLnchParams_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string command = TBoxLnchParams.Text;
-            // Check to avoid double trigger.
-            if (command != SettingsCurrent.Game.Command)
-            {
-                Settings_Game_Command_Save(command);
-            }
-        }
-        private void ButtonVerNumber_Click(object sender, RoutedEventArgs e)
-        {
-            string versionNumber = TBoxVerNumber.Text;
-            if (versionNumber != "")
-            {
-                Clipboard.SetText(versionNumber);
-            }
-        }
         private void TBoxVerName_TextChanged(object sender, TextChangedEventArgs e)
         {
             string name = TBoxVerName.Text;
@@ -2756,35 +2799,11 @@ namespace DeepDiveEmulator
                 }
             }
         }
-        private void ButtonVerName_Click(object sender, RoutedEventArgs e)
-        {
-            string versionName = TBoxVerName.Text;
-            if (versionName != "")
-            {
-                Clipboard.SetText(versionName);
-            }
-        }
         private void TBoxVerManifest_TextChanged(object sender, TextChangedEventArgs e)
         {
             String_ReduceTo_Manifest(TBoxVerManifest.Text, TBoxVerManifest.SelectionStart, out string str, out int pos);
             TBoxVerManifest.Text = str;
             TBoxVerManifest.SelectionStart = pos;
-        }
-        private void ButtonVerManifest_Click(object sender, RoutedEventArgs e)
-        {
-            string manifest = TBoxVerManifest.Text;
-            if (manifest != "")
-            {
-                Clipboard.SetText(manifest);
-            }
-        }
-        private void ButtonVerColor_Click(object sender, RoutedEventArgs e)
-        {
-            string manifest = TBoxVerColor.Text;
-            if (manifest != "")
-            {
-                Clipboard.SetText(manifest);
-            }
         }
         private void TBoxVerSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -3541,7 +3560,6 @@ namespace DeepDiveEmulator
             newFileINI.Write("EliteAnomaly2", CBoxDDEliAno2.Text, "DeepDive");
             newFileINI.Write("EliteAnomaly3", CBoxDDEliAno3.Text, "DeepDive");
         }
-
         private void ButtonDeepDiveAdd_Click(object sender, RoutedEventArgs e)
         {
             DeepDivesCustom_Add();
@@ -3560,7 +3578,8 @@ namespace DeepDiveEmulator
         public string Date { get; set; }
         public string NameNormal { get; set; }
         public string NameElite { get; set; }
-        public Brush Brush { get; set; }
+        public Brush BrushBackground { get; set; }
+        public Brush BrushBorder { get; set; }
     }
     public class ItemEvent
     {

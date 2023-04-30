@@ -1,6 +1,8 @@
 ﻿# DeepDiveEmulator
 Main focus of this project is adding an ability to replay old Deep Dives in singleplayer or multiplayer with every original parameter. In addition to that program is able to recreate some always online functionality: creation of Deep Dives, creation of Weekly Assignments, creation of Events.
 
+Even if no file or code was used, main idea came from another project ([link](https://github.com/0P3N50URC3-F0R3V3R/blackbeard)).
+
 # Supported Operational Systems:
 Windows 10 - x64
 
