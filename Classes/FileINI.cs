@@ -4,42 +4,32 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace DeepDiveEmulator.ClassFileINI
+namespace DeepDiveEmulator.Classes
 {
     public class FileINI
     {
         string Path;
         string EXE = Assembly.GetExecutingAssembly().GetName().Name;
 
-
+        [DllImport("kernel32", CharSet = CharSet.Unicode)]
+        static extern int GetPrivateProfileString(string inSection, string inKey, string inDefault, StringBuilder inRetVal, int inSize, string inPath);
 
         [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        static extern long WritePrivateProfileString(string inputSection, string inputKey, string inputValue, string inputPath);
+        static extern long WritePrivateProfileString(string inSection, string inKey, string inValue, string inPath);
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        static extern int GetPrivateProfileString(string inputSection, string inputKey, string inputDefault, StringBuilder inputRetVal, int inputSize, string inputPath);
-
-
-
-        public FileINI(string inputPath = null)
+        public FileINI(string inPath = null)
         {
-            Path = new FileInfo(inputPath ?? EXE + ".ini").FullName;
+            Path = new FileInfo(inPath ?? EXE + ".ini").FullName;
         }
 
-        public string Read(string inputKey, string inputSection = null)
+        public bool ReadKeyString(string inKey, out string outValue, string inSection = null)
         {
-            var RetVal = new StringBuilder(255);
-            GetPrivateProfileString(inputSection ?? EXE, inputKey, "", RetVal, 255, Path);
-            return RetVal.ToString();
-        }
-
-        public bool ReadInt(string inputKey, out int outputValue, string inputSection = null)
-        {
-            outputValue = 0;
-            string value = Read(inputKey, inputSection);
-            if (int.TryParse(value, out int valueChecked) == true)
+            StringBuilder stringBuilder = new StringBuilder(4095);
+            GetPrivateProfileString(inSection ?? EXE, inKey, "", stringBuilder, 4095, Path);
+            //
+            outValue = stringBuilder.ToString();
+            if (outValue.Length > 0)
             {
-                outputValue = valueChecked;
                 return true;
             }
             else
@@ -47,14 +37,11 @@ namespace DeepDiveEmulator.ClassFileINI
                 return false;
             }
         }
-
-        public bool ReadUInt(string inputKey, out uint outputValue, string inputSection = null)
+        public bool ReadKeyByte(string inKey, out Byte outValue, string inSection = null)
         {
-            outputValue = 0;
-            string value = Read(inputKey, inputSection);
-            if (uint.TryParse(value, out uint valueChecked) == true)
+            outValue = 0;
+            if (ReadKeyString(inKey, out string value, inSection) == true && Byte.TryParse(value, out outValue) == true)
             {
-                outputValue = valueChecked;
                 return true;
             }
             else
@@ -62,13 +49,11 @@ namespace DeepDiveEmulator.ClassFileINI
                 return false;
             }
         }
-        public bool ReadDouble(string inputKey, out double outputValue, string inputSection = null)
+        public bool ReadKeyInt(string inKey, out int outValue, string inSection = null)
         {
-            outputValue = 0;
-            string value = Read(inputKey, inputSection);
-            if (double.TryParse(value, out double valueChecked) == true)
+            outValue = 0;
+            if (ReadKeyString(inKey, out string value, inSection) == true && int.TryParse(value, out outValue) == true)
             {
-                outputValue = valueChecked;
                 return true;
             }
             else
@@ -76,13 +61,11 @@ namespace DeepDiveEmulator.ClassFileINI
                 return false;
             }
         }
-        public bool ReadByte(string inputKey, out Byte outputValue, string inputSection = null)
+        public bool ReadKeyUInt(string inKey, out uint outValue, string inSection = null)
         {
-            outputValue = 0;
-            string value = Read(inputKey, inputSection);
-            if (Byte.TryParse(value, out Byte valueChecked) == true)
+            outValue = 0;
+            if (ReadKeyString(inKey, out string value, inSection) == true && uint.TryParse(value, out outValue) == true)
             {
-                outputValue = valueChecked;
                 return true;
             }
             else
@@ -90,14 +73,11 @@ namespace DeepDiveEmulator.ClassFileINI
                 return false;
             }
         }
-
-        public bool ReadBool(string inputKey, out bool outputValue, string inputSection = null)
+        public bool ReadKeyDouble(string inKey, out double outValue, string inSection = null)
         {
-            outputValue = false;
-            string value = Read(inputKey, inputSection);
-            if (bool.TryParse(value, out bool valueChecked) == true)
+            outValue = 0;
+            if (ReadKeyString(inKey, out string value, inSection) == true && double.TryParse(value, out outValue) == true)
             {
-                outputValue = valueChecked;
                 return true;
             }
             else
@@ -105,32 +85,29 @@ namespace DeepDiveEmulator.ClassFileINI
                 return false;
             }
         }
-
-        public void Write(string inputKey, string inputValue, string inputSection = null)
+        public bool ReadKeyBool(string inKey, out bool outValue, string inSection = null)
         {
-            WritePrivateProfileString(inputSection ?? EXE, inputKey, inputValue, Path);
+            outValue = false;
+            if (ReadKeyString(inKey, out string value, inSection) == true && bool.TryParse(value, out outValue) == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-        /*
-        public void KeyDelete(string inputKey, string inputSection = null)
+        public void WriteKey(string inKey, string inValue, string inSection = null)
         {
-            Write(inputKey, null, inputSection ?? EXE);
+            WritePrivateProfileString(inSection ?? EXE, inKey, inValue, Path);
         }
-        */
-
-        /*
-        public bool KeyExists(string inputKey, string inputSection = null)
+        public void DeleteKey(string inKey, string inSection = null)
         {
-            return Read(inputKey, inputSection).Length > 0;
+            WriteKey(inKey, null, inSection ?? EXE);
         }
-        */
-
-
-        /*
-        public void SectionDelete(string inputSection = null)
+        public void DeleteSection(string inSection = null)
         {
-            Write(null, null, inputSection ?? EXE);
+            WriteKey(null, null, inSection ?? EXE);
         }
-        */
     }
 }

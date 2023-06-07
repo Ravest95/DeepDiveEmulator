@@ -6,21 +6,22 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\**" />
-    <EmbeddedResource Remove="Data\**" />
-    <None Remove="Data\**" />
-    <Page Remove="Data\**" />
+    <None Remove="Resources\DeepDiveEmulator.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="DeepDiveEmulator.ico" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="DeepDiveEmulator.ico" />
+    <Resource Include="Resources\DeepDiveEmulator.ico" />
   </ItemGroup>
 
 </Project>
