@@ -1,5 +1,4 @@
 ﻿using DeepDiveEmulator.Classes;
-using Microsoft.VisualBasic.ApplicationServices;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -19,9 +18,9 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Markup;
 using System.Windows.Media;
 using Application = System.Windows.Forms.Application;
+using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using DataFormats = System.Windows.DataFormats;
 using DispatcherTimer = System.Windows.Threading.DispatcherTimer;
@@ -33,132 +32,6 @@ namespace DeepDiveEmulator
 {
     public partial class MainWindow : Window
     {
-        #region ResizeWindows
-        bool ResizeInProcess = false;
-        private void Resize_Init(object sender, MouseButtonEventArgs e)
-        {
-            System.Windows.Shapes.Rectangle senderRect = sender as System.Windows.Shapes.Rectangle;
-            if (senderRect != null)
-            {
-                ResizeInProcess = true;
-            }
-        }
-        private void Resizeing_Form(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (ResizeInProcess)
-            {
-                System.Windows.Shapes.Rectangle senderRect = sender as System.Windows.Shapes.Rectangle;
-                Window mainWindow = senderRect.Tag as Window;
-                if (senderRect != null)
-                {
-                    senderRect.CaptureMouse();
-                    double vectorX = e.GetPosition(mainWindow).X;
-                    double vectorY = e.GetPosition(mainWindow).Y;
-                    if (senderRect.Name.ToLower().Contains("left"))
-                    {
-                        if (vectorX < 0)
-                        {
-                            mainWindow.Width = mainWindow.Width + Math.Abs(vectorX);
-                            mainWindow.Left = mainWindow.Left - Math.Abs(vectorX);
-                        }
-                        else
-                        {
-                            // Define new width.
-                            double windowSizeX = mainWindow.Width - vectorX;
-                            // Check if width is bigger then minimal width.
-                            if (windowSizeX > mainWindow.MinWidth)
-                            {
-                                mainWindow.Left = mainWindow.Left + vectorX;
-                                mainWindow.Width = windowSizeX;
-                            }
-                            else
-                            {
-                                mainWindow.Left = mainWindow.Left + mainWindow.Width - mainWindow.MinWidth;
-                                mainWindow.Width = mainWindow.MinWidth;
-                            }
-                        }
-                    }
-                    if (senderRect.Name.ToLower().Contains("right"))
-                    {
-                        // Define true vector, without window width.
-                        vectorX = vectorX - mainWindow.Width;
-                        if (vectorX > 0)
-                        {
-                            mainWindow.Width = mainWindow.Width + vectorX;
-                        }
-                        else
-                        {
-                            // Define new width.
-                            double windowSizeX = mainWindow.Width - Math.Abs(vectorX);
-                            // Check if width is bigger then minimal width.
-                            if (windowSizeX > mainWindow.MinWidth)
-                            {
-                                mainWindow.Width = windowSizeX;
-                            }
-                            else
-                            {
-                                mainWindow.Width = mainWindow.MinWidth;
-                            }
-                        }
-                    }
-                    if (senderRect.Name.ToLower().Contains("top"))
-                    {
-                        if (vectorY < 0)
-                        {
-                            mainWindow.Height = mainWindow.Height + Math.Abs(vectorY);
-                            mainWindow.Top = mainWindow.Top - Math.Abs(vectorY);
-                        }
-                        else if (vectorY > 0)
-                        {
-                            // Define new heigh.
-                            double windowSizeY = mainWindow.Height - vectorY;
-                            // Check if height is bigger then minimal height.
-                            if (windowSizeY > mainWindow.MinHeight)
-                            {
-                                mainWindow.Top = mainWindow.Top + vectorY;
-                                mainWindow.Height = windowSizeY;
-                            }
-                            else if (windowSizeY < mainWindow.MinHeight)
-                            {
-                                mainWindow.Top = mainWindow.Top + mainWindow.Height - mainWindow.MinHeight;
-                                mainWindow.Height = mainWindow.MinHeight;
-                            }
-                        }
-                    }
-                    if (senderRect.Name.ToLower().Contains("bottom"))
-                    {
-                        // Define true vector, without window height.
-                        vectorY = vectorY - mainWindow.Height;
-                        if (vectorY > 0)
-                        {
-                            mainWindow.Height = mainWindow.Height + vectorY;
-                        }
-                        else
-                        {
-                            double windowSizeY = mainWindow.Height - Math.Abs(vectorY);
-                            if (windowSizeY > mainWindow.MinHeight)
-                            {
-                                mainWindow.Height = windowSizeY;
-                            }
-                            else
-                            {
-                                mainWindow.Height = mainWindow.MinHeight;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private void Resize_End(object sender, MouseButtonEventArgs e)
-        {
-            System.Windows.Shapes.Rectangle senderRect = sender as System.Windows.Shapes.Rectangle;
-            if (senderRect != null)
-            {
-                ResizeInProcess = false;
-                senderRect.ReleaseMouseCapture();
-            }
-        }
-        #endregion
         #region TitleButtons
         private void MinimizeWindow(object sender, RoutedEventArgs e)
         {
@@ -187,12 +60,12 @@ namespace DeepDiveEmulator
             if (App.Current.MainWindow.WindowState == WindowState.Maximized)
             {
                 App.Current.MainWindow.WindowState = WindowState.Normal;
-                MaximizeButton.Content = "";
+                BtnMaximize.Content = "";
             }
             else if (App.Current.MainWindow.WindowState == WindowState.Normal)
             {
                 App.Current.MainWindow.WindowState = WindowState.Maximized;
-                MaximizeButton.Content = "";
+                BtnMaximize.Content = "";
             }
         }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -1210,6 +1083,14 @@ namespace DeepDiveEmulator
                 SettingsCurrent.Services.ChangeRedirects = value;
             }
         }
+        public void Settings_Load_Services_ChangeCertificates()
+        {
+            FileINI fileINI = new FileINI(PathFileAppSettings);
+            if (fileINI.ReadKeyBool("ChangeCertificates", out bool value, "Services") == true)
+            {
+                SettingsCurrent.Services.ChangeCertificates = value;
+            }
+        }
         public void Settings_Load_Services_StartServer()
         {
             FileINI fileINI = new FileINI(PathFileAppSettings);
@@ -1455,6 +1336,13 @@ namespace DeepDiveEmulator
             // External Setting.
             File_App_Write_Services_ChangeRedirects(inChangeRedirects);
         }
+        public void Settings_Save_Services_ChangeCertificates(bool inChangeCertificates)
+        {
+            // Internal Setting.
+            SettingsCurrent.Services.ChangeCertificates = inChangeCertificates;
+            // External Setting.
+            File_App_Write_Services_ChangeCertificates(inChangeCertificates);
+        }
         public void Settings_Save_Services_StartServer(bool inStartServer)
         {
             // Internal Setting.
@@ -1659,6 +1547,12 @@ namespace DeepDiveEmulator
             FileINI fileINI = new FileINI(PathFileAppSettings);
             Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
             fileINI.WriteKey("ChangeRedirects", inChangeRedirects.ToString(), "Services");
+        }
+        public void File_App_Write_Services_ChangeCertificates(bool inChangeCertificates)
+        {
+            FileINI fileINI = new FileINI(PathFileAppSettings);
+            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
+            fileINI.WriteKey("ChangeCertificates", inChangeCertificates.ToString(), "Services");
         }
         public void File_App_Write_Services_StartServer(bool inStartServer)
         {
@@ -2327,6 +2221,7 @@ namespace DeepDiveEmulator
             File_Game_Delete_Section(inIdVersion);
             //
             File_Game_Write_ModsAreEnabled(inIdVersion);
+            File_Game_Write_CheckGameversion(inIdVersion, "False");
             File_Game_Write_CurrentBranchName(inIdVersion, "public");
         }
         public void File_Game_Write_ModsAreEnabled(int inIdVersion)
@@ -2347,6 +2242,17 @@ namespace DeepDiveEmulator
                         }
                     }
                 }
+            }
+        }
+        public void File_Game_Write_CheckGameversion(int inIdVersion, string inCheckGameversion)
+        {
+            if (inIdVersion >= 0)
+            {
+                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
+                //
+                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                FileINI fileINI = new FileINI(pathFile);
+                fileINI.WriteKey("CheckGameversion", inCheckGameversion, "/Script/FSD.UserGeneratedContent");
             }
         }
         public void File_Game_Write_CurrentBranchName(int inIdVersion, string inCurrentBranchName)
@@ -2586,6 +2492,13 @@ namespace DeepDiveEmulator
             // Timer Website Redirects are added.
             TmrSvcsStatusRedirects.Tick += TmrSvcsStatusRedirects_Tick;
             TmrSvcsStatusRedirects.Interval = TimeSpan.FromSeconds(2.5);
+            // Add/Remove Website Certificates on launch/close.
+            CBoxSvcsCertsChange.IsChecked = SettingsCurrent.Services.ChangeCertificates;
+            if (SettingsCurrent.Services.ChangeCertificates == true)
+            {
+                Server_Certificates_Remove();
+                Server_Certificates_Add();
+            }
             // Website Certificates are added.
             CBoxSvcsCertsAdded_Enable(Server_Certificates_Check());
             // Timer Website Certificates are added.
@@ -3209,6 +3122,7 @@ namespace DeepDiveEmulator
             // Settings.
             Settings_Load_Services_IP();
             Settings_Load_Services_ChangeRedirects();
+            Settings_Load_Services_ChangeCertificates();
             Settings_Load_Services_StartServer();
             //
             Settings_Load_Version_Path();
@@ -3255,6 +3169,10 @@ namespace DeepDiveEmulator
             {
                 Server_Redirects_Remove();
             }
+            if (SettingsCurrent.Services.ChangeCertificates == true)
+            {
+                Server_Certificates_Remove();
+            }
         }
         private void Window_LocationChanged(object sender, EventArgs e)
         {
@@ -3279,7 +3197,8 @@ namespace DeepDiveEmulator
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // When window is minimized, it's size will be 0, 0.
-            if (this.WindowState != WindowState.Minimized)
+            // When window is maximized, it's size will be +14, +14.
+            if (this.WindowState == WindowState.Normal)
             {
                 TmrWindowSize_Update();
             }
@@ -3381,6 +3300,11 @@ namespace DeepDiveEmulator
         private void BtnSvcsCertsOpen_Click(object sender, RoutedEventArgs e)
         {
             Server_Certificates_OpenFolder();
+        }
+        private void CBoxSvcsCertsChange_Click(object sender, RoutedEventArgs e)
+        {
+            bool changeCerts = CBoxSvcsCertsChange.IsChecked.GetValueOrDefault();
+            Settings_Save_Services_ChangeCertificates(changeCerts);
         }
         private void BtnSvcsServStart_Click(object sender, RoutedEventArgs e)
         {
@@ -3670,9 +3594,17 @@ namespace DeepDiveEmulator
         private void CBoxModsModIsEnabled_Click(object sender, RoutedEventArgs e)
         {
             int idVersion = SettingsCurrent.Version.SelectedId;
-            int idMod = SettingsCurrent.Mod.SelectedId;
-            bool modIsEnabled = !Data.Versions[idVersion].Mods[idMod].IsEnabled;
-            Settings_Save_Mod_ModIsEnabled(idVersion, idMod, modIsEnabled);
+            if (Data.Versions[idVersion].Path != "" && File.Exists(Data.Versions[idVersion].Path))
+            {
+                int idMod = SettingsCurrent.Mod.SelectedId;
+                bool modIsEnabled = !Data.Versions[idVersion].Mods[idMod].IsEnabled;
+                Settings_Save_Mod_ModIsEnabled(idVersion, idMod, modIsEnabled);
+            }
+            else
+            {
+                CheckBox checkBox = sender as CheckBox;
+                checkBox.IsChecked = false;
+            }
         }
         private void BtnModsDeselect_Click(object sender, RoutedEventArgs e)
         {

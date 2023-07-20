@@ -21,11 +21,13 @@
     public class SettingsServices
     {
         private string _IP = "127.0.0.1";
-        private bool _ChangeRedirects = false;
-        private bool _StartServer = false;
+        private bool _ChangeRedirects = true;
+        private bool _ChangeCertificates = true;
+        private bool _StartServer = true;
 
         public string IP { get { return _IP; } set { _IP = value; } }
         public bool ChangeRedirects { get { return _ChangeRedirects; } set { _ChangeRedirects = value; } }
+        public bool ChangeCertificates { get { return _ChangeCertificates; } set { _ChangeCertificates = value; } }
         public bool StartServer { get { return _StartServer; } set { _StartServer = value; } }
     }
     public class SettingsVersion
