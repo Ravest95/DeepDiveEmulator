@@ -12,6 +12,7 @@ Windows 10 - 1809 (17763.379) - x64
   Modification will work only for Deep Dives in the current update. If you try to create Deep Dive from previous updates, new elements will interfere with creation, resulting in completely different Deep Dive.
 
 - Can I be banned?
+
   No. Game does not have an anti-cheat (an anti-cheat is not installed during game installation), and is not dependant on central server for progress (you can play offline, and progress will be preserved in online). In addition to that, all connection for the game will be blocked (apart from local area network), you will not connect to Steam or any official website.
   Your account may be suspended only if you try to distribute project files or advertise the project on official game websites (use common sense).
 
