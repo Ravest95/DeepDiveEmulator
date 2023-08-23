@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text;
@@ -22,6 +22,8 @@ using System.Windows.Media;
 using Application = System.Windows.Forms.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
+using Color = System.Windows.Media.Color;
+using ComboBox = System.Windows.Controls.ComboBox;
 using DataFormats = System.Windows.DataFormats;
 using DispatcherTimer = System.Windows.Threading.DispatcherTimer;
 using Path = System.IO.Path;
@@ -83,53 +85,49 @@ namespace DeepDiveEmulator
 
         // Variables.
         #region Variables
-        // Path folders.
+        // Path folders
+        static string PathFoldAppDataLocal = Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%");
+        static string PathFoldPublic = Environment.ExpandEnvironmentVariables("%PUBLIC%");
+        static string PathFoldWindows = Environment.ExpandEnvironmentVariables("%SystemRoot%");
         static string PathFoldApp = Application.StartupPath;
         static string PathFoldApache24 = Path.Combine(PathFoldApp, "Apache24");
-        static string PathFoldAppDives = Path.Combine(PathFoldApp, "Data\\Dives");
-        static string PathFoldAppEvents = Path.Combine(PathFoldApp, "Data\\Events");
-        static string PathFoldAppMods = Path.Combine(PathFoldApp, "Data\\Mods");
-        static string PathFoldAppVersions = Path.Combine(PathFoldApp, "Data\\Versions");
-        static string PathFoldGSE = Path.Combine(PathFoldApp, "GoldbergSteamEmulator");
-        static string PathFoldAppLanguages = Path.Combine(PathFoldApp, "Languages");
-        static string PathFoldAppSaveVersions = Path.Combine(PathFoldApp, "Saves\\Versions");
-        static string PathFoldAppSaveMods = Path.Combine(PathFoldApp, "Saves\\Mods");
         static string PathFoldApache24Certificates = Path.Combine(PathFoldApache24, "conf\\ssl.crt");
-        static string PathFoldWindows = Environment.ExpandEnvironmentVariables("%SystemRoot%");
-        static string PathFoldLocalAppData = Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%");
-        static string PathFoldPublic = Environment.ExpandEnvironmentVariables("%PUBLIC%");
+        static string PathFoldApache24URLs = Path.Combine(PathFoldApache24, "htdocs");
+        static string PathFoldDataDives = Path.Combine(PathFoldApp, "Data\\Dives");
+        static string PathFoldDataEvents = Path.Combine(PathFoldApp, "Data\\Events");
+        static string PathFoldDataLanguages = Path.Combine(PathFoldApp, "Data\\Languages");
+        static string PathFoldDataMods = Path.Combine(PathFoldApp, "Data\\Mods");
+        static string PathFoldDataVersions = Path.Combine(PathFoldApp, "Data\\Versions");
+        static string PathFoldGSE = Path.Combine(PathFoldApp, "GoldbergSteamEmulator");
+        static string PathFoldModIO = Path.Combine(PathFoldPublic, "mod.io");
+        static string PathFoldSavesVersions = Path.Combine(PathFoldApp, "Saves\\Versions");
+        static string PathFoldSavesMods = Path.Combine(PathFoldApp, "Saves\\Mods");
+        static string PathFoldSavesDives = Path.Combine(PathFoldApp, "Saves\\Dives");
         static string PathFoldWindowsETC = Path.Combine(PathFoldWindows, "System32\\drivers\\etc");
         // Path files.
-        static string PathFileAppSettings = Path.Combine(PathFoldApp, "DeepDiveEmulator.ini");
-        static string PathFileAppAnomalies = Path.Combine(PathFoldApp, "Sources\\Anomalies.txt");
-        static string PathFileAppMissions = Path.Combine(PathFoldApp, "Sources\\Missions.txt");
-        static string PathFileAppObjectives = Path.Combine(PathFoldApp, "Sources\\Objectives.txt");
-        static string PathFileAppRegions = Path.Combine(PathFoldApp, "Sources\\Regions.txt");
-        static string PathFileAppWarnings = Path.Combine(PathFoldApp, "Sources\\Warnings.txt");
+        static string PathFileSettings = Path.Combine(PathFoldApp, "DeepDiveEmulator.ini");
+        static string PathFileVersion = Path.Combine(PathFoldApp, "Version.txt");
+        static string PathFileDataDiveParametersAnomalies = Path.Combine(PathFoldApp, "Data\\DiveParameters\\Anomalies.txt");
+        static string PathFileDataDiveParametersMissions = Path.Combine(PathFoldApp, "Data\\DiveParameters\\Missions.txt");
+        static string PathFileDataDiveParametersObjectives = Path.Combine(PathFoldApp, "Data\\DiveParameters\\Objectives.txt");
+        static string PathFileDataDiveParametersRegions = Path.Combine(PathFoldApp, "Data\\DiveParameters\\Regions.txt");
+        static string PathFileDataDiveParametersWarnings = Path.Combine(PathFoldApp, "Data\\DiveParameters\\Warnings.txt");
+        static string PathFileDataURLsAssignments = Path.Combine(PathFoldApp, "Data\\URLs\\Assignments.txt");
+        static string PathFileDataURLsDives = Path.Combine(PathFoldApp, "Data\\URLs\\Dives.txt");
+        static string PathFileDataURLsEvents = Path.Combine(PathFoldApp, "Data\\URLs\\Events.txt");
+        static string PathFileDataURLsFreeBeers = Path.Combine(PathFoldApp, "Data\\URLs\\FreeBeers.txt");
+        static string PathFileDataVersionParameters = Path.Combine(PathFoldApp, "Data\\VersionParameters\\Branches.txt");
+        static string PathFileGSEAccountName = Path.Combine(PathFoldGSE, "steam_settings\\settings\\account_name.txt");
+        static string PathFileGSEUserSteamId = Path.Combine(PathFoldGSE, "steam_settings\\settings\\user_steam_id.txt");
+        static string PathFileModIOGlobalSettings = Path.Combine(PathFoldAppDataLocal, "mod.io\\globalsettings.json");
+        static string PathFileModIOState = Path.Combine(PathFoldPublic, "mod.io\\2475\\metadata\\state.json");
+        static string PathFileModIOUser = Path.Combine(PathFoldAppDataLocal, "mod.io\\2475", WindowsIdentity.GetCurrent().User.ToString(), "user.json");
+        static string PathFileWindowsHosts = Path.Combine(PathFoldWindows, "System32\\drivers\\etc\\hosts");
+        //
         static string PathFileHTTPDEXE = Path.Combine(PathFoldApache24, "bin\\httpd.exe");
         static string PathFileHTTPDConfig = Path.Combine(PathFoldApache24, "conf\\httpd.conf");
-        static string PathFileApache24DeepDive1 = Path.Combine(PathFoldApache24, "htdocs\\drg.ghostship.dk\\events\\deepdive");
-        static string PathFileApache24DeepDive2 = Path.Combine(PathFoldApache24, "htdocs\\services.ghostship.dk\\deepdive");
-        static string PathFileApache24CGoalStateTime1 = Path.Combine(PathFoldApache24, "htdocs\\services.ghostship.dk\\cGoalStateTime");
-        static string PathFileApache24Events1 = Path.Combine(PathFoldApache24, "htdocs\\drg.ghostship.dk\\events\\events");
-        static string PathFileApache24Events2 = Path.Combine(PathFoldApache24, "htdocs\\services.ghostship.dk\\events");
-        static string PathFileApache24Weekly1 = Path.Combine(PathFoldApache24, "htdocs\\drg.ghostship.dk\\events\\weekly");
-        static string PathFileApache24Weekly2 = Path.Combine(PathFoldApache24, "htdocs\\services.ghostship.dk\\weekly");
         static string PathFileGSEColdClientLoader = Path.Combine(PathFoldGSE, "ColdClientLoader.ini");
         static string PathFileGSESteamClient_Loader = Path.Combine(PathFoldGSE, "steamclient_loader.exe");
-        static string PathFileGSEUser_Steam_Id = Path.Combine(PathFoldGSE, "steam_settings\\settings\\user_steam_id.txt");
-        static string PathFileGSEAccount_Name = Path.Combine(PathFoldGSE, "steam_settings\\settings\\account_name.txt");
-        static string PathFileWindowsHosts = Path.Combine(PathFoldWindows, "System32\\drivers\\etc\\hosts");
-
-
-
-
-        //
-        static string PathFoldModIO = Path.Combine(PathFoldPublic, "mod.io");
-        //
-        static string PathFileModIOGlobalSettings = Path.Combine(PathFoldLocalAppData, "mod.io\\globalsettings.json");
-        static string PathFileModIOUser = Path.Combine(PathFoldLocalAppData, "mod.io\\2475", WindowsIdentity.GetCurrent().User.ToString(), "user.json");
-        static string PathFileModIOState = Path.Combine(PathFoldPublic, "mod.io\\2475\\metadata\\state.json");
         #endregion
         #region Timers
         DispatcherTimer TmrSvcsStatus = new DispatcherTimer();
@@ -145,16 +143,13 @@ namespace DeepDiveEmulator
         #endregion
         #region Data
         public static Data Data = new Data();
-        #endregion
-        #region Sorces
-        // CBox.
         public static SrcCBox SorceCBox = new SrcCBox();
-        // Vlist.
-        ObservableCollection<SrcVListVersion> SorceVlistVersions = new ObservableCollection<SrcVListVersion>();
-        ObservableCollection<SrcVListMod> SorceVlistMods = new ObservableCollection<SrcVListMod>();
-        ObservableCollection<SrcVListDive> SorceVlistDives = new ObservableCollection<SrcVListDive>();
-        ObservableCollection<SrcVListEvent> SorceVlistEvents = new ObservableCollection<SrcVListEvent>();
-        ObservableCollection<SrcVListEventItem> SorceVlistEventItems = new ObservableCollection<SrcVListEventItem>();
+        #endregion
+        #region Sources
+        ObservableCollection<SrcVListVersion> SourceVlistVersions = new ObservableCollection<SrcVListVersion>();
+        ObservableCollection<SrcVListMod> SourceVlistMods = new ObservableCollection<SrcVListMod>();
+        ObservableCollection<SrcVListDive> SourceVlistDives = new ObservableCollection<SrcVListDive>();
+        ObservableCollection<SrcVListEvent> SourceVlistEvents = new ObservableCollection<SrcVListEvent>();
         #endregion
         #region Settings
         public static Settings SettingsDefault = new Settings();
@@ -162,137 +157,384 @@ namespace DeepDiveEmulator
         #endregion
 
         // Functions.
-        #region Source
-        public void Source_Load_Anomalies()
+        #region File App
+        // DeepDiveEmulator.
+        public void File_App_WrtKey_DDE_Services_IP(string inValue)
         {
-            // Clear list, because it may be reloaded later.
-            SorceCBox.Anomalies = new List<string>();
-            // Add epmty string.
-            SorceCBox.Anomalies.Add("");
-            // Load from file.
-            if (File.Exists(PathFileAppAnomalies) == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("IP", "Services", inValue);
+
+        }
+        public void File_App_WrtKey_DDE_Services_ChangeRedirects(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("ChangeRedirects", "Services", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Services_ChangeCertificates(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("ChangeCertificates", "Services", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Services_StartServer(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("StartServer", "Services", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Version_Path(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Path", "Version", inValue);
+        }
+        public void File_App_WrtKey_DDE_Version_SelectedNumber(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("SelectedNumber", "Version", inValue);
+        }
+        public void File_App_WrtKey_DDE_Version_Branch(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Branch", "Version", inValue);
+        }
+        public void File_App_WrtKey_DDE_Dive_Seed(uint inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Seed", "Dive", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Dive_LostDives(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("LostDives", "Dive", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Dive_SelectedNumber(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("SelectedNumber", "Dive", inValue);
+        }
+        public void File_App_WrtKey_DDE_Event_Command(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Command", "Event", inValue);
+        }
+        public void File_App_WrtKey_DDE_Event_FreeBeers(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("FreeBeers", "Event", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Event_LostEvents(bool inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("LostEvents", "Event", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Event_SelectedNumber(string inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("SelectedNumber", "Event", inValue);
+        }
+        public void File_App_WrtKey_DDE_Assignment_Seed(uint inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Seed", "Assignment", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Common_PosX(double inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("PosX", "Common", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Common_PosY(double inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("PosY", "Common", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Common_SizeX(double inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("SizeX", "Common", inValue.ToString());
+        }
+        public void File_App_WrtKey_DDE_Common_SizeY(double inValue)
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("SizeY", "Common", inValue.ToString());
+        }
+        // Saves.
+        public void File_App_WrtKey_SavesVersion_Path(int inIdVersion, string inValue)
+        {
+            string pathFile = Path.Combine(PathFoldSavesVersions, Data.Versions[inIdVersion].Number + ".ini");
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("Path", "SaveVersion", inValue);
+        }
+        public void File_App_DelFile_SavesVersion(int inIdVersion)
+        {
+            string pathFile = Path.Combine(PathFoldSavesVersions, Data.Versions[inIdVersion].Number + ".ini");
+            File.Delete(pathFile);
+        }
+        #endregion
+        #region File Apache24
+        public void File_Apache24_Write_Assignments(uint inValue)
+        {
+            if (Data.URLs.Assignments.Count > 0)
             {
-                string[] lines = File.ReadAllLines(PathFileAppAnomalies);
-                if (lines.Length > 0)
+                string command = "{\"Seed\":" + inValue + ",\"ExpirationTime\":\"2100-01-01T00:00:00Z\"}";
+                for (int i = 0; i < Data.URLs.Assignments.Count; i++)
                 {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        SorceCBox.Anomalies.Add(lines[i]);
-                    }
+                    string pathFile = Path.Combine(PathFoldApache24URLs, Data.URLs.Assignments[i]);
+                    Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                    File.WriteAllText(pathFile, command);
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppAnomalies));
-                File.Create(PathFileAppAnomalies);
             }
         }
-        public void Source_Load_Missions()
+        public void File_Apache24_Write_Dives(uint inValue)
         {
-            // Clear list, because it may be reloaded later.
-            SorceCBox.Missions = new List<string>();
-            // Add epmty string.
-            SorceCBox.Missions.Add("");
-            // Load from file.
-            if (File.Exists(PathFileAppMissions) == true)
+            if (Data.URLs.Dives.Count > 0)
             {
-                string[] lines = File.ReadAllLines(PathFileAppMissions);
-                if (lines.Length > 0)
+                string command = "{\"Seed\":" + inValue + ",\"SeedV2\":" + inValue + ",\"ExpirationTime\":\"2100-01-01T00:00:00Z\"}";
+                for (int i = 0; i < Data.URLs.Dives.Count; i++)
                 {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        SorceCBox.Missions.Add(lines[i]);
-                    }
+                    string pathFile = Path.Combine(PathFoldApache24URLs, Data.URLs.Dives[i]);
+                    Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                    File.WriteAllText(pathFile, command);
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppMissions));
-                File.Create(PathFileAppMissions);
             }
         }
-        public void Source_Load_Regions()
+        public void File_Apache24_Write_Events(string inValue)
         {
-            // Clear list, because it may be reloaded later.
-            SorceCBox.Regions = new List<string>();
-            // Add epmty string.
-            SorceCBox.Regions.Add("");
-            // Load from file.
-            if (File.Exists(PathFileAppRegions) == true)
+            if (Data.URLs.Events.Count > 0)
             {
-                string[] lines = File.ReadAllLines(PathFileAppRegions);
-                if (lines.Length > 0)
+                // Remove spaces and replace "comma" with "quotes,comma,qoutes".
+                string command = "{\"ActiveEvents\":[\"" + Regex.Replace(inValue, @" ", "").Replace(",", "\",\"") + "\"]}";
+                for (int i = 0; i < Data.URLs.Events.Count; i++)
                 {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        SorceCBox.Regions.Add(lines[i]);
-                    }
+                    string pathFile = Path.Combine(PathFoldApache24URLs, Data.URLs.Events[i]);
+                    Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                    File.WriteAllText(pathFile, command);
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppRegions));
-                File.Create(PathFileAppRegions);
             }
         }
-        public void Source_Load_Objectives()
+        public void File_Apache24_Write_FreeBeers(bool inValue)
         {
-            // Clear list, because it may be reloaded later.
-            SorceCBox.Objectives = new List<string>();
-            // Add epmty string.
-            SorceCBox.Objectives.Add("");
-            // Load from file.
-            if (File.Exists(PathFileAppObjectives) == true)
+            if (Data.URLs.FreeBeers.Count > 0)
             {
-                string[] lines = File.ReadAllLines(PathFileAppObjectives);
-                if (lines.Length > 0)
+                string command = "{\"FreeBeers\":" + inValue + "}";
+                for (int i = 0; i < Data.URLs.FreeBeers.Count; i++)
                 {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        SorceCBox.Objectives.Add(lines[i]);
-                    }
+                    string pathFile = Path.Combine(PathFoldApache24URLs, Data.URLs.FreeBeers[i]);
+                    Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                    File.WriteAllText(pathFile, command);
                 }
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppObjectives));
-                File.Create(PathFileAppObjectives);
-            }
-        }
-        public void Source_Load_Warnings()
-        {
-            // Clear list, because it may be reloaded later.
-            SorceCBox.Warnings = new List<string>();
-            // Add epmty string.
-            SorceCBox.Warnings.Add("");
-            // Load from file.
-            if (File.Exists(PathFileAppWarnings) == true)
-            {
-                string[] lines = File.ReadAllLines(PathFileAppWarnings);
-                if (lines.Length > 0)
-                {
-                    for (int i = 0; i < lines.Length; i++)
-                    {
-                        SorceCBox.Warnings.Add(lines[i]);
-                    }
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppWarnings));
-                File.Create(PathFileAppWarnings);
             }
         }
         #endregion
-        #region Data
+        #region File Game
+        public void File_Game_WrtKey_GUS_SFSDUGC_CheckGameversion(int inIdVersion, string inValue)
+        {
+            if (inIdVersion >= 0)
+            {
+                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
+                FileINI fileINI = new FileINI(pathFile);
+                fileINI.WriteKey("CheckGameversion", "/Script/FSD.UserGeneratedContent", inValue);
+            }
+        }
+        public void File_Game_WrtKey_GUS_SFSDUGC_CurrentBranchName(int inIdVersion, string inValue)
+        {
+            if (inIdVersion >= 0)
+            {
+                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
+                FileINI fileINI = new FileINI(pathFile);
+                fileINI.WriteKey("CurrentBranchName", "/Script/FSD.UserGeneratedContent", inValue);
+            }
+        }
+        public void File_Game_WrtKey_GUS_SFSDUGC_ModsAreEnabled(int inIdVersion)
+        {
+            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0)
+            {
+                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
+                FileINI fileINI = new FileINI(pathFile);
+                for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
+                {
+                    // No need to write disabled mods, because they will never load anyway.
+                    if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
+                    {
+                        fileINI.WriteKey(Data.Versions[inIdVersion].Mods[i].Number, "/Script/FSD.UserGeneratedContent", "True");
+                    }
+                }
+            }
+        }
+        public void File_Game_DelSec_GUS_SFSDUGC(int inIdVersion)
+        {
+            if (inIdVersion >= 0)
+            {
+                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
+                FileINI fileINI = new FileINI(pathFile);
+                fileINI.DeleteSection("/Script/FSD.UserGeneratedContent");
+            }
+        }
+        #endregion
+        #region File GoldbergSteamEmulator
+        public void File_GSE_WrtKey_CCL_SteamClient_AppId(string inValue)
+        {
+            string pathFile = PathFileGSEColdClientLoader;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("AppId", "SteamClient", inValue);
+        }
+        public void File_GSE_WrtKey_CCL_SteamClient_ExeCommandLine(string inValue)
+        {
+            string pathFile = PathFileGSEColdClientLoader;
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("ExeCommandLine", "SteamClient", inValue);
+        }
+        public void File_GSE_WrtFile_LocalSave()
+        {
+            string pathFile = Path.Combine(PathFoldGSE, "local_save.txt");
+            Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+            File.WriteAllText(pathFile, "steam_settings");
+        }
+        public void File_GSE_WrtFile_AccountName(string inValue)
+        {
+            string pathFile = PathFileGSEAccountName;
+            Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+            File.WriteAllText(pathFile, inValue);
+        }
+        public void File_GSE_WrtFile_UserSteamId(string inValue)
+        {
+            string pathFile = PathFileGSEUserSteamId;
+            Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+            File.WriteAllText(pathFile, inValue);
+        }
+        #endregion
+        #region File ModIO
+        public void File_ModIO_WrtFile_State(int inIdVersion)
+        {
+            if (inIdVersion >= 0)
+            {
+                ModIOState data = new ModIOState();
+                //
+                if (Data.Versions[inIdVersion].Mods.Count > 0)
+                {
+                    for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
+                    {
+                        if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
+                        {
+                            ModIOStateMod mod = new ModIOStateMod();
+                            string numberVersion = Data_Versions_Get_Number(inIdVersion);
+                            string[] numberVersionParts = numberVersion.Split('.');
+                            //
+                            mod.ID = int.Parse(Data.Versions[inIdVersion].Mods[i].Number);
+                            mod.PathOnDisk = Path.Combine(PathFoldDataMods, numberVersion, Data.Versions[inIdVersion].Mods[i].Number);
+                            mod.Profile.tags[1].name = numberVersionParts[0] + "." + numberVersionParts[1];
+                            //
+                            data.Mods.Add(mod);
+                        }
+                    }
+                }
+                //
+                string pathFile = PathFileModIOState;
+                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                File.WriteAllText(pathFile, JsonSerializer.Serialize(data));
+            }
+        }
+        public void File_ModIO_WrtFile_GlobalSettings(int inIdVersion)
+        {
+            if (inIdVersion >= 0)
+            {
+                ModIOGlobalSettings data = new ModIOGlobalSettings();
+                //
+                data.RootLocalStoragePath = PathFoldModIO;
+                //
+                string pathFile = PathFileModIOGlobalSettings;
+                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                File.WriteAllText(pathFile, JsonSerializer.Serialize(data));
+            }
+        }
+        public void File_ModIO_WrtFile_User(int inIdVersion)
+        {
+            if (inIdVersion >= 0)
+            {
+                ModIOUser data = new ModIOUser();
+                //
+                if (Data.Versions[inIdVersion].Mods.Count > 0)
+                {
+                    for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
+                    {
+                        if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
+                        {
+                            data.subscriptions.Add(int.Parse(Data.Versions[inIdVersion].Mods[i].Number));
+                        }
+                    }
+                }
+                //
+                string pathFile = PathFileModIOUser;
+                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
+                File.WriteAllText(pathFile, JsonSerializer.Serialize(data));
+            }
+        }
+        #endregion
+        #region Version Load
+        public void Version_Load()
+        {
+            string title = this.Title;
+            string pathFile = PathFileVersion;
+            if (File.Exists(pathFile) == true)
+            {
+                string[] lines = File.ReadAllLines(pathFile);
+                if (lines.Length == 1)
+                {
+                    title = title + " - " + lines[0];
+                }
+            }
+            LblTitle.Content = title;
+        }
+        #endregion
+        #region Data Load
+        public void Data_Load_All()
+        {
+            // Versions.
+            Data_Versions_Load();
+            // VersionParameters.
+            Data_Load_VersionParameters_Branches();
+            // Mods.
+            Data_Mods_Load();
+            // Dives.
+            Data_Dives_Load();
+            // DiveParameters.
+            Data_Load_DiveParameters_Anomalies();
+            Data_Load_DiveParameters_Missions();
+            Data_Load_DiveParameters_Objectives();
+            Data_Load_DiveParameters_Regions();
+            Data_Load_DiveParameters_Warnings();
+            // Events.
+            Data_Events_Load();
+            // URLs.
+            Data_Load_URLs_Assignments();
+            Data_Load_URLs_Dives();
+            Data_Load_URLs_Events();
+            Data_Load_URLs_FreeBeers();
+        }
         // Versions.
         public void Data_Versions_Load()
         {
             // Clear the list, because function may be executed again.
             Data.Versions = new List<DataVersion>();
             // Create folder if it doesn't exist.
-            Directory.CreateDirectory(PathFoldAppVersions);
-            string[] pathFiles = Directory.GetFiles(PathFoldAppVersions, "*.ini", SearchOption.TopDirectoryOnly);
+            Directory.CreateDirectory(PathFoldDataVersions);
+            string[] pathFiles = Directory.GetFiles(PathFoldDataVersions, "*.ini", SearchOption.TopDirectoryOnly);
             if (pathFiles.Length > 0)
             {
                 for (int i = 0; i < pathFiles.Length; i++)
@@ -306,31 +548,29 @@ namespace DeepDiveEmulator
                         // Create data.
                         DataVersion dataVersion = new DataVersion();
                         dataVersion.Number = number;
-                        if (fileINI.ReadKeyString("Name", out string name, "Version") == true)
+                        string? name = fileINI.ReadKeyString("Name", "Version");
+                        if (name != null)
                         {
                             dataVersion.Name = name;
                         }
-                        if (fileINI.ReadKeyString("Manifest", out string manifest, "Version") == true)
+                        string? manifest = fileINI.ReadKeyString("Manifest", "Version");
+                        if (manifest != null)
                         {
                             dataVersion.Manifest = manifest; // !!! Validate.
                         }
-                        if (
-                            fileINI.ReadKeyByte("ColorR", out Byte colorR, "Version") == true
-                            &&
-                            fileINI.ReadKeyByte("ColorG", out Byte colorG, "Version") == true
-                            &&
-                            fileINI.ReadKeyByte("ColorB", out Byte colorB, "Version") == true
-                        )
+                        Byte? colorA = fileINI.ReadKeyByte("ColorA", "Version");
+                        Byte? colorR = fileINI.ReadKeyByte("ColorR", "Version");
+                        Byte? colorG = fileINI.ReadKeyByte("ColorG", "Version");
+                        Byte? colorB = fileINI.ReadKeyByte("ColorB", "Version");
+                        if (colorA != null && colorR != null && colorG != null && colorB != null)
                         {
-                            dataVersion.Brush = new SolidColorBrush(Color.FromArgb(255, colorR, colorG, colorB));
+                            dataVersion.Brush = new SolidColorBrush(Color.FromArgb(colorA.Value, colorR.Value, colorG.Value, colorB.Value));
                         }
                         // Add data to the list.
                         Data.Versions.Add(dataVersion);
                     }
                 }
             }
-            // Load user data.
-            DataUser_Versions_Load();
         }
         public int Data_Versions_Get_Id(string inNumberVersion, List<DataVersion> inDataVersions = null)
         {
@@ -363,7 +603,7 @@ namespace DeepDiveEmulator
         public string Data_Versions_Get_Number(int inIdVersion)
         {
             string outNumberVersion = "";
-            if (inIdVersion >= 0 && Data.Versions.Count > 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count)
             {
                 outNumberVersion = Data.Versions[inIdVersion].Number;
             }
@@ -372,7 +612,7 @@ namespace DeepDiveEmulator
         public DataVersion Data_Versions_Get_Version(int inIdVersion)
         {
             DataVersion outDataVersion = new DataVersion();
-            if (Data.Versions.Count > 0 && inIdVersion >= 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count)
             {
                 outDataVersion = Data.Versions[inIdVersion];
             }
@@ -402,6 +642,31 @@ namespace DeepDiveEmulator
             List<DataVersion> outDataVersions = inDataVersions.OrderByDescending(x => x.Number).ToList();
             return outDataVersions;
         }
+        // VersionParameters.
+        public void Data_Load_VersionParameters_Branches()
+        {
+            // Clear the list, because it may be reloaded later.
+            Data.VersionParameters.Branches = new List<string>();
+            // Add epmty string.
+            Data.VersionParameters.Branches.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataVersionParameters) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataVersionParameters);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        Data.VersionParameters.Branches.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataVersionParameters));
+                File.Create(PathFileDataVersionParameters);
+            }
+        }
         // Mods.
         public void Data_Mods_Load()
         {
@@ -413,8 +678,8 @@ namespace DeepDiveEmulator
                     Data.Versions[i].Mods = new List<DataMod>();
                 }
                 // Create folder if it doesn't exist.
-                Directory.CreateDirectory(PathFoldAppMods);
-                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldAppMods, "*", SearchOption.TopDirectoryOnly);
+                Directory.CreateDirectory(PathFoldDataMods);
+                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldDataMods, "*", SearchOption.TopDirectoryOnly);
                 if (pathFoldsVersion.Length > 0)
                 {
                     for (int iVersion = 0; iVersion < pathFoldsVersion.Length; iVersion++)
@@ -441,15 +706,19 @@ namespace DeepDiveEmulator
                                             // No need to check if file "Info.ini" exists.
                                             string pathFileInfo = Path.Combine(pathFoldsMod[iMod], "Info.ini");
                                             FileINI fileInfo = new FileINI(pathFileInfo);
-                                            if (fileInfo.ReadKeyString("Name", out string name, "Mod") == true)
+
+                                            string? name = fileInfo.ReadKeyString("Name", "Mod");
+                                            if (name != null)
                                             {
                                                 dataMod.Name = name;
                                             }
-                                            if (fileInfo.ReadKeyInt("Time", out int time, "Mod") == true)
+                                            int? time = fileInfo.ReadKeyInt("Time", "Mod");
+                                            if (time != null)
                                             {
-                                                dataMod.Time = time;
+                                                dataMod.Time = time.GetValueOrDefault();
                                             }
-                                            if (fileInfo.ReadKeyString("Description", out string description, "Mod") == true)
+                                            string? description = fileInfo.ReadKeyString("Description", "Mod");
+                                            if (description != null)
                                             {
                                                 dataMod.Description = description;
                                             }
@@ -496,7 +765,8 @@ namespace DeepDiveEmulator
         public string Data_Mods_Get_Number(int inIdVersion, int inIdMod)
         {
             string outNumberMod = "";
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0 && inIdMod >= 0)
+            // Index can be bigger than range, when version was deleted and Data was reloaded.
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdMod >= 0 && inIdMod < Data.Versions[inIdVersion].Mods.Count)
             {
                 outNumberMod = Data.Versions[inIdVersion].Mods[inIdMod].Number;
             }
@@ -505,7 +775,7 @@ namespace DeepDiveEmulator
         public DataMod Data_Mods_Get_Mod(int inIdVersion, int inIdMod)
         {
             DataMod outDataMod = new DataMod();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0 && inIdMod >= 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdMod >= 0 && inIdMod < Data.Versions[inIdVersion].Mods.Count)
             {
                 outDataMod = Data.Versions[inIdVersion].Mods[inIdMod];
             }
@@ -514,7 +784,7 @@ namespace DeepDiveEmulator
         public List<DataMod> Data_Mods_Get_Mods(int inIdVersion, string inText)
         {
             List<DataMod> outDataMods = new List<DataMod>();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0)
+            if (inIdVersion >= 0 && inIdVersion <= Data.Versions.Count - 1 && Data.Versions[inIdVersion].Mods.Count > 0)
             {
                 for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
                 {
@@ -535,6 +805,127 @@ namespace DeepDiveEmulator
             List<DataMod> outDataMods = inDataMods.OrderByDescending(x => int.Parse(x.Number)).ToList();
             return outDataMods;
         }
+        // DiveParameters.
+        public void Data_Load_DiveParameters_Anomalies()
+        {
+            // Clear the list, because it may be reloaded later.
+            SorceCBox.Anomalies = new List<string>();
+            // Add epmty string.
+            SorceCBox.Anomalies.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataDiveParametersAnomalies) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataDiveParametersAnomalies);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        SorceCBox.Anomalies.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataDiveParametersAnomalies));
+                File.Create(PathFileDataDiveParametersAnomalies);
+            }
+        }
+        public void Data_Load_DiveParameters_Missions()
+        {
+            // Clear the list, because it may be reloaded later.
+            SorceCBox.Missions = new List<string>();
+            // Add epmty string.
+            SorceCBox.Missions.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataDiveParametersMissions) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataDiveParametersMissions);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        SorceCBox.Missions.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataDiveParametersMissions));
+                File.Create(PathFileDataDiveParametersMissions);
+            }
+        }
+        public void Data_Load_DiveParameters_Objectives()
+        {
+            // Clear the list, because it may be reloaded later.
+            SorceCBox.Objectives = new List<string>();
+            // Add epmty string.
+            SorceCBox.Objectives.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataDiveParametersObjectives) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataDiveParametersObjectives);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        SorceCBox.Objectives.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataDiveParametersObjectives));
+                File.Create(PathFileDataDiveParametersObjectives);
+            }
+        }
+        public void Data_Load_DiveParameters_Regions()
+        {
+            // Clear the list, because it may be reloaded later.
+            SorceCBox.Regions = new List<string>();
+            // Add epmty string.
+            SorceCBox.Regions.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataDiveParametersRegions) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataDiveParametersRegions);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        SorceCBox.Regions.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataDiveParametersRegions));
+                File.Create(PathFileDataDiveParametersRegions);
+            }
+        }
+        public void Data_Load_DiveParameters_Warnings()
+        {
+            // Clear the list, because it may be reloaded later.
+            SorceCBox.Warnings = new List<string>();
+            // Add epmty string.
+            SorceCBox.Warnings.Add("");
+            // Load from file.
+            if (File.Exists(PathFileDataDiveParametersWarnings) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataDiveParametersWarnings);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        SorceCBox.Warnings.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataDiveParametersWarnings));
+                File.Create(PathFileDataDiveParametersWarnings);
+            }
+        }
         // Dives.
         public void Data_Dives_Load()
         {
@@ -546,8 +937,8 @@ namespace DeepDiveEmulator
                     Data.Versions[i].Dives = new List<DataDive>();
                 }
                 // Create folder if it doesn't exist.
-                Directory.CreateDirectory(PathFoldAppDives);
-                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldAppDives, "*", SearchOption.TopDirectoryOnly);
+                Directory.CreateDirectory(PathFoldDataDives);
+                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldDataDives, "*", SearchOption.TopDirectoryOnly);
                 if (pathFoldsVersion.Length > 0)
                 {
                     for (int iVersion = 0; iVersion < pathFoldsVersion.Length; iVersion++)
@@ -570,176 +961,219 @@ namespace DeepDiveEmulator
                                         // Define dive.
                                         DataDive dataDive = new DataDive();
                                         dataDive.Number = numberDive;
-                                        if (fileINI.ReadKeyUInt("Seed", out uint seed, "Dive") == true)
+                                        uint? seed = fileINI.ReadKeyUInt("Seed", "Dive");
+                                        if (seed != null)
                                         {
-                                            dataDive.Seed = seed;
+                                            dataDive.Seed = seed.Value;
                                         }
                                         dataDive.BrushBack = Data.Versions[idVersion].Brush;
-                                        if (fileINI.ReadKeyString("Event", out string eventNumber, "Dive") == true)
+                                        string? eventNumber = fileINI.ReadKeyString("Event", "Dive");
+                                        if (eventNumber != null)
                                         {
                                             dataDive.EventNumber = eventNumber;
                                         }
-                                        if (fileINI.ReadKeyString("Date", out string date, "Dive") == true)
+                                        string? date = fileINI.ReadKeyString("Date", "Dive");
+                                        if (date != null)
                                         {
                                             dataDive.Date = date;
                                         }
-                                        if (fileINI.ReadKeyString("NormalName", out string normalName, "Dive") == true)
+                                        string? normalName = fileINI.ReadKeyString("NormalName", "Dive");
+                                        if (normalName != null)
                                         {
                                             dataDive.Normal.Name = normalName;
                                         }
-                                        if (fileINI.ReadKeyString("NormalRegion", out string normalRegion, "Dive") == true)
+                                        string? normalRegion = fileINI.ReadKeyString("NormalRegion", "Dive");
+                                        if (normalRegion != null)
                                         {
                                             dataDive.Normal.Region = normalRegion;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionType1", out string normalMissionType1, "Dive") == true)
+                                        string? normalMissionType1 = fileINI.ReadKeyString("NormalMissionType1", "Dive");
+                                        if (normalMissionType1 != null)
                                         {
                                             dataDive.Normal.Missions[0].Type = normalMissionType1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionType2", out string normalMissionType2, "Dive") == true)
+                                        string? normalMissionType2 = fileINI.ReadKeyString("NormalMissionType2", "Dive");
+                                        if (normalMissionType2 != null)
                                         {
                                             dataDive.Normal.Missions[1].Type = normalMissionType2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionType3", out string normalMissionType3, "Dive") == true)
+                                        string? normalMissionType3 = fileINI.ReadKeyString("NormalMissionType3", "Dive");
+                                        if (normalMissionType3 != null)
                                         {
                                             dataDive.Normal.Missions[2].Type = normalMissionType3;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionValue1", out string normalMissionValue1, "Dive") == true)
+                                        string? normalMissionValue1 = fileINI.ReadKeyString("NormalMissionValue1", "Dive");
+                                        if (normalMissionValue1 != null)
                                         {
                                             dataDive.Normal.Missions[0].Value = normalMissionValue1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionValue2", out string normalMissionValue2, "Dive") == true)
+                                        string? normalMissionValue2 = fileINI.ReadKeyString("NormalMissionValue2", "Dive");
+                                        if (normalMissionValue2 != null)
                                         {
                                             dataDive.Normal.Missions[1].Value = normalMissionValue2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalMissionValue3", out string normalMissionValue3, "Dive") == true)
+                                        string? normalMissionValue3 = fileINI.ReadKeyString("NormalMissionValue3", "Dive");
+                                        if (normalMissionValue3 != null)
                                         {
                                             dataDive.Normal.Missions[2].Value = normalMissionValue3;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveType1", out string normalObjectiveType1, "Dive") == true)
+                                        string? normalObjectiveType1 = fileINI.ReadKeyString("NormalObjectiveType1", "Dive");
+                                        if (normalObjectiveType1 != null)
                                         {
                                             dataDive.Normal.Objectives[0].Type = normalObjectiveType1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveType2", out string normalObjectiveType2, "Dive") == true)
+                                        string? normalObjectiveType2 = fileINI.ReadKeyString("NormalObjectiveType2", "Dive");
+                                        if (normalObjectiveType2 != null)
                                         {
                                             dataDive.Normal.Objectives[1].Type = normalObjectiveType2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveType3", out string normalObjectiveType3, "Dive") == true)
+                                        string? normalObjectiveType3 = fileINI.ReadKeyString("NormalObjectiveType3", "Dive");
+                                        if (normalObjectiveType3 != null)
                                         {
                                             dataDive.Normal.Objectives[2].Type = normalObjectiveType3;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveValue1", out string normalObjectiveValue1, "Dive") == true)
+                                        string? normalObjectiveValue1 = fileINI.ReadKeyString("NormalObjectiveValue1", "Dive");
+                                        if (normalObjectiveValue1 != null)
                                         {
                                             dataDive.Normal.Objectives[0].Value = normalObjectiveValue1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveValue2", out string normalObjectiveValue2, "Dive") == true)
+                                        string? normalObjectiveValue2 = fileINI.ReadKeyString("NormalObjectiveValue2", "Dive");
+                                        if (normalObjectiveValue2 != null)
                                         {
                                             dataDive.Normal.Objectives[1].Value = normalObjectiveValue2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalObjectiveValue3", out string normalObjectiveValue3, "Dive") == true)
+                                        string? normalObjectiveValue3 = fileINI.ReadKeyString("NormalObjectiveValue3", "Dive");
+                                        if (normalObjectiveValue3 != null)
                                         {
                                             dataDive.Normal.Objectives[2].Value = normalObjectiveValue3;
                                         }
-                                        if (fileINI.ReadKeyString("NormalWarning1", out string normalWarning1, "Dive") == true)
+                                        string? normalWarning1 = fileINI.ReadKeyString("NormalWarning1", "Dive");
+                                        if (normalWarning1 != null)
                                         {
                                             dataDive.Normal.Warnings[0] = normalWarning1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalWarning2", out string normalWarning2, "Dive") == true)
+                                        string? normalWarning2 = fileINI.ReadKeyString("NormalWarning2", "Dive");
+                                        if (normalWarning2 != null)
                                         {
                                             dataDive.Normal.Warnings[1] = normalWarning2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalWarning3", out string normalWarning3, "Dive") == true)
+                                        string? normalWarning3 = fileINI.ReadKeyString("NormalWarning3", "Dive");
+                                        if (normalWarning3 != null)
                                         {
                                             dataDive.Normal.Warnings[2] = normalWarning3;
                                         }
-                                        if (fileINI.ReadKeyString("NormalAnomaly1", out string normalAnomaly1, "Dive") == true)
+                                        string? normalAnomaly1 = fileINI.ReadKeyString("NormalAnomaly1", "Dive");
+                                        if (normalAnomaly1 != null)
                                         {
                                             dataDive.Normal.Anomalies[0] = normalAnomaly1;
                                         }
-                                        if (fileINI.ReadKeyString("NormalAnomaly2", out string normalAnomaly2, "Dive") == true)
+                                        string? normalAnomaly2 = fileINI.ReadKeyString("NormalAnomaly2", "Dive");
+                                        if (normalAnomaly2 != null)
                                         {
                                             dataDive.Normal.Anomalies[1] = normalAnomaly2;
                                         }
-                                        if (fileINI.ReadKeyString("NormalAnomaly3", out string normalAnomaly3, "Dive") == true)
+                                        string? normalAnomaly3 = fileINI.ReadKeyString("NormalAnomaly3", "Dive");
+                                        if (normalAnomaly3 != null)
                                         {
                                             dataDive.Normal.Anomalies[2] = normalAnomaly3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteName", out string eliteName, "Dive") == true)
+                                        string? eliteName = fileINI.ReadKeyString("EliteName", "Dive");
+                                        if (eliteName != null)
                                         {
                                             dataDive.Elite.Name = eliteName;
                                         }
-                                        if (fileINI.ReadKeyString("EliteRegion", out string eliteRegion, "Dive") == true)
+                                        string? eliteRegion = fileINI.ReadKeyString("EliteRegion", "Dive");
+                                        if (eliteRegion != null)
                                         {
                                             dataDive.Elite.Region = eliteRegion;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionType1", out string eliteMissionType1, "Dive") == true)
+                                        string? eliteMissionType1 = fileINI.ReadKeyString("EliteMissionType1", "Dive");
+                                        if (eliteMissionType1 != null)
                                         {
                                             dataDive.Elite.Missions[0].Type = eliteMissionType1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionType2", out string eliteMissionType2, "Dive") == true)
+                                        string? eliteMissionType2 = fileINI.ReadKeyString("EliteMissionType2", "Dive");
+                                        if (eliteMissionType2 != null)
                                         {
                                             dataDive.Elite.Missions[1].Type = eliteMissionType2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionType3", out string eliteMissionType3, "Dive") == true)
+                                        string? eliteMissionType3 = fileINI.ReadKeyString("EliteMissionType3", "Dive");
+                                        if (eliteMissionType3 != null)
                                         {
                                             dataDive.Elite.Missions[2].Type = eliteMissionType3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionValue1", out string eliteMissionValue1, "Dive") == true)
+                                        string? eliteMissionValue1 = fileINI.ReadKeyString("EliteMissionValue1", "Dive");
+                                        if (eliteMissionValue1 != null)
                                         {
                                             dataDive.Elite.Missions[0].Value = eliteMissionValue1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionValue2", out string eliteMissionValue2, "Dive") == true)
+                                        string? eliteMissionValue2 = fileINI.ReadKeyString("EliteMissionValue2", "Dive");
+                                        if (eliteMissionValue2 != null)
                                         {
                                             dataDive.Elite.Missions[1].Value = eliteMissionValue2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteMissionValue3", out string eliteMissionValue3, "Dive") == true)
+                                        string? eliteMissionValue3 = fileINI.ReadKeyString("EliteMissionValue3", "Dive");
+                                        if (eliteMissionValue3 != null)
                                         {
                                             dataDive.Elite.Missions[2].Value = eliteMissionValue3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveType1", out string eliteObjectiveType1, "Dive") == true)
+                                        string? eliteObjectiveType1 = fileINI.ReadKeyString("EliteObjectiveType1", "Dive");
+                                        if (eliteObjectiveType1 != null)
                                         {
                                             dataDive.Elite.Objectives[0].Type = eliteObjectiveType1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveType2", out string eliteObjectiveType2, "Dive") == true)
+                                        string? eliteObjectiveType2 = fileINI.ReadKeyString("EliteObjectiveType2", "Dive");
+                                        if (eliteObjectiveType2 != null)
                                         {
                                             dataDive.Elite.Objectives[1].Type = eliteObjectiveType2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveType3", out string eliteObjectiveType3, "Dive") == true)
+                                        string? eliteObjectiveType3 = fileINI.ReadKeyString("EliteObjectiveType3", "Dive");
+                                        if (eliteObjectiveType3 != null)
                                         {
                                             dataDive.Elite.Objectives[2].Type = eliteObjectiveType3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveValue1", out string eliteObjectiveValue1, "Dive") == true)
+                                        string? eliteObjectiveValue1 = fileINI.ReadKeyString("EliteObjectiveValue1", "Dive");
+                                        if (eliteObjectiveValue1 != null)
                                         {
                                             dataDive.Elite.Objectives[0].Value = eliteObjectiveValue1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveValue2", out string eliteObjectiveValue2, "Dive") == true)
+                                        string? eliteObjectiveValue2 = fileINI.ReadKeyString("EliteObjectiveValue2", "Dive");
+                                        if (eliteObjectiveValue2 != null)
                                         {
                                             dataDive.Elite.Objectives[1].Value = eliteObjectiveValue2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteObjectiveValue3", out string eliteObjectiveValue3, "Dive") == true)
+                                        string? eliteObjectiveValue3 = fileINI.ReadKeyString("EliteObjectiveValue3", "Dive");
+                                        if (eliteObjectiveValue3 != null)
                                         {
                                             dataDive.Elite.Objectives[2].Value = eliteObjectiveValue3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteWarning1", out string eliteWarning1, "Dive") == true)
+                                        string? eliteWarning1 = fileINI.ReadKeyString("EliteWarning1", "Dive");
+                                        if (eliteWarning1 != null)
                                         {
                                             dataDive.Elite.Warnings[0] = eliteWarning1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteWarning2", out string eliteWarning2, "Dive") == true)
+                                        string? eliteWarning2 = fileINI.ReadKeyString("EliteWarning2", "Dive");
+                                        if (eliteWarning2 != null)
                                         {
                                             dataDive.Elite.Warnings[1] = eliteWarning2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteWarning3", out string eliteWarning3, "Dive") == true)
+                                        string? eliteWarning3 = fileINI.ReadKeyString("EliteWarning3", "Dive");
+                                        if (eliteWarning3 != null)
                                         {
                                             dataDive.Elite.Warnings[2] = eliteWarning3;
                                         }
-                                        if (fileINI.ReadKeyString("EliteAnomaly1", out string eliteAnomaly1, "Dive") == true)
+                                        string? eliteAnomaly1 = fileINI.ReadKeyString("EliteAnomaly1", "Dive");
+                                        if (eliteAnomaly1 != null)
                                         {
                                             dataDive.Elite.Anomalies[0] = eliteAnomaly1;
                                         }
-                                        if (fileINI.ReadKeyString("EliteAnomaly2", out string eliteAnomaly2, "Dive") == true)
+                                        string? eliteAnomaly2 = fileINI.ReadKeyString("EliteAnomaly2", "Dive");
+                                        if (eliteAnomaly2 != null)
                                         {
                                             dataDive.Elite.Anomalies[1] = eliteAnomaly2;
                                         }
-                                        if (fileINI.ReadKeyString("EliteAnomaly3", out string eliteAnomaly3, "Dive") == true)
+                                        string? eliteAnomaly3 = fileINI.ReadKeyString("EliteAnomaly3", "Dive");
+                                        if (eliteAnomaly3 != null)
                                         {
                                             dataDive.Elite.Anomalies[2] = eliteAnomaly3;
                                         }
@@ -756,7 +1190,7 @@ namespace DeepDiveEmulator
         public int Data_Dives_Get_Id(int inIdVersion, string inNumberDive, List<DataDive> inDataDives = null)
         {
             int outIdDive = -1;
-            if (inIdVersion >= 0 && inNumberDive != "")
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inNumberDive != "")
             {
                 List<DataDive> dataDives;
                 if (inDataDives != null)
@@ -784,7 +1218,8 @@ namespace DeepDiveEmulator
         public string Data_Dives_Get_Number(int inIdVersion, int inIdDive)
         {
             string outNumberDive = "";
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Dives.Count > 0 && inIdDive >= 0)
+            // Index can be bigger than range, when version was deleted and Data was reloaded.
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdDive >= 0 && inIdDive < Data.Versions[inIdVersion].Dives.Count)
             {
                 outNumberDive = Data.Versions[inIdVersion].Dives[inIdDive].Number;
             }
@@ -793,7 +1228,7 @@ namespace DeepDiveEmulator
         public DataDive Data_Dives_Get_Dive(int inIdVersion, int inIdDive)
         {
             DataDive outDataDive = new DataDive();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Dives.Count > 0 && inIdDive >= 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdDive >= 0 && inIdDive < Data.Versions[inIdVersion].Dives.Count)
             {
                 outDataDive = Data.Versions[inIdVersion].Dives[inIdDive];
             }
@@ -802,7 +1237,7 @@ namespace DeepDiveEmulator
         public List<DataDive> Data_Dives_Get_Dives(int inIdVersion, string inText)
         {
             List<DataDive> outDataDives = new List<DataDive>();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Dives.Count > 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && Data.Versions[inIdVersion].Dives.Count > 0)
             {
                 for (int i = 0; i < Data.Versions[inIdVersion].Dives.Count; i++)
                 {
@@ -875,7 +1310,7 @@ namespace DeepDiveEmulator
         }
         public List<DataDive> Data_Dives_Sort_Dives(List<DataDive> inDataDives)
         {
-            List<DataDive> outDataDives = inDataDives.OrderByDescending(x => x.Number).ToList();
+            List<DataDive> outDataDives = inDataDives.OrderByDescending(x => int.Parse(x.Number)).ToList();
             return outDataDives;
         }
         // Events.
@@ -889,8 +1324,8 @@ namespace DeepDiveEmulator
                     Data.Versions[i].Events = new List<DataEvent>();
                 }
                 // Create folder if it doesn't exist.
-                Directory.CreateDirectory(PathFoldAppEvents);
-                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldAppEvents, "*", SearchOption.TopDirectoryOnly);
+                Directory.CreateDirectory(PathFoldDataEvents);
+                string[] pathFoldsVersion = Directory.GetDirectories(PathFoldDataEvents, "*", SearchOption.TopDirectoryOnly);
                 if (pathFoldsVersion.Length > 0)
                 {
                     for (int iVersion = 0; iVersion < pathFoldsVersion.Length; iVersion++)
@@ -909,19 +1344,22 @@ namespace DeepDiveEmulator
                                     // Check if number is correct.
                                     if (String_Check_NumberEvent(numberEvent) == true)
                                     {
-                                        FileINI fleINI = new FileINI(pathFilesEvent[iEvent]);
+                                        FileINI fileINI = new FileINI(pathFilesEvent[iEvent]);
                                         // Define event.
                                         DataEvent dataEvent = new DataEvent();
                                         dataEvent.Number = numberEvent;
-                                        if (fleINI.ReadKeyString("Name", out string name, "Event") == true)
+                                        string? name = fileINI.ReadKeyString("Name", "Event");
+                                        if (name != null)
                                         {
                                             dataEvent.Name = name;
                                         }
-                                        if (fleINI.ReadKeyString("Date", out string date, "Event") == true)
+                                        string? date = fileINI.ReadKeyString("Date", "Event");
+                                        if (date != null)
                                         {
                                             dataEvent.Date = date; // Validate Date.
                                         }
-                                        if (fleINI.ReadKeyString("Command", out string command, "Event") == true)
+                                        string? command = fileINI.ReadKeyString("Command", "Event");
+                                        if (command != null)
                                         {
                                             dataEvent.Command = command;
                                         }
@@ -930,7 +1368,9 @@ namespace DeepDiveEmulator
                                         int count = 1;
                                         while (check == true)
                                         {
-                                            if (fleINI.ReadKeyString("ItemName" + count, out string itemName, "Event") == true && fleINI.ReadKeyString("ItemType" + count, out string itemType, "Event") == true)
+                                            string? itemName = fileINI.ReadKeyString("ItemName", "Event");
+                                            string? itemType = fileINI.ReadKeyString("ItemType", "Event");
+                                            if (itemName != null && itemType != null)
                                             {
                                                 DataEventItem item = new DataEventItem();
                                                 item.Name = itemName;
@@ -988,7 +1428,8 @@ namespace DeepDiveEmulator
         public string Data_Events_Get_Number(int inIdVersion, int inIdEvent)
         {
             string outNumberEvent = "";
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Events.Count > 0 && inIdEvent >= 0)
+            // Index can be bigger than range, when version was deleted and Data was reloaded.
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdEvent >= 0 && inIdEvent < Data.Versions[inIdVersion].Events.Count)
             {
                 outNumberEvent = Data.Versions[inIdVersion].Events[inIdEvent].Number;
             }
@@ -997,7 +1438,7 @@ namespace DeepDiveEmulator
         public DataEvent Data_Events_Get_Event(int inIdVersion, int inIdEvent)
         {
             DataEvent outDataEvent = new DataEvent();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Events.Count > 0 && inIdEvent >= 0)
+            if (inIdVersion >= 0 && inIdVersion < Data.Versions.Count && inIdEvent >= 0 && inIdEvent < Data.Versions[inIdVersion].Events.Count)
             {
                 outDataEvent = Data.Versions[inIdVersion].Events[inIdEvent];
             }
@@ -1006,7 +1447,7 @@ namespace DeepDiveEmulator
         public List<DataEvent> Data_Events_Get_Events(int inIdVersion, string inText)
         {
             List<DataEvent> outDataEvents = new List<DataEvent>();
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Events.Count > 0)
+            if (inIdVersion >= 0 && inIdVersion <= Data.Versions.Count - 1 && Data.Versions[inIdVersion].Events.Count > 0)
             {
                 for (int i = 0; i < Data.Versions[inIdVersion].Events.Count; i++)
                 {
@@ -1032,29 +1473,446 @@ namespace DeepDiveEmulator
             List<DataEvent> outDataEvents = inDataEvents.OrderByDescending(x => int.Parse(x.Number)).ToList();
             return outDataEvents;
         }
-        #endregion
-        #region DataUser
-        // Versions.
-        public void DataUser_Versions_Load()
+        // URLs.
+        public void Data_Load_URLs_Assignments()
         {
-            // Create folder if it doesn't exist.
-            Directory.CreateDirectory(PathFoldAppSaveVersions);
-            // Get all files inside folder "Save\Versions".
-            string[] pathFiles = Directory.GetFiles(PathFoldAppSaveVersions, "*.ini", SearchOption.TopDirectoryOnly);
+            // Clear the list, because it may be reloaded later.
+            Data.URLs.Assignments = new List<string>();
+            // Load from file.
+            if (File.Exists(PathFileDataURLsAssignments) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataURLsAssignments);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        Data.URLs.Assignments.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataURLsAssignments));
+                File.Create(PathFileDataURLsAssignments);
+            }
+        }
+        public void Data_Load_URLs_Dives()
+        {
+            // Clear the list, because it may be reloaded later.
+            Data.URLs.Dives = new List<string>();
+            // Load from file.
+            if (File.Exists(PathFileDataURLsDives) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataURLsDives);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        Data.URLs.Dives.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataURLsDives));
+                File.Create(PathFileDataURLsDives);
+            }
+        }
+        public void Data_Load_URLs_Events()
+        {
+            // Clear the list, because it may be reloaded later.
+            Data.URLs.Events = new List<string>();
+            // Load from file.
+            if (File.Exists(PathFileDataURLsEvents) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataURLsEvents);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        Data.URLs.Events.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataURLsEvents));
+                File.Create(PathFileDataURLsEvents);
+            }
+        }
+        public void Data_Load_URLs_FreeBeers()
+        {
+            // Clear the list, because it may be reloaded later.
+            Data.URLs.FreeBeers = new List<string>();
+            // Load from file.
+            if (File.Exists(PathFileDataURLsFreeBeers) == true)
+            {
+                string[] lines = File.ReadAllLines(PathFileDataURLsFreeBeers);
+                if (lines.Length > 0)
+                {
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        Data.URLs.FreeBeers.Add(lines[i]);
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(PathFileDataURLsFreeBeers));
+                File.Create(PathFileDataURLsFreeBeers);
+            }
+        }
+        #endregion
+        #region Settings Save
+        // Services.
+        public void Settings_Save_Services_IP(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Services.IP = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Services_IP(inValue);
+        }
+        public void Settings_Save_Services_ChangeRedirects(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Services.ChangeRedirects = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Services_ChangeRedirects(inValue);
+        }
+        public void Settings_Save_Services_ChangeCertificates(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Services.ChangeCertificates = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Services_ChangeCertificates(inValue);
+        }
+        public void Settings_Save_Services_StartServer(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Services.StartServer = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Services_StartServer(inValue);
+        }
+        // Version.
+        public void Settings_Save_Version_Path(int inIdVersion, string inValue)
+        {
+            if (inIdVersion >= 0)
+            {
+                // Internal Setting.
+                Data.Versions[inIdVersion].Path = inValue;
+                // External Setting.
+                if (inValue != "")
+                {
+                    File_App_WrtKey_SavesVersion_Path(inIdVersion, inValue);
+                }
+                else
+                {
+                    File_App_DelFile_SavesVersion(inIdVersion);
+                }
+            }
+            else
+            {
+                // Internal Setting.
+                SettingsCurrent.Version.Path = inValue;
+                // External Setting.
+                File_App_WrtKey_DDE_Version_Path(inValue);
+            }
+        }
+        public void Settings_Save_Version_Branch(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.Branch = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Version_Branch(inValue);
+        }
+        public void Settings_Save_Version_PlayerId(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.PlayerId = inValue;
+            // External Setting.
+            File_GSE_WrtFile_UserSteamId(inValue);
+        }
+        public void Settings_Save_Version_PlayerName(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.PlayerName = inValue;
+            // External Setting.
+            File_GSE_WrtFile_AccountName(inValue);
+        }
+        public void Settings_Save_Version_Command(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.Command = inValue;
+            // External Setting.
+            File_GSE_WrtKey_CCL_SteamClient_ExeCommandLine(inValue);
+        }
+        public void Settings_Save_Version_Search(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.Search = inValue;
+        }
+        public void Settings_Save_Version_SelectedId(int inIdVersion)
+        {
+            // Internal Setting.
+            SettingsCurrent.Version.SelectedId = inIdVersion;
+            string numberVersion = Data_Versions_Get_Number(inIdVersion);
+            SettingsCurrent.Version.SelectedNumber = numberVersion;
+            // External Setting.
+            File_App_WrtKey_DDE_Version_SelectedNumber(numberVersion);
+        }
+        // Mod.
+        public void Settings_Save_Mod_Search(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Mod.Search = inValue;
+        }
+        public void Settings_Save_Mod_SelectedId(int inIdMod)
+        {
+            // Internal Setting.
+            SettingsCurrent.Mod.SelectedId = inIdMod;
+            string numberMod = Data_Mods_Get_Number(SettingsCurrent.Version.SelectedId, inIdMod);
+            SettingsCurrent.Mod.SelectedNumber = numberMod;
+        }
+        public void Settings_Save_Mod_ModIsEnabled(int inIdVersion, int inIdMod, bool inValue)
+        {
+            Data.Versions[inIdVersion].Mods[inIdMod].IsEnabled = inValue;
+        }
+        // Dive.
+        public void Settings_Save_Dive_Seed(uint inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Dive.Seed = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Dive_Seed(inValue);
+            File_Apache24_Write_Dives(inValue);
+        }
+        public void Settings_Save_Dive_LostDives(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Dive.LostDives = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Dive_LostDives(inValue);
+        }
+        public void Settings_Save_Dive_Search(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Dive.Search = inValue;
+        }
+        public void Settings_Save_Dive_SelectedId(int inIdDive)
+        {
+            // Internal Setting.
+            SettingsCurrent.Dive.SelectedId = inIdDive;
+            string numberDive = Data_Dives_Get_Number(SettingsCurrent.Version.SelectedId, inIdDive);
+            SettingsCurrent.Dive.SelectedNumber = numberDive;
+            // External Setting.
+            File_App_WrtKey_DDE_Dive_SelectedNumber(numberDive);
+        }
+        // Event.
+        public void Settings_Save_Event_Command(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Event.Command = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Event_Command(inValue);
+            File_Apache24_Write_Events(inValue);
+        }
+        public void Settings_Save_Event_FreeBeers(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Event.FreeBeers = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Event_FreeBeers(inValue);
+            File_Apache24_Write_FreeBeers(inValue);
+        }
+        public void Settings_Save_Event_LostEvents(bool inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Event.LostEvents = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Event_LostEvents(inValue);
+        }
+        public void Settings_Save_Event_Search(string inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Event.Search = inValue;
+        }
+        public void Settings_Save_Event_SelectedId(int inIdEvent)
+        {
+            // Internal Setting.
+            SettingsCurrent.Event.SelectedId = inIdEvent;
+            string numberEvent = Data_Events_Get_Number(SettingsCurrent.Version.SelectedId, inIdEvent);
+            SettingsCurrent.Event.SelectedNumber = numberEvent;
+            // External Setting.
+            File_App_WrtKey_DDE_Event_SelectedNumber(numberEvent);
+        }
+        // Assignment.
+        public void Settings_Save_Assignment_Seed(uint inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Assignment.Seed = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Assignment_Seed(inValue);
+            File_Apache24_Write_Assignments(inValue);
+        }
+        // Common.
+        public void Settings_Save_Common_PosX(double inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Common.PosX = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Common_PosX(inValue);
+        }
+        public void Settings_Save_Common_PosY(double inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Common.PosY = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Common_PosY(inValue);
+        }
+        public void Settings_Save_Common_SizeX(double inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Common.SizeX = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Common_SizeX(inValue);
+        }
+        public void Settings_Save_Common_SizeY(double inValue)
+        {
+            // Internal Setting.
+            SettingsCurrent.Common.SizeY = inValue;
+            // External Setting.
+            File_App_WrtKey_DDE_Common_SizeY(inValue);
+        }
+        #endregion
+        #region Settings Load
+        public void Settings_Load_All()
+        {
+            //
+            Settings_Load_Services_IP();
+            Settings_Load_Services_ChangeRedirects();
+            Settings_Load_Services_ChangeCertificates();
+            Settings_Load_Services_StartServer();
+            //
+            Settings_Load_Version_PathSimple();
+            Settings_Load_Version_PathComplex();
+            Settings_Load_Version_Branch();
+            Settings_Load_Version_PlayerId();
+            Settings_Load_Version_PlayerName();
+            Settings_Load_Version_Command();
+            Settings_Load_Version_SelectedId();
+            //
+            Settings_Load_Mods_EnabledMltVersion();
+            //
+            Settings_Load_Dive_LostDives();
+            Settings_Load_Dive_Seed();
+            Settings_Load_Dive_SelectedId();
+            //
+            Settings_Load_Event_Command();
+            Settings_Load_Event_FreeBeers();
+            Settings_Load_Event_LostEvents();
+            Settings_Load_Event_SelectedId();
+            //
+            Settings_Load_Assignment_Seed();
+            //
+            Settings_Load_Common_PosX();
+            Settings_Load_Common_PosY();
+            Settings_Load_Common_SizeX();
+            Settings_Load_Common_SizeY();
+        }
+        // Services.
+        public void Settings_Load_Services_IP()
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("IP", "Services");
+            if (value != null)
+            {
+                SettingsCurrent.Services.IP = value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Services_IP(SettingsDefault.Services.IP);
+            }
+        }
+        public void Settings_Load_Services_ChangeRedirects()
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("ChangeRedirects", "Services");
+            if (value != null)
+            {
+                SettingsCurrent.Services.ChangeRedirects = value.Value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Services_ChangeRedirects(SettingsDefault.Services.ChangeRedirects);
+            }
+        }
+        public void Settings_Load_Services_ChangeCertificates()
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("ChangeCertificates", "Services");
+            if (value != null)
+            {
+                SettingsCurrent.Services.ChangeCertificates = value.Value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Services_ChangeCertificates(SettingsDefault.Services.ChangeCertificates);
+            }
+        }
+        public void Settings_Load_Services_StartServer()
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("StartServer", "Services");
+            if (value != null)
+            {
+                SettingsCurrent.Services.StartServer = value.Value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Services_StartServer(SettingsDefault.Services.StartServer);
+            }
+        }
+        // Version.
+        public void Settings_Load_Version_PathSimple()
+        {
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("Path", "Version");
+            if (value != null)
+            {
+                SettingsCurrent.Version.Path = value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Version_Path(SettingsDefault.Version.Path);
+            }
+        }
+        public void Settings_Load_Version_PathComplex()
+        {
+            Directory.CreateDirectory(PathFoldSavesVersions);
+            string[] pathFiles = Directory.GetFiles(PathFoldSavesVersions, "*.ini", SearchOption.TopDirectoryOnly);
             if (pathFiles.Length > 0)
             {
                 for (int i = 0; i < pathFiles.Length; i++)
                 {
-                    // Get file name without extention.
                     string numberVersion = Path.GetFileNameWithoutExtension(pathFiles[i]);
                     // Check if data for version exists.
                     int idVersion = Data_Versions_Get_Id(numberVersion);
                     if (idVersion >= 0)
                     {
                         FileINI fileINI = new FileINI(pathFiles[i]);
-                        if (fileINI.ReadKeyString("Path", out string path, "SaveVersion") == true)
+                        string? path = fileINI.ReadKeyString("Path", "SaveVersion");
+                        if (path != null)
                         {
-                            Data.Versions[idVersion].Path = path; // No need to validate path (it will be validated on game launch).
+                            Data.Versions[idVersion].Path = path; // No need to validate path, because it will be validated on game launch.
+                        }
+                        else
+                        {
+                            File.Delete(pathFiles[i]);
                         }
                     }
                     else
@@ -1064,55 +1922,25 @@ namespace DeepDiveEmulator
                 }
             }
         }
-        #endregion
-        #region Settings Load
-        // Services.
-        public void Settings_Load_Services_IP()
+        public void Settings_Load_Version_Branch()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("IP", out string value, "Services") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("Branch", "Version");
+            if (value != null)
             {
-                SettingsCurrent.Services.IP = value;
+                SettingsCurrent.Version.Branch = value;
             }
-        }
-        public void Settings_Load_Services_ChangeRedirects()
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("ChangeRedirects", out bool value, "Services") == true)
+            else
             {
-                SettingsCurrent.Services.ChangeRedirects = value;
-            }
-        }
-        public void Settings_Load_Services_ChangeCertificates()
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("ChangeCertificates", out bool value, "Services") == true)
-            {
-                SettingsCurrent.Services.ChangeCertificates = value;
-            }
-        }
-        public void Settings_Load_Services_StartServer()
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("StartServer", out bool value, "Services") == true)
-            {
-                SettingsCurrent.Services.StartServer = value;
-            }
-        }
-        // Version.
-        public void Settings_Load_Version_Path()
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("Path", out string value, "Version") == true)
-            {
-                SettingsCurrent.Version.Path = value;
+                File_App_WrtKey_DDE_Version_Branch(SettingsDefault.Version.Branch);
             }
         }
         public void Settings_Load_Version_PlayerId()
         {
-            if (File.Exists(PathFileGSEUser_Steam_Id) == true)
+            if (File.Exists(PathFileGSEUserSteamId) == true)
             {
-                string[] lines = File.ReadAllLines(PathFileGSEUser_Steam_Id);
+                string[] lines = File.ReadAllLines(PathFileGSEUserSteamId);
                 // If file will be empty, it's length will be null and it will not load empty string.
                 if (lines.Length == 1)
                 {
@@ -1120,19 +1948,19 @@ namespace DeepDiveEmulator
                 }
                 else
                 {
-                    File_GSE_Write_Version_PlayerId(SettingsDefault.Version.PlayerId);
+                    File_GSE_WrtFile_UserSteamId(SettingsDefault.Version.PlayerId);
                 }
             }
             else
             {
-                File_GSE_Write_Version_PlayerId(SettingsDefault.Version.PlayerId);
+                File_GSE_WrtFile_UserSteamId(SettingsDefault.Version.PlayerId);
             }
         }
         public void Settings_Load_Version_PlayerName()
         {
-            if (File.Exists(PathFileGSEAccount_Name) == true)
+            if (File.Exists(PathFileGSEAccountName) == true)
             {
-                string[] lines = File.ReadAllLines(PathFileGSEAccount_Name);
+                string[] lines = File.ReadAllLines(PathFileGSEAccountName);
                 // If file will be empty, it's length will be null and it will not load empty string.
                 if (lines.Length == 1)
                 {
@@ -1140,26 +1968,34 @@ namespace DeepDiveEmulator
                 }
                 else
                 {
-                    File_GSE_Write_Version_PlayerName(SettingsDefault.Version.PlayerName);
+                    File_GSE_WrtFile_AccountName(SettingsDefault.Version.PlayerName);
                 }
             }
             else
             {
-                File_GSE_Write_Version_PlayerName(SettingsDefault.Version.PlayerName);
+                File_GSE_WrtFile_AccountName(SettingsDefault.Version.PlayerName);
             }
         }
         public void Settings_Load_Version_Command()
         {
-            FileINI fileINI = new FileINI(PathFileGSEColdClientLoader);
-            if (fileINI.ReadKeyString("ExeCommandLine", out string value, "SteamClient") == true)
+            string pathFile = PathFileGSEColdClientLoader;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("ExeCommandLine", "SteamClient");
+            if (value != null)
             {
                 SettingsCurrent.Version.Command = value;
+            }
+            else
+            {
+                File_GSE_WrtKey_CCL_SteamClient_ExeCommandLine(SettingsDefault.Version.Command);
             }
         }
         public void Settings_Load_Version_SelectedId()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("SelectedNumber", out string value, "Version") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("SelectedNumber", "Version");
+            if (value != null)
             {
                 int selectedId = Data_Versions_Get_Id(value);
                 if (selectedId >= 0)
@@ -1167,44 +2003,45 @@ namespace DeepDiveEmulator
                     SettingsCurrent.Version.SelectedId = selectedId;
                     SettingsCurrent.Version.SelectedNumber = value;
                 }
+                else
+                {
+                    File_App_WrtKey_DDE_Version_SelectedNumber(SettingsDefault.Version.SelectedNumber);
+                }
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Version_SelectedNumber(SettingsDefault.Version.SelectedNumber);
             }
         }
         // Mod.
-        public void Settings_Load_Mod_Version_ModsIsEnabled()
+        public void Settings_Load_Mods_EnabledMltVersion()
         {
             for (int i = 0; i < Data.Versions.Count; i++)
             {
-                Settings_Load_Mod_ModsIsEnabled(i);
+                Settings_Load_Mods_EnabledSngVersion(i);
             }
         }
-        public void Settings_Load_Mod_ModsIsEnabled(int inId)
+        public void Settings_Load_Mods_EnabledSngVersion(int inIdVersion)
         {
-            if (inId >= 0)
+            if (inIdVersion >= 0)
             {
-                if (File.Exists(Data.Versions[inId].Path) == true)
+                for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
+                {
+                    Data.Versions[inIdVersion].Mods[i].IsEnabled = false;
+                }
+                if (File.Exists(Data.Versions[inIdVersion].Path) == true)
                 {
                     // "Path.GetFullPath" is used to convert "..\\" to go up the root.
                     // Notice that three "..\\" are used. One to remove "FSD-Win64-Shipping.exe", others to go up the root.
-                    string pathFoldGameWindowsNoEditor = Path.GetFullPath(Path.Combine(Data.Versions[inId].Path, "..\\..\\..\\Saved\\Config\\WindowsNoEditor"));
-                    string pathFile = Path.Combine(pathFoldGameWindowsNoEditor, "GameUserSettings.ini");
+                    string pathFile = Path.GetFullPath(Path.Combine(Data.Versions[inIdVersion].Path, "..\\..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
                     FileINI fileINI = new FileINI(pathFile);
-                    for (int i = 0; i < Data.Versions[inId].Mods.Count; i++)
+                    for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
                     {
-                        if (fileINI.ReadKeyBool(Data.Versions[inId].Mods[i].Number, out bool enabled, "/Script/FSD.UserGeneratedContent") == true)
+                        bool? value = fileINI.ReadKeyBool(Data.Versions[inIdVersion].Mods[i].Number, "/Script/FSD.UserGeneratedContent");
+                        if (value != null)
                         {
-                            Data.Versions[inId].Mods[i].IsEnabled = enabled;
+                            Data.Versions[inIdVersion].Mods[i].IsEnabled = value.Value;
                         }
-                        else
-                        {
-                            Data.Versions[inId].Mods[i].IsEnabled = false;
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < Data.Versions[inId].Mods.Count; i++)
-                    {
-                        Data.Versions[inId].Mods[i].IsEnabled = false;
                     }
                 }
             }
@@ -1212,24 +2049,38 @@ namespace DeepDiveEmulator
         // Dive.
         public void Settings_Load_Dive_Seed()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyUInt("Seed", out uint value, "Dive") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            uint? value = fileINI.ReadKeyUInt("Seed", "Dive");
+            if (value != null)
             {
-                SettingsCurrent.Dive.Seed = value;
+                SettingsCurrent.Dive.Seed = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Dive_Seed(SettingsDefault.Dive.Seed);
             }
         }
         public void Settings_Load_Dive_LostDives()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("LostDives", out bool value, "Dive") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("LostDives", "Dive");
+            if (value != null)
             {
-                SettingsCurrent.Dive.LostDives = value;
+                SettingsCurrent.Dive.LostDives = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Dive_LostDives(SettingsDefault.Dive.LostDives);
             }
         }
         public void Settings_Load_Dive_SelectedId()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("SelectedNumber", out string value, "Dive") == true && SettingsCurrent.Version.SelectedId >= 0)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("SelectedNumber", "Dive");
+            if (value != null)
             {
                 int selectedId = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, value);
                 if (selectedId >= 0)
@@ -1237,37 +2088,65 @@ namespace DeepDiveEmulator
                     SettingsCurrent.Dive.SelectedId = selectedId;
                     SettingsCurrent.Dive.SelectedNumber = value;
                 }
+                else
+                {
+                    File_App_WrtKey_DDE_Dive_SelectedNumber(SettingsDefault.Dive.SelectedNumber);
+                }
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Dive_SelectedNumber(SettingsDefault.Dive.SelectedNumber);
             }
         }
         // Event.
         public void Settings_Load_Event_Command()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("Command", out string value, "Event") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("Command", "Event");
+            if (value != null)
             {
                 SettingsCurrent.Event.Command = value;
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Event_Command(SettingsDefault.Event.Command);
             }
         }
         public void Settings_Load_Event_FreeBeers()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("FreeBeers", out bool value, "Event") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("FreeBeers", "Event");
+            if (value != null)
             {
-                SettingsCurrent.Event.FreeBeers = value;
+                SettingsCurrent.Event.FreeBeers = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Event_FreeBeers(SettingsDefault.Event.FreeBeers);
             }
         }
         public void Settings_Load_Event_LostEvents()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyBool("LostEvents", out bool value, "Event") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            bool? value = fileINI.ReadKeyBool("LostEvents", "Event");
+            if (value != null)
             {
-                SettingsCurrent.Event.LostEvents = value;
+                SettingsCurrent.Event.LostEvents = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Event_LostEvents(SettingsDefault.Event.LostEvents);
             }
         }
         public void Settings_Load_Event_SelectedId()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyString("SelectedNumber", out string value, "Event") == true && SettingsCurrent.Version.SelectedId >= 0)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            string? value = fileINI.ReadKeyString("SelectedNumber", "Event");
+            if (value != null)
             {
                 int selectedId = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, value);
                 if (selectedId >= 0)
@@ -1275,425 +2154,222 @@ namespace DeepDiveEmulator
                     SettingsCurrent.Event.SelectedId = selectedId;
                     SettingsCurrent.Event.SelectedNumber = value;
                 }
+                else
+                {
+                    File_App_WrtKey_DDE_Event_SelectedNumber(SettingsDefault.Event.SelectedNumber);
+                }
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Event_SelectedNumber(SettingsDefault.Event.SelectedNumber);
             }
         }
         // Assignment.
         public void Settings_Load_Assignment_Seed()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyUInt("Seed", out uint value, "Assignment") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            uint? value = fileINI.ReadKeyUInt("Seed", "Assignment");
+            if (value != null)
             {
-                SettingsCurrent.Assignment.Seed = value;
+                SettingsCurrent.Assignment.Seed = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Assignment_Seed(SettingsDefault.Assignment.Seed);
             }
         }
         // Common.
         public void Settings_Load_Common_PosX()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyDouble("PosX", out double value, "Common") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            double? value = fileINI.ReadKeyDouble("PosX", "Common");
+            if (value != null)
             {
-                SettingsCurrent.Common.PosX = value;
+                SettingsCurrent.Common.PosX = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Common_PosX(SettingsDefault.Common.PosX);
             }
         }
         public void Settings_Load_Common_PosY()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyDouble("PosY", out double value, "Common") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            double? value = fileINI.ReadKeyDouble("PosY", "Common");
+            if (value != null)
             {
-                SettingsCurrent.Common.PosY = value;
+                SettingsCurrent.Common.PosY = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Common_PosY(SettingsDefault.Common.PosY);
             }
         }
         public void Settings_Load_Common_SizeX()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyDouble("SizeX", out double value, "Common") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            double? value = fileINI.ReadKeyDouble("SizeX", "Common");
+            if (value != null)
             {
-                SettingsCurrent.Common.SizeX = value;
+                SettingsCurrent.Common.SizeX = value.GetValueOrDefault();
+            }
+            else
+            {
+                File_App_WrtKey_DDE_Common_SizeX(SettingsDefault.Common.SizeX);
             }
         }
         public void Settings_Load_Common_SizeY()
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            if (fileINI.ReadKeyDouble("SizeY", out double value, "Common") == true)
+            string pathFile = PathFileSettings;
+            FileINI fileINI = new FileINI(pathFile);
+            double? value = fileINI.ReadKeyDouble("SizeY", "Common");
+            if (value != null)
             {
-                SettingsCurrent.Common.SizeY = value;
-            }
-        }
-        #endregion
-        #region Settings Save
-        // Services.
-        public void Settings_Save_Services_IP(string inIP)
-        {
-            // Internal Setting.
-            SettingsCurrent.Services.IP = inIP;
-            // External Setting.
-            File_App_Write_Services_IP(inIP);
-        }
-        public void Settings_Save_Services_ChangeRedirects(bool inChangeRedirects)
-        {
-            // Internal Setting.
-            SettingsCurrent.Services.ChangeRedirects = inChangeRedirects;
-            // External Setting.
-            File_App_Write_Services_ChangeRedirects(inChangeRedirects);
-        }
-        public void Settings_Save_Services_ChangeCertificates(bool inChangeCertificates)
-        {
-            // Internal Setting.
-            SettingsCurrent.Services.ChangeCertificates = inChangeCertificates;
-            // External Setting.
-            File_App_Write_Services_ChangeCertificates(inChangeCertificates);
-        }
-        public void Settings_Save_Services_StartServer(bool inStartServer)
-        {
-            // Internal Setting.
-            SettingsCurrent.Services.StartServer = inStartServer;
-            // External Setting.
-            File_App_Write_Services_StartServer(inStartServer);
-        }
-        // Version.
-        public void Settings_Save_Version_Path(int inId, string inPath)
-        {
-            if (inId >= 0)
-            {
-                // Internal Setting.
-                Data.Versions[inId].Path = inPath;
-                // External Setting.
-                if (inPath != "")
-                {
-                    File_DataUser_Write_Version_Path(inId, inPath);
-                }
-                else
-                {
-                    File_DataUser_Delete_Version_Path(inId);
-                }
+                SettingsCurrent.Common.SizeY = value.GetValueOrDefault();
             }
             else
             {
-                // Internal Setting.
-                SettingsCurrent.Version.Path = inPath;
-                // External Setting.
-                File_App_Write_Version_Path(inPath);
+                File_App_WrtKey_DDE_Common_SizeY(SettingsDefault.Common.SizeY);
             }
         }
-        public void Settings_Save_Version_PlayerId(string inPlayerId)
+        #endregion
+        #region Game
+        public void Game_Save_LaunchEssentials(int inIdVersion)
         {
-            // Internal Setting.
-            SettingsCurrent.Version.PlayerId = inPlayerId;
-            // External Setting.
-            File_GSE_Write_Version_PlayerId(inPlayerId);
+            //
+            File_Game_DelSec_GUS_SFSDUGC(inIdVersion);
+            //
+            File_Game_WrtKey_GUS_SFSDUGC_ModsAreEnabled(inIdVersion);
+            File_Game_WrtKey_GUS_SFSDUGC_CheckGameversion(inIdVersion, "False");
+            File_Game_WrtKey_GUS_SFSDUGC_CurrentBranchName(inIdVersion, SettingsCurrent.Version.Branch);
         }
-        public void Settings_Save_Version_PlayerName(string inPlayerName)
+        public bool? Game_Check_Path(string inPath)
         {
-            // Internal Setting.
-            SettingsCurrent.Version.PlayerName = inPlayerName;
-            // External Setting.
-            File_GSE_Write_Version_PlayerName(inPlayerName);
-        }
-        public void Settings_Save_Version_Command(string inCommand)
-        {
-            // Internal Setting.
-            SettingsCurrent.Version.Command = inCommand;
-            // External Setting.
-            File_GSE_Write_Version_Command(inCommand);
-        }
-        public void Settings_Save_Version_Search(string inSearch)
-        {
-            // Internal Setting.
-            SettingsCurrent.Version.Search = inSearch;
-        }
-        public void Settings_Save_Version_SelectedId(int inSelectedId)
-        {
-            // Internal Setting.
-            SettingsCurrent.Version.SelectedId = inSelectedId;
-            string inSelectedNumber = Data_Versions_Get_Number(inSelectedId);
-            SettingsCurrent.Version.SelectedNumber = inSelectedNumber;
-            // External Setting.
-            File_App_Write_Version_SelectedNumber(inSelectedNumber);
-        }
-        // Mod.
-        public void Settings_Save_Mod_Search(string inSearch)
-        {
-            // Internal Setting.
-            SettingsCurrent.Mod.Search = inSearch;
-        }
-        public void Settings_Save_Mod_SelectedId(int inSelectedId)
-        {
-            // Internal Setting.
-            SettingsCurrent.Mod.SelectedId = inSelectedId;
-            string inSelectedNumber = Data_Mods_Get_Number(SettingsCurrent.Version.SelectedId, inSelectedId);
-            SettingsCurrent.Mod.SelectedNumber = inSelectedNumber;
-        }
-        public void Settings_Save_Mod_ModIsEnabled(int inIdVersion, int inIdMod, bool inModIsEnabled)
-        {
-            Data.Versions[inIdVersion].Mods[inIdMod].IsEnabled = inModIsEnabled;
-        }
-        // Dive.
-        public void Settings_Save_Dive_Seed(uint inSeed)
-        {
-            // Internal Setting.
-            SettingsCurrent.Dive.Seed = inSeed;
-            // External Setting.
-            File_App_Write_Dive_Seed(inSeed);
-            File_Apache24_Write_Dive_Seed(inSeed);
-        }
-        public void Settings_Save_Dive_LostDives(bool inLostDives)
-        {
-            // Internal Setting.
-            SettingsCurrent.Dive.LostDives = inLostDives;
-            // External Setting.
-            File_App_Write_Dive_LostDives(inLostDives);
-        }
-        public void Settings_Save_Dive_Search(string inSearch)
-        {
-            // Internal Setting.
-            SettingsCurrent.Dive.Search = inSearch;
-        }
-        public void Settings_Save_Dive_SelectedId(int inSelectedId)
-        {
-            // Internal Setting.
-            SettingsCurrent.Dive.SelectedId = inSelectedId;
-            string inSelectedNumber = Data_Dives_Get_Number(SettingsCurrent.Version.SelectedId, inSelectedId);
-            SettingsCurrent.Dive.SelectedNumber = inSelectedNumber;
-            // External Setting.
-            File_App_Write_Dive_SelectedNumber(inSelectedNumber);
-        }
-        // Event.
-        public void Settings_Save_Event_Command(string inCommand)
-        {
-            // Internal Setting.
-            SettingsCurrent.Event.Command = inCommand;
-            // External Setting.
-            File_App_Write_Event_Command(inCommand);
-            File_Apache24_Write_Event_Command(inCommand);
-        }
-        public void Settings_Save_Event_FreeBeers(bool inFreeBeers)
-        {
-            // Internal Setting.
-            SettingsCurrent.Event.FreeBeers = inFreeBeers;
-            // External Setting.
-            File_App_Write_Event_FreeBeers(inFreeBeers);
-            File_Apache24_Write_Event_FreeBeers(inFreeBeers);
-        }
-        public void Settings_Save_Event_LostEvents(bool inLostEvents)
-        {
-            // Internal Setting.
-            SettingsCurrent.Event.LostEvents = inLostEvents;
-            // External Setting.
-            File_App_Write_Event_LostEvents(inLostEvents);
-        }
-        public void Settings_Save_Event_Search(string inSearch)
-        {
-            // Internal Setting.
-            SettingsCurrent.Event.Search = inSearch;
-        }
-        public void Settings_Save_Event_SelectedId(int inSelectedId)
-        {
-            // Internal Setting.
-            SettingsCurrent.Event.SelectedId = inSelectedId;
-            string inSelectedNumber = Data_Events_Get_Number(SettingsCurrent.Version.SelectedId, inSelectedId);
-            SettingsCurrent.Event.SelectedNumber = inSelectedNumber;
-            // External Setting.
-            File_App_Write_Event_SelectedNumber(inSelectedNumber);
-        }
-        // Assignment.
-        public void Settings_Save_Assignment_Seed(uint inSeed)
-        {
-            // Internal Setting.
-            SettingsCurrent.Assignment.Seed = inSeed;
-            // External Setting.
-            File_App_Write_Assignment_Seed(inSeed);
-            File_Apache24_Write_Assignment_Seed(inSeed);
-        }
-        // Common.
-        public void Settings_Save_Common_PosX(double inPosX)
-        {
-            // Internal Setting.
-            SettingsCurrent.Common.PosX = inPosX;
-            // External Setting.
-            File_App_Write_Common_PosX(inPosX);
-        }
-        public void Settings_Save_Common_PosY(double inPosY)
-        {
-            // Internal Setting.
-            SettingsCurrent.Common.PosY = inPosY;
-            // External Setting.
-            File_App_Write_Common_PosY(inPosY);
-        }
-        public void Settings_Save_Common_SizeX(double inSizeX)
-        {
-            // Internal Setting.
-            SettingsCurrent.Common.SizeX = inSizeX;
-            // External Setting.
-            File_App_Write_Common_SizeX(inSizeX);
-        }
-        public void Settings_Save_Common_SizeY(double inSizeY)
-        {
-            // Internal Setting.
-            SettingsCurrent.Common.SizeY = inSizeY;
-            // External Setting.
-            File_App_Write_Common_SizeY(inSizeY);
+            bool? check = null;
+            if (File.Exists(inPath) == true)
+            {
+                if (inPath.EndsWith("FSD-Win64-Shipping.exe") == true)
+                {
+                    check = true;
+                }
+                else
+                {
+                    check = false;
+                }
+            }
+            return check;
         }
         #endregion
-        #region File App
-        // App.
-        public void File_App_Write_Services_IP(string inIP)
+        #region GoldbergSteamEmulator
+        public void GSE_Save_LaunchEssentials(int inIdVersion)
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("IP", inIP, "Services");
+            // ColdClientLoader.ini.
+            File_GSE_WrtKey_CCL_SteamClient_AppId("548430");
+            FileINI fileINI = new FileINI(PathFileGSEColdClientLoader);
+            string path = SettingsCurrent.Version.Path;
+            if (inIdVersion >= 0)
+            {
+                path = Data.Versions[inIdVersion].Path;
+            }
+            fileINI.WriteKey("Exe", "SteamClient", path);
+            fileINI.WriteKey("ExeRunDir", "SteamClient", ".");
+            string pathFileSCDLL = Path.Combine(PathFoldGSE, "steamclient.dll");
+            fileINI.WriteKey("SteamClientDll", "SteamClient", pathFileSCDLL);
+            string pathFileSC64DLL = Path.Combine(PathFoldGSE, "steamclient64.dll");
+            fileINI.WriteKey("SteamClient64Dll", "SteamClient", pathFileSC64DLL);
+            // local_save.txt.
+            File_GSE_WrtFile_LocalSave();
+            // account_name.txt.
+            File_GSE_WrtFile_AccountName(SettingsCurrent.Version.PlayerName);
+            // user_steam_id.txt.
+            File_GSE_WrtFile_UserSteamId(SettingsCurrent.Version.PlayerId);
         }
-        public void File_App_Write_Services_ChangeRedirects(bool inChangeRedirects)
+        public void GSE_Launch(int inIdVersion)
         {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("ChangeRedirects", inChangeRedirects.ToString(), "Services");
-        }
-        public void File_App_Write_Services_ChangeCertificates(bool inChangeCertificates)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("ChangeCertificates", inChangeCertificates.ToString(), "Services");
-        }
-        public void File_App_Write_Services_StartServer(bool inStartServer)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("StartServer", inStartServer.ToString(), "Services");
-        }
-        public void File_App_Write_Version_Path(string inPath)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("Path", inPath, "Version");
-        }
-        public void File_App_Write_Version_SelectedNumber(string inSelectedNumber)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("SelectedNumber", inSelectedNumber, "Version");
-        }
-        public void File_App_Write_Dive_Seed(uint inSeed)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("Seed", inSeed.ToString(), "Dive");
-        }
-        public void File_App_Write_Dive_LostDives(bool inLostDives)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("LostDives", inLostDives.ToString(), "Dive");
-        }
-        public void File_App_Write_Dive_SelectedNumber(string inSelectedNumber)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("SelectedNumber", inSelectedNumber, "Dive");
-        }
-        public void File_App_Write_Event_Command(string inCommand)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("Command", inCommand, "Event");
-        }
-        public void File_App_Write_Event_FreeBeers(bool inFreeBeers)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("FreeBeers", inFreeBeers.ToString(), "Event");
-        }
-        public void File_App_Write_Event_LostEvents(bool inLostEvents)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("LostEvents", inLostEvents.ToString(), "Event");
-        }
-        public void File_App_Write_Event_SelectedNumber(string inSelectedNumber)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("SelectedNumber", inSelectedNumber, "Event");
-        }
-        public void File_App_Write_Assignment_Seed(uint inSeed)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("Seed", inSeed.ToString(), "Assignment");
-        }
-        public void File_App_Write_Common_PosX(double inPosX)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("PosX", inPosX.ToString(), "Common");
-        }
-        public void File_App_Write_Common_PosY(double inPosY)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("PosY", inPosY.ToString(), "Common");
-        }
-        public void File_App_Write_Common_SizeX(double inSizeX)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("SizeX", inSizeX.ToString(), "Common");
-        }
-        public void File_App_Write_Common_SizeY(double inSizeY)
-        {
-            FileINI fileINI = new FileINI(PathFileAppSettings);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileAppSettings));
-            fileINI.WriteKey("SizeY", inSizeY.ToString(), "Common");
+            GSE_Save_LaunchEssentials(inIdVersion);
+            Game_Save_LaunchEssentials(inIdVersion);
+            ModIO_Save_LaunchEssentials(inIdVersion);
+            //
+            if (File.Exists(PathFileGSESteamClient_Loader) == true)
+            {
+                Process.Start(PathFileGSESteamClient_Loader);
+            }
         }
         #endregion
-        #region File DataUser
-        public void File_DataUser_Write_Version_Path(int inId, string inPath)
+        #region ModIO
+        public void ModIO_Save_LaunchEssentials(int inIdVersion)
         {
-            Directory.CreateDirectory(PathFoldAppSaveVersions);
-            FileINI fileINI = new FileINI(Path.Combine(PathFoldAppSaveVersions, Data.Versions[inId].Number + ".ini"));
-            fileINI.WriteKey("Path", inPath, "SaveVersion");
-        }
-        public void File_DataUser_Delete_Version_Path(int inId)
-        {
-            File.Delete(Path.Combine(PathFoldAppSaveVersions, Data.Versions[inId].Number + ".ini"));
+            File_ModIO_WrtFile_State(inIdVersion);
+            File_ModIO_WrtFile_GlobalSettings(inIdVersion);
+            File_ModIO_WrtFile_User(inIdVersion);
         }
         #endregion
-        #region File Apache24
-        public void File_Apache24_Write_Dive_Seed(uint inSeed)
+        #region Steam
+        public void Steam_OpenConsole()
         {
-            string command = "{\"Seed\":" + inSeed + ",\"SeedV2\":" + inSeed + ",\"ExpirationTime\":\"2100-01-01T00:00:00Z\"}";
-            // Create folder for file.
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24DeepDive1));
-            File.WriteAllText(PathFileApache24DeepDive1, command);
-            // Create folder for file.
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24DeepDive2));
-            File.WriteAllText(PathFileApache24DeepDive2, command);
+            Process.Start("explorer.exe", "steam://nav/console");
         }
-        public void File_Apache24_Write_Event_Command(string inCommand)
+        public bool Steam_CheckRunning()
         {
-            // Remove spaces and replace "comma" with "quotes,comma,qoutes".
-            string command = "{\"ActiveEvents\":[\"" + Regex.Replace(inCommand, @" ", "").Replace(",", "\",\"") + "\"]}";
-            // Create folder for file.
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24Events1));
-            File.WriteAllText(PathFileApache24Events1, command);
-            // Create folder for file.
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24Events2));
-            File.WriteAllText(PathFileApache24Events2, command);
-        }
-        public void File_Apache24_Write_Event_FreeBeers(bool inFreeBeers)
-        {
-            string command = "{\"FreeBeers\":" + inFreeBeers + "}";
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24CGoalStateTime1));
-            File.WriteAllText(PathFileApache24CGoalStateTime1, command);
-        }
-        public void File_Apache24_Write_Assignment_Seed(uint inSeed)
-        {
-            string command = "{\"Seed\":" + inSeed + ",\"ExpirationTime\":\"2100-01-01T00:00:00Z\"}";
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24Weekly1));
-            File.WriteAllText(PathFileApache24Weekly1, command);
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileApache24Weekly2));
-            File.WriteAllText(PathFileApache24Weekly2, command);
+            bool value = false;
+            Process[] processes = Process.GetProcessesByName("Steam");
+            if (processes.Length > 0)
+            {
+                value = true;
+            }
+            return value;
         }
         #endregion
+        #region Window
+        public void Window_Load()
+        {
+            TmrWindPos.Tick += TmrWindowPos_Tick;
+            TmrWindPos.Interval = TimeSpan.FromSeconds(0.5);
+            TmrWindSize.Tick += TmrWindowSize_Tick;
+            TmrWindSize.Interval = TimeSpan.FromSeconds(0.5);
+        }
+        public void Window_Set_Position(double inPosX, double inPosY)
+        {
+            this.Left = inPosX;
+            this.Top = inPosY;
+        }
+        public void Window_Set_Size(double inSizeX, double inSizeY)
+        {
+            this.Width = inSizeX;
+            this.Height = inSizeY;
+        }
+        public void TmrWindowPos_Start()
+        {
+            TmrWindPos.Start();
+        }
+        public void TmrWindowPos_Stop()
+        {
+            TmrWindPos.Stop();
+        }
+        public void TmrWindowPos_Update()
+        {
+            TmrWindowPos_Stop();
+            TmrWindowPos_Start();
+        }
+        public void TmrWindowSize_Start()
+        {
+            TmrWindSize.Start();
+        }
+        public void TmrWindowSize_Stop()
+        {
+            TmrWindSize.Stop();
+        }
+        public void TmrWindowSize_Update()
+        {
+            TmrWindowSize_Stop();
+            TmrWindowSize_Start();
+        }
+        #endregion
+        //
         #region String
         public bool String_Check_NumberVersion(string inNumber, out string[] outNumberParts)
         {
@@ -1884,7 +2560,7 @@ namespace DeepDiveEmulator
             }
             outStr = stringBuilder.ToString();
         }
-        private static string String_FormatTo_Literal(string inText)
+        public string String_FormatTo_Literal(string inText)
         {
             return SymbolDisplay.FormatLiteral(inText, false);
         }
@@ -1907,144 +2583,184 @@ namespace DeepDiveEmulator
         public void Server_Redirects_Add()
         {
             Directory.CreateDirectory(PathFoldApache24Certificates);
-            string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "*.crt", SearchOption.TopDirectoryOnly);
+            string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "", SearchOption.TopDirectoryOnly);
             if (pathFiles.Length > 0)
             {
-                // Fix file not having empty line at the end and add lines between redirects.
-                if (File.ReadAllText(PathFileWindowsHosts).EndsWith("\r\n") == false)
+                // Check if files have correct extention.
+                List<string> pathFilesChecked = new List<string>();
+                for (int i = 0; i < pathFiles.Length; i++)
                 {
-                    // Add two lines, first for not writing redirect on top of existing one, second for space between redirects.
-                    File.AppendAllText(PathFileWindowsHosts, Environment.NewLine + Environment.NewLine);
+                    string ext = Path.GetExtension(pathFiles[i]);
+                    if (ext == ".crt" || ext == ".txt")
+                    {
+                        pathFilesChecked.Add(pathFiles[i]);
+                    }
                 }
-                else
+                if (pathFilesChecked.Count > 0)
                 {
-                    // Add one line for space between redirects.
-                    File.AppendAllText(PathFileWindowsHosts, Environment.NewLine);
-                }
-                // Add label for app redirects.
-                File.AppendAllText(PathFileWindowsHosts, "#DeepDiveEmulator Redirects" + Environment.NewLine);
-                // Add redirects.
-                foreach (string pathFile in pathFiles)
-                {
-                    // Define redirect name.
-                    string hostName = Path.GetFileNameWithoutExtension(pathFile); // Get file name without extention.
-                    // Define command.
-                    string command = SettingsCurrent.Services.IP + " " + hostName;
-                    // Write command down at the end of all lines.
-                    File.AppendAllText(PathFileWindowsHosts, command + Environment.NewLine);
+                    if (File.Exists(PathFileWindowsHosts) == false)
+                    {
+                        // `File.Create` command causes crash.
+                        File.WriteAllText(PathFileWindowsHosts, "");
+                    }
+                    string[] lines = File.ReadAllLines(PathFileWindowsHosts);
+
+                    //
+                    int count = 0;
+                    // Check if lines exist (empty file will have 0 length). No need to move to next new line when file is empty.
+                    if (lines.Length > 0)
+                    {
+                        // Check if file has empty line at the end. `ReadAllText` is used, beacause `lines[lines.Length - 1]` will not detect empty line at the end.
+                        if (File.ReadAllText(PathFileWindowsHosts).EndsWith("\r\n") == true)
+                        {
+                            count = 1;
+                        }
+                        else
+                        {
+                            count = 2;
+                        }
+                    }
+                    // Add empty lines.
+                    for (int i = 0; i < count; i++)
+                    {
+                        File.AppendAllText(PathFileWindowsHosts, Environment.NewLine);
+                    }
+                    // Add label for app redirects.
+                    File.AppendAllText(PathFileWindowsHosts, "#DeepDiveEmulator Redirects" + Environment.NewLine);
+                    // Add redirects.
+                    for (int i = 0; i < pathFilesChecked.Count; i++)
+                    {
+                        // Define redirect name.
+                        string hostName = Path.GetFileNameWithoutExtension(pathFilesChecked[i]);
+                        // Define command.
+                        string command = SettingsCurrent.Services.IP + " " + hostName;
+                        // Write command down at the end of all lines.
+                        File.AppendAllText(PathFileWindowsHosts, command + Environment.NewLine);
+                    }
                 }
             }
         }
         public void Server_Redirects_Remove()
         {
-            Directory.CreateDirectory(PathFoldApache24Certificates);
-            string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "*.crt", SearchOption.TopDirectoryOnly);
-            if (pathFiles.Length > 0)
+            if (File.Exists(PathFileWindowsHosts) == true)
             {
                 string[] lines = File.ReadAllLines(PathFileWindowsHosts);
                 List<string> tempLines = new List<string>();
-                // Remove "#DeepDiveEmulator Redirects".
-                foreach (string line in lines)
+
+                // Remove line `#DeepDiveEmulator Redirects`.
+                for (int i = 0; i < lines.Length; i++)
                 {
-                    if (line.Contains("#DeepDiveEmulator Redirects") == false)
+                    if (lines[i].Contains("#DeepDiveEmulator Redirects") == false)
                     {
-                        tempLines.Add(line);
+                        tempLines.Add(lines[i]);
                     }
                     else
                     {
-                        // Remove last line if it is empty, because it was added with redirects for spacing them out.
-                        if (tempLines[tempLines.Count - 1] == "")
+                        // Check if previous line is empty.
+                        if (tempLines.Count > 0 && tempLines[tempLines.Count - 1] == "")
                         {
+                            // Remove previous line, because it was added with redirects for space.
                             tempLines.RemoveAt(tempLines.Count - 1);
                         }
                     }
                 }
-                // Update lines.
+                // Update array after the change, because comment position may be different (user defined).
                 lines = tempLines.ToArray();
-                // Clear tempLines.
                 tempLines.Clear();
+
                 // Remove redirects.
-                foreach (string pathFile in pathFiles)
+                Directory.CreateDirectory(PathFoldApache24Certificates);
+                string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "", SearchOption.TopDirectoryOnly);
+                if (pathFiles.Length > 0)
                 {
-                    string hostName = Path.GetFileNameWithoutExtension(pathFile); // Get file name without extention.
-                    //
-                    foreach (string line in lines)
+                    // Check if files have correct extention.
+                    List<string> pathFilesChecked = new List<string>();
+                    for (int i = 0; i < pathFiles.Length; i++)
                     {
-                        if (line.Contains(hostName) == false)
+                        string ext = Path.GetExtension(pathFiles[i]);
+                        if (ext == ".crt" || ext == ".txt")
                         {
-                            tempLines.Add(line);
+                            pathFilesChecked.Add(pathFiles[i]);
                         }
                     }
-                    // Update lines.
-                    lines = tempLines.ToArray();
-                    // Clear tempLines.
-                    tempLines.Clear();
+                    if (pathFilesChecked.Count > 0)
+                    {
+                        for (int iPathFileChecked = 0; iPathFileChecked < pathFilesChecked.Count; iPathFileChecked++)
+                        {
+                            // Define redirect name.
+                            string hostName = Path.GetFileNameWithoutExtension(pathFilesChecked[iPathFileChecked]);
+                            //
+                            for (int iLine = 0; iLine < lines.Length; iLine++)
+                            {
+                                if (lines[iLine].Contains(hostName) == false)
+                                {
+                                    tempLines.Add(lines[iLine]);
+                                }
+                            }
+                            // Update array right after the change, because order of the redirects may be different (user defined) compare to order of files in the folder.
+                            lines = tempLines.ToArray();
+                            tempLines.Clear();
+                        }
+                    }
                 }
-                // Write down all lines, without wrong redirects.
+                // Write down all lines, without redirects.
                 File.WriteAllLines(PathFileWindowsHosts, lines);
             }
         }
         public bool Server_Redirects_Check()
         {
-            string redirectsIP = "";
-            //
             Directory.CreateDirectory(PathFoldApache24Certificates);
-            string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "*.crt", SearchOption.TopDirectoryOnly);
+            string[] pathFiles = Directory.GetFiles(PathFoldApache24Certificates, "", SearchOption.TopDirectoryOnly);
             if (pathFiles.Length > 0)
             {
-                // Count for the ammount of current redirects with required host name.
-                int count = 0;
-                //
-                foreach (string pathFile in pathFiles)
+                List<string> pathFilesChecked = new List<string>();
+                for (int i = 0; i < pathFiles.Length; i++)
                 {
-                    string hostName = Path.GetFileNameWithoutExtension(pathFile); // Get file name without extention.
-
-                    //
-                    string[] lines = File.ReadAllLines(PathFileWindowsHosts);
-                    foreach (string line in lines)
+                    string ext = Path.GetExtension(pathFiles[i]);
+                    if (ext == ".crt" || ext == ".txt")
                     {
-                        if (line.Contains(hostName) == true)
+                        pathFilesChecked.Add(pathFiles[i]);
+                    }
+                }
+                if (pathFilesChecked.Count > 0)
+                {
+                    if (File.Exists(PathFileWindowsHosts) == true)
+                    {
+                        string[] lines = File.ReadAllLines(PathFileWindowsHosts);
+                        if (lines.Length > 0)
                         {
-                            // Get IP only on first pass and check with others.
-                            if (count == 0)
+                            for (int iPathFileChecked = 0; iPathFileChecked < pathFilesChecked.Count; iPathFileChecked++)
                             {
-                                redirectsIP = Regex.Replace(line, @" ", "").Replace(hostName, ""); // Remove spaces and remove host name.
-                                if (IPAddress.TryParse(redirectsIP, out IPAddress ipAddress) == false)
+                                // Define redirect name.
+                                string hostName = Path.GetFileNameWithoutExtension(pathFilesChecked[iPathFileChecked]);
+                                // Define command without spaces.
+                                string command = SettingsCurrent.Services.IP + hostName;
+                                //
+                                for (int iLine = 0; iLine < lines.Length; iLine++)
                                 {
-                                    redirectsIP = "";
-                                    break;
+                                    // Check if line, without any spaces will be equal to the command.
+                                    if (Regex.Replace(lines[iLine], "\\s+", "") == command)
+                                    {
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if (iLine == lines.Length - 1)
+                                        {
+                                            // One required redirect dosen't exist.
+                                            return false;
+                                        }
+                                    }
                                 }
                             }
-                            else
-                            {
-                                if (Regex.Replace(line, @" ", "").Replace(hostName, "") != redirectsIP)
-                                {
-                                    redirectsIP = "";
-                                    break;
-                                }
-                            }
-                            // Increase ammount of current redirects with correct host name.
-                            count = count + 1;
+                            // All required redirects exist.
+                            return true;
                         }
                     }
                 }
-                // Check if ammount of current redirects is equal to amount of files.
-                if (count == pathFiles.Length && redirectsIP != "")
-                {
-                    // All required redirects are added.
-                    return true;
-                }
-                else
-                {
-                    // One or more required redirects are not added.
-                    return false;
-                }
             }
-            else
-            {
-                // Folder does not contain certificates to check with.
-                return false;
-            }
+            // Files don't exist or `hosts` file doesn't exist or `hosts` file is empty.
+            return false;
         }
         public void Server_Redirects_OpenFolder()
         {
@@ -2186,13 +2902,16 @@ namespace DeepDiveEmulator
             // Write down required path for server to work.
             Server_Install();
             //
-            Process process = new Process();
-            process.StartInfo.FileName = PathFileHTTPDEXE;
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.UseShellExecute = false;
-            process.Start();
+            if (File.Exists(PathFileHTTPDEXE) == true)
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = PathFileHTTPDEXE;
+                process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.UseShellExecute = false;
+                process.Start();
+            }
         }
         public void Server_Stop()
         {
@@ -2213,265 +2932,6 @@ namespace DeepDiveEmulator
             {
                 return false;
             }
-        }
-        #endregion
-        #region Game
-        public void Game_Save(int inIdVersion)
-        {
-            File_Game_Delete_Section(inIdVersion);
-            //
-            File_Game_Write_ModsAreEnabled(inIdVersion);
-            File_Game_Write_CheckGameversion(inIdVersion, "False");
-            File_Game_Write_CurrentBranchName(inIdVersion, "public");
-        }
-        public void File_Game_Write_ModsAreEnabled(int inIdVersion)
-        {
-            if (inIdVersion >= 0)
-            {
-                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
-                //
-                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
-                FileINI fileINI = new FileINI(pathFile);
-                if (Data.Versions[inIdVersion].Mods.Count > 0)
-                {
-                    for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
-                    {
-                        if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
-                        {
-                            fileINI.WriteKey(Data.Versions[inIdVersion].Mods[i].Number, Data.Versions[inIdVersion].Mods[i].IsEnabled.ToString(), "/Script/FSD.UserGeneratedContent");
-                        }
-                    }
-                }
-            }
-        }
-        public void File_Game_Write_CheckGameversion(int inIdVersion, string inCheckGameversion)
-        {
-            if (inIdVersion >= 0)
-            {
-                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
-                //
-                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
-                FileINI fileINI = new FileINI(pathFile);
-                fileINI.WriteKey("CheckGameversion", inCheckGameversion, "/Script/FSD.UserGeneratedContent");
-            }
-        }
-        public void File_Game_Write_CurrentBranchName(int inIdVersion, string inCurrentBranchName)
-        {
-            if (inIdVersion >= 0)
-            {
-                string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
-                //
-                Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
-                FileINI fileINI = new FileINI(pathFile);
-                fileINI.WriteKey("CurrentBranchName", inCurrentBranchName, "/Script/FSD.UserGeneratedContent");
-            }
-        }
-        public void File_Game_Delete_Section(int inIdVersion)
-        {
-            string path;
-            if (inIdVersion >= 0)
-            {
-                path = Data.Versions[inIdVersion].Path;
-            }
-            else
-            {
-                path = SettingsCurrent.Version.Path;
-            }
-            string pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path), "..\\..\\Saved\\Config\\WindowsNoEditor\\GameUserSettings.ini"));
-            //
-            Directory.CreateDirectory(Path.GetDirectoryName(pathFile));
-            FileINI fileINI = new FileINI(pathFile);
-            fileINI.DeleteSection("/Script/FSD.UserGeneratedContent");
-        }
-        #endregion
-        #region ModIO
-        public void ModIO_Save(int inIdVersion)
-        {
-            File_ModIO_Write_State(inIdVersion);
-            File_ModIO_Write_GlobalSettings();
-            File_ModIO_Write_User(inIdVersion);
-        }
-        public void File_ModIO_Write_State(int inIdVersion)
-        {
-            ModIOState data = new ModIOState();
-            //
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0)
-            {
-                for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
-                {
-                    if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
-                    {
-                        ModIOStateMod mod = new ModIOStateMod();
-                        string numberVersion = Data_Versions_Get_Number(inIdVersion);
-                        string[] numberVersionParts = numberVersion.Split('.');
-                        //
-                        mod.ID = int.Parse(Data.Versions[inIdVersion].Mods[i].Number);
-                        mod.PathOnDisk = Path.Combine(PathFoldAppMods, numberVersion, Data.Versions[inIdVersion].Mods[i].Number);
-                        mod.Profile.tags[1].name = numberVersionParts[0] + "." + numberVersionParts[1];
-                        //
-                        data.Mods.Add(mod);
-                    }
-                }
-            }
-            //
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileModIOState));
-            File.WriteAllText(PathFileModIOState, JsonSerializer.Serialize(data));
-        }
-        public void File_ModIO_Write_GlobalSettings()
-        {
-            ModIOGlobalSettings data = new ModIOGlobalSettings();
-            //
-            data.RootLocalStoragePath = PathFoldModIO;
-            //
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileModIOGlobalSettings));
-            File.WriteAllText(PathFileModIOGlobalSettings, JsonSerializer.Serialize(data));
-        }
-        public void File_ModIO_Write_User(int inIdVersion)
-        {
-            ModIOUser data = new ModIOUser();
-            //
-            if (inIdVersion >= 0 && Data.Versions[inIdVersion].Mods.Count > 0)
-            {
-                for (int i = 0; i < Data.Versions[inIdVersion].Mods.Count; i++)
-                {
-                    if (Data.Versions[inIdVersion].Mods[i].IsEnabled == true)
-                    {
-                        data.subscriptions.Add(int.Parse(Data.Versions[inIdVersion].Mods[i].Number));
-                    }
-                }
-            }
-            //
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileModIOUser));
-            File.WriteAllText(PathFileModIOUser, JsonSerializer.Serialize(data));
-        }
-        #endregion
-        #region GoldbergSteamEmulator
-        public bool? GSE_Path_Check(string inPath)
-        {
-            bool? check;
-            if (File.Exists(inPath) == true)
-            {
-                if (inPath.EndsWith("FSD-Win64-Shipping.exe") == true)
-                {
-                    check = true;
-                }
-                else
-                {
-                    check = false;
-                }
-            }
-            else
-            {
-                check = null;
-            }
-            return check;
-        }
-        public void GSE_Launch(int inIdVersion)
-        {
-            File_GSE_Write_Essentials(inIdVersion);
-            if (File.Exists(PathFileGSESteamClient_Loader) == true)
-            {
-                Process.Start(PathFileGSESteamClient_Loader);
-            }
-        }
-        public void File_GSE_Write_Essentials(int inIdVersion)
-        {
-            string path;
-            if (inIdVersion >= 0)
-            {
-                path = Data.Versions[inIdVersion].Path;
-            }
-            else
-            {
-                path = SettingsCurrent.Version.Path;
-            }
-            string pathFileSCDLL = Path.Combine(PathFoldGSE, @"steamclient.dll");
-            string pathFileSC64DLL = Path.Combine(PathFoldGSE, @"steamclient64.dll");
-            //
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileGSEColdClientLoader));
-            FileINI fileINI = new FileINI(PathFileGSEColdClientLoader);
-            fileINI.WriteKey("Exe", path, "SteamClient");
-            fileINI.WriteKey("SteamClientDll", pathFileSCDLL, "SteamClient");
-            fileINI.WriteKey("SteamClient64Dll", pathFileSC64DLL, "SteamClient");
-        }
-        public void File_GSE_Write_Version_PlayerId(string inPlayerId)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileGSEUser_Steam_Id));
-            File.WriteAllText(PathFileGSEUser_Steam_Id, inPlayerId);
-        }
-        public void File_GSE_Write_Version_PlayerName(string inPlayerName)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileGSEAccount_Name));
-            File.WriteAllText(PathFileGSEAccount_Name, inPlayerName);
-        }
-        public void File_GSE_Write_Version_Command(string inCommand)
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(PathFileGSEColdClientLoader));
-            FileINI fileINI = new FileINI(PathFileGSEColdClientLoader);
-            fileINI.WriteKey("ExeCommandLine", inCommand, "SteamClient");
-        }
-        #endregion
-        #region Steam
-        public void Steam_OpenConsole()
-        {
-            Process.Start("explorer.exe", "steam://nav/console");
-        }
-        public bool Steam_CheckRunning()
-        {
-            Process[] processes = Process.GetProcessesByName("Steam");
-            if (processes.Length > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        #endregion
-        #region Window
-        public void Window_Load()
-        {
-            TmrWindPos.Tick += TmrWindowPos_Tick;
-            TmrWindPos.Interval = TimeSpan.FromSeconds(0.5);
-            TmrWindSize.Tick += TmrWindowSize_Tick;
-            TmrWindSize.Interval = TimeSpan.FromSeconds(0.5);
-        }
-        public void Window_Set_Position(double inPosX, double inPosY)
-        {
-            this.Left = inPosX;
-            this.Top = inPosY;
-        }
-        public void Window_Set_Size(double inSizeX, double inSizeY)
-        {
-            this.Width = inSizeX;
-            this.Height = inSizeY;
-        }
-        public void TmrWindowPos_Start()
-        {
-            TmrWindPos.Start();
-        }
-        public void TmrWindowPos_Stop()
-        {
-            TmrWindPos.Stop();
-        }
-        public void TmrWindowPos_Update()
-        {
-            TmrWindowPos_Stop();
-            TmrWindowPos_Start();
-        }
-        public void TmrWindowSize_Start()
-        {
-            TmrWindSize.Start();
-        }
-        public void TmrWindowSize_Stop()
-        {
-            TmrWindSize.Stop();
-        }
-        public void TmrWindowSize_Update()
-        {
-            TmrWindowSize_Stop();
-            TmrWindowSize_Start();
         }
         #endregion
         #region Tabs
@@ -2599,6 +3059,8 @@ namespace DeepDiveEmulator
         // Tab Versions.
         public void TabVersions_Load()
         {
+            CBoxVerBranch.ItemsSource = Data.VersionParameters.Branches;
+            CBoxVerBranch.Text = SettingsCurrent.Version.Branch;
             //
             TBoxVersPlrId.Text = SettingsCurrent.Version.PlayerId;
             //
@@ -2609,7 +3071,7 @@ namespace DeepDiveEmulator
             TmrVersSearch.Tick += TmrVersSearch_Tick;
             TmrVersSearch.Interval = TimeSpan.FromSeconds(0.5);
             //
-            VListVers.ItemsSource = SorceVlistVersions;
+            VListVers.ItemsSource = SourceVlistVersions;
             VListVers_SelectId(SettingsCurrent.Version.SelectedId);
             VListVers_Fill();
         }
@@ -2628,7 +3090,7 @@ namespace DeepDiveEmulator
         }
         public void VListVers_Fill()
         {
-            SorceVlistVersions.Clear();
+            SourceVlistVersions.Clear();
             List<DataVersion> dataVersions = Data_Versions_Get_Versions(SettingsCurrent.Version.Search);
             dataVersions = Data_Versions_Sort_Versions(dataVersions);
             for (int i = 0; i < dataVersions.Count; i++)
@@ -2639,7 +3101,7 @@ namespace DeepDiveEmulator
                 srcVListVersion.Name = dataVersions[i].Name;
                 srcVListVersion.BrushBack = dataVersions[i].Brush;
                 // Add item.
-                SorceVlistVersions.Add(srcVListVersion);
+                SourceVlistVersions.Add(srcVListVersion);
             }
             VListVers.SelectedIndex = Data_Versions_Get_Id(SettingsCurrent.Version.SelectedNumber, dataVersions);
         }
@@ -2671,18 +3133,16 @@ namespace DeepDiveEmulator
             {
                 BtnModsBackup.IsEnabled = false;
             }
-            string numberMod = Data_Mods_Get_Number(idVersionOld, SettingsCurrent.Mod.SelectedId);
-            int idMod = Data_Mods_Get_Id(SettingsCurrent.Version.SelectedId, numberMod);
+            //
+            int idMod = Data_Mods_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Mod.SelectedNumber);
             VListMods_SelectId(idMod, true);
             VListMods_Fill();
             //
-            string numberDive = Data_Dives_Get_Number(idVersionOld, SettingsCurrent.Dive.SelectedId);
-            int idDive = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, numberDive);
+            int idDive = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Dive.SelectedNumber);
             VListDivs_SelectId(idDive, true);
             VListDivs_Fill();
             //
-            string numberEvent = Data_Events_Get_Number(idVersionOld, SettingsCurrent.Event.SelectedId);
-            int idEvent = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, numberEvent);
+            int idEvent = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Event.SelectedNumber);
             VListEvts_SelectId(idEvent, true);
             VListEvts_Fill();
         }
@@ -2693,7 +3153,7 @@ namespace DeepDiveEmulator
             TmrModsSearch.Tick += TmrModsSearch_Tick;
             TmrModsSearch.Interval = TimeSpan.FromSeconds(0.5);
             //
-            VListMods.ItemsSource = SorceVlistMods;
+            VListMods.ItemsSource = SourceVlistMods;
             VListMods_Fill();
         }
         public void TmrModsSearch_Start()
@@ -2711,7 +3171,7 @@ namespace DeepDiveEmulator
         }
         public void VListMods_Fill()
         {
-            SorceVlistMods.Clear();
+            SourceVlistMods.Clear();
             if (SettingsCurrent.Version.SelectedId >= 0)
             {
                 List<DataMod> dataMods = Data_Mods_Get_Mods(SettingsCurrent.Version.SelectedId, SettingsCurrent.Mod.Search);
@@ -2726,7 +3186,7 @@ namespace DeepDiveEmulator
                     srcVListMod.IsEnabled = dataMods[i].IsEnabled;
                     srcVListMod.BrushBack = dataMods[i].BrushBack;
                     // Add item.
-                    SorceVlistMods.Add(srcVListMod);
+                    SourceVlistMods.Add(srcVListMod);
                 }
                 VListMods.SelectedIndex = Data_Mods_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Mod.SelectedNumber, dataMods);
             }
@@ -2819,7 +3279,7 @@ namespace DeepDiveEmulator
             TmrDivsSearch.Tick += TmrDivsSearch_Tick;
             TmrDivsSearch.Interval = TimeSpan.FromSeconds(0.5);
             //
-            VListDivs.ItemsSource = SorceVlistDives;
+            VListDivs.ItemsSource = SourceVlistDives;
             VListDivs_SelectId(SettingsCurrent.Dive.SelectedId);
             VListDivs_Fill();
         }
@@ -2924,7 +3384,7 @@ namespace DeepDiveEmulator
         }
         public void VListDivs_Fill()
         {
-            SorceVlistDives.Clear();
+            SourceVlistDives.Clear();
             List<DataDive> dataDives = Data_Dives_Get_Dives(SettingsCurrent.Version.SelectedId, SettingsCurrent.Dive.Search);
             dataDives = Data_Dives_Sort_Dives(dataDives);
             for (int i = 0; i < dataDives.Count; i++)
@@ -2941,7 +3401,7 @@ namespace DeepDiveEmulator
                     srcVListDive.Event = "★";
                 }
                 // Add item.
-                SorceVlistDives.Add(srcVListDive);
+                SourceVlistDives.Add(srcVListDive);
             }
             VListDivs.SelectedIndex = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Dive.SelectedNumber, dataDives);
         }
@@ -3000,7 +3460,7 @@ namespace DeepDiveEmulator
             TmrEvtsSearch.Tick += TmrEvtsSearch_Tick;
             TmrEvtsSearch.Interval = TimeSpan.FromSeconds(0.5);
             //
-            VListEvts.ItemsSource = SorceVlistEvents;
+            VListEvts.ItemsSource = SourceVlistEvents;
             VListEvts_SelectId(SettingsCurrent.Event.SelectedId, true);
             VListEvts_Fill();
         }
@@ -3019,7 +3479,7 @@ namespace DeepDiveEmulator
         }
         public void VListEvts_Fill()
         {
-            SorceVlistEvents.Clear();
+            SourceVlistEvents.Clear();
             List<DataEvent> dataEvents = Data_Events_Get_Events(SettingsCurrent.Version.SelectedId, SettingsCurrent.Event.Search);
             dataEvents = Data_Events_Sort_Events(dataEvents);
             for (int i = 0; i < dataEvents.Count; i++)
@@ -3031,7 +3491,7 @@ namespace DeepDiveEmulator
                 srcVListEvent.Date = dataEvents[i].Date;
                 srcVListEvent.BrushBack = dataEvents[i].BrushBack;
                 // Add item.
-                SorceVlistEvents.Add(srcVListEvent);
+                SourceVlistEvents.Add(srcVListEvent);
             }
             VListEvts.SelectedIndex = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, SettingsCurrent.Event.SelectedNumber, dataEvents);
         }
@@ -3092,7 +3552,7 @@ namespace DeepDiveEmulator
         // Tab Help.
         public void TabHelp_Load()
         {
-            string pathFile = Path.Combine(PathFoldApp, @"Languages\English\Help.txt");
+            string pathFile = Path.Combine(PathFoldDataLanguages, @"English\Help.txt");
             if (File.Exists(pathFile))
             {
                 TextRange textRange = new TextRange(RTBoxHelp.Document.ContentStart, RTBoxHelp.Document.ContentEnd);
@@ -3109,47 +3569,10 @@ namespace DeepDiveEmulator
             // In case of shutting down the app.exe with Task Manager and leaving server processes running.
             Server_Stop();
             //
-            Source_Load_Anomalies();
-            Source_Load_Missions();
-            Source_Load_Regions();
-            Source_Load_Objectives();
-            Source_Load_Warnings();
+            Version_Load();
+            Data_Load_All();
+            Settings_Load_All();
             //
-            Data_Versions_Load();
-            Data_Mods_Load();
-            Data_Dives_Load();
-            Data_Events_Load();
-            // Settings.
-            Settings_Load_Services_IP();
-            Settings_Load_Services_ChangeRedirects();
-            Settings_Load_Services_ChangeCertificates();
-            Settings_Load_Services_StartServer();
-            //
-            Settings_Load_Version_Path();
-            Settings_Load_Version_PlayerId();
-            Settings_Load_Version_PlayerName();
-            Settings_Load_Version_Command();
-            Settings_Load_Version_SelectedId();
-            //
-            Settings_Load_Mod_Version_ModsIsEnabled();
-            // Dive.
-            Settings_Load_Dive_LostDives();
-            Settings_Load_Dive_Seed();
-            Settings_Load_Dive_SelectedId();
-            // Event.
-            Settings_Load_Event_Command();
-            Settings_Load_Event_FreeBeers();
-            Settings_Load_Event_LostEvents();
-            Settings_Load_Event_SelectedId();
-            // Assignment.
-            Settings_Load_Assignment_Seed();
-            // Common.
-            Settings_Load_Common_PosX();
-            Settings_Load_Common_PosY();
-            Settings_Load_Common_SizeX();
-            Settings_Load_Common_SizeY();
-
-
             // Load window properties.
             Window_Load();
             // Load tab properties.
@@ -3181,6 +3604,22 @@ namespace DeepDiveEmulator
             {
                 TmrWindowPos_Update();
             }
+        }
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            Color color = Color.FromArgb(255, 224, 224, 224);
+            RectOutlineLeft.Fill = new SolidColorBrush(color);
+            RectOutlineRight.Fill = new SolidColorBrush(color);
+            RectOutlineTop.Fill = new SolidColorBrush(color);
+            RectOutlineBottom.Fill = new SolidColorBrush(color);
+        }
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            Color color = Color.FromArgb(0, 0, 0, 0);
+            RectOutlineLeft.Fill = new SolidColorBrush(color);
+            RectOutlineRight.Fill = new SolidColorBrush(color);
+            RectOutlineTop.Fill = new SolidColorBrush(color);
+            RectOutlineBottom.Fill = new SolidColorBrush(color);
         }
         private void TmrWindowPos_Tick(object sender, EventArgs e)
         {
@@ -3215,6 +3654,17 @@ namespace DeepDiveEmulator
             TBoxSetsSizeY.Text = sizeY.ToString();
             //
             TmrWindowSize_Stop();
+        }
+        // App.
+        private void BtnAppRldData_Click(object sender, RoutedEventArgs e)
+        {
+            Data_Load_All();
+            Settings_Load_Version_PathComplex();
+            Settings_Load_Mods_EnabledMltVersion();
+            //
+            int idVersion = Data_Versions_Get_Id(SettingsCurrent.Version.SelectedNumber);
+            VListVers_SelectId(idVersion);
+            VListVers_Fill();
         }
         // Tab Services.
         private void TBoxSvcsRedsIP_TextChanged(object sender, TextChangedEventArgs e)
@@ -3354,7 +3804,7 @@ namespace DeepDiveEmulator
             string path = TBoxVersPath.Text;
             Settings_Save_Version_Path(idVersion, path);
             //
-            Settings_Load_Mod_ModsIsEnabled(idVersion);
+            Settings_Load_Mods_EnabledSngVersion(idVersion); // Recheck maybe no need.
             //
             VListMods_Fill();
         }
@@ -3381,15 +3831,13 @@ namespace DeepDiveEmulator
             //
             if (path != "")
             {
-                bool? check = GSE_Path_Check(path);
+                bool? check = Game_Check_Path(path);
                 if (check != null)
                 {
                     if (check == true)
                     {
                         if (SettingsCurrent.Version.PlayerId != null)
                         {
-                            ModIO_Save(SettingsCurrent.Version.SelectedId);
-                            Game_Save(SettingsCurrent.Version.SelectedId);
                             GSE_Launch(SettingsCurrent.Version.SelectedId);
                         }
                     }
@@ -3416,6 +3864,12 @@ namespace DeepDiveEmulator
                 string message = "Executable path is not defined.";
                 System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        private void CBoxVerBranch_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // `.Text` will return previous value.
+            string branch = (sender as ComboBox).SelectedItem as string;
+            Settings_Save_Version_Branch(branch);
         }
         private void TBoxVersPlrId_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -3476,7 +3930,7 @@ namespace DeepDiveEmulator
         {
             if (VListVers.SelectedIndex >= 0)
             {
-                int idVersion = Data_Versions_Get_Id(SorceVlistVersions[VListVers.SelectedIndex].Number);
+                int idVersion = Data_Versions_Get_Id(SourceVlistVersions[VListVers.SelectedIndex].Number);
                 if (SettingsCurrent.Version.SelectedId != idVersion)
                 {
                     VListVers_SelectId(idVersion);
@@ -3544,14 +3998,14 @@ namespace DeepDiveEmulator
                                                     //
                                                     if (skip == false)
                                                     {
-                                                        string pathFoldModNew = Path.Combine(PathFoldAppSaveMods, SettingsCurrent.Version.SelectedNumber, numberMod);
+                                                        string pathFoldModNew = Path.Combine(PathFoldSavesMods, SettingsCurrent.Version.SelectedNumber, numberMod);
                                                         Directory.CreateDirectory(pathFoldModNew);
                                                         File.Copy(pathFilesMod[0], Path.Combine(pathFoldModNew, "File.pak"));
                                                         string PathFileInfo = Path.Combine(pathFoldModNew, "Info.ini");
                                                         FileINI fileINI = new FileINI(PathFileInfo);
-                                                        fileINI.WriteKey("Name", nameMod, "Mod");
-                                                        fileINI.WriteKey("Time", timeMod.ToString(), "Mod");
-                                                        fileINI.WriteKey("Description", descriptionMod, "Mod");
+                                                        fileINI.WriteKey("Name", "Mod", nameMod);
+                                                        fileINI.WriteKey("Time", "Mod", timeMod.ToString());
+                                                        fileINI.WriteKey("Description", "Mod", descriptionMod);
                                                     }
                                                 }
                                             }
@@ -3584,7 +4038,7 @@ namespace DeepDiveEmulator
         {
             if (VListMods.SelectedIndex >= 0)
             {
-                int idMod = Data_Mods_Get_Id(SettingsCurrent.Version.SelectedId, SorceVlistMods[VListMods.SelectedIndex].Number);
+                int idMod = Data_Mods_Get_Id(SettingsCurrent.Version.SelectedId, SourceVlistMods[VListMods.SelectedIndex].Number);
                 if (SettingsCurrent.Mod.SelectedId != idMod)
                 {
                     VListMods_SelectId(idMod);
@@ -3622,7 +4076,7 @@ namespace DeepDiveEmulator
             {
                 if (SettingsCurrent.Dive.SelectedId >= 0)
                 {
-                    File_Apache24_Write_Dive_Seed(seed);
+                    File_Apache24_Write_Dives(seed);
                 }
                 else
                 {
@@ -3668,7 +4122,7 @@ namespace DeepDiveEmulator
         {
             if (VListDivs.SelectedIndex >= 0)
             {
-                int idDive = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, SorceVlistDives[VListDivs.SelectedIndex].Number);
+                int idDive = Data_Dives_Get_Id(SettingsCurrent.Version.SelectedId, SourceVlistDives[VListDivs.SelectedIndex].Number);
                 if (SettingsCurrent.Dive.SelectedId != idDive)
                 {
                     VListDivs_SelectId(idDive);
@@ -3686,7 +4140,7 @@ namespace DeepDiveEmulator
             string command = TBoxEvtsCommand.Text;
             if (SettingsCurrent.Event.SelectedId >= 0)
             {
-                File_Apache24_Write_Event_Command(command);
+                File_Apache24_Write_Events(command);
             }
             else
             {
@@ -3724,7 +4178,7 @@ namespace DeepDiveEmulator
         {
             if (VListEvts.SelectedIndex >= 0)
             {
-                int idEvent = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, SorceVlistEvents[VListEvts.SelectedIndex].Number);
+                int idEvent = Data_Events_Get_Id(SettingsCurrent.Version.SelectedId, SourceVlistEvents[VListEvts.SelectedIndex].Number);
                 if (SettingsCurrent.Event.SelectedId != idEvent)
                 {
                     VListEvts_SelectId(idEvent);
@@ -3882,5 +4336,59 @@ namespace DeepDiveEmulator
             }
         }
         #endregion
+
+        private void BtnDivsSave_Click(object sender, RoutedEventArgs e)
+        {
+            string pathFold = Path.Combine(PathFoldSavesDives, SettingsCurrent.Version.SelectedNumber);
+            Directory.CreateDirectory(pathFold);
+            string pathFile = Path.Combine(pathFold, SettingsCurrent.Dive.SelectedNumber + ".ini");
+            FileINI fileINI = new FileINI(pathFile);
+            // Common.
+            fileINI.WriteKey("Date", "Dive", Data.Versions[SettingsCurrent.Version.SelectedId].Dives[SettingsCurrent.Dive.SelectedId].Date);
+            fileINI.WriteKey("Seed", "Dive", TBoxDivsSeed.Text);
+            fileINI.WriteKey("Event", "Dive", Data.Versions[SettingsCurrent.Version.SelectedId].Dives[SettingsCurrent.Dive.SelectedId].EventNumber);
+            // Normal.
+            fileINI.WriteKey("NormalName", "Dive", Data.Versions[SettingsCurrent.Version.SelectedId].Dives[SettingsCurrent.Dive.SelectedId].Normal.Name);
+            fileINI.WriteKey("NormalRegion", "Dive", CBoxDDNorReg.Text);
+            fileINI.WriteKey("NormalMissionType1", "Dive", CBoxDDNorMisT1.Text);
+            fileINI.WriteKey("NormalMissionType2", "Dive", CBoxDDNorMisT2.Text);
+            fileINI.WriteKey("NormalMissionType3", "Dive", CBoxDDNorMisT3.Text);
+            fileINI.WriteKey("NormalMissionValue1", "Dive", TBoxDDNorMisV1.Text);
+            fileINI.WriteKey("NormalMissionValue2", "Dive", TBoxDDNorMisV2.Text);
+            fileINI.WriteKey("NormalMissionValue3", "Dive", TBoxDDNorMisV3.Text);
+            fileINI.WriteKey("NormalObjectiveType1", "Dive", CBoxDDNorObjT1.Text);
+            fileINI.WriteKey("NormalObjectiveType2", "Dive", CBoxDDNorObjT2.Text);
+            fileINI.WriteKey("NormalObjectiveType3", "Dive", CBoxDDNorObjT3.Text);
+            fileINI.WriteKey("NormalObjectiveValue1", "Dive", TBoxDDNorObjV1.Text);
+            fileINI.WriteKey("NormalObjectiveValue2", "Dive", TBoxDDNorObjV2.Text);
+            fileINI.WriteKey("NormalObjectiveValue3", "Dive", TBoxDDNorObjV3.Text);
+            fileINI.WriteKey("NormalWarning1", "Dive", CBoxDDNorWar1.Text);
+            fileINI.WriteKey("NormalWarning2", "Dive", CBoxDDNorWar2.Text);
+            fileINI.WriteKey("NormalWarning3", "Dive", CBoxDDNorWar3.Text);
+            fileINI.WriteKey("NormalAnomaly1", "Dive", CBoxDDNorAno1.Text);
+            fileINI.WriteKey("NormalAnomaly2", "Dive", CBoxDDNorAno2.Text);
+            fileINI.WriteKey("NormalAnomaly3", "Dive", CBoxDDNorAno3.Text);
+            // Elite.
+            fileINI.WriteKey("EliteName", "Dive", Data.Versions[SettingsCurrent.Version.SelectedId].Dives[SettingsCurrent.Dive.SelectedId].Elite.Name);
+            fileINI.WriteKey("EliteRegion", "Dive", CBoxDDEliReg.Text);
+            fileINI.WriteKey("EliteMissionType1", "Dive", CBoxDDEliMisT1.Text);
+            fileINI.WriteKey("EliteMissionType2", "Dive", CBoxDDEliMisT2.Text);
+            fileINI.WriteKey("EliteMissionType3", "Dive", CBoxDDEliMisT3.Text);
+            fileINI.WriteKey("EliteMissionValue1", "Dive", TBoxDDEliMisV1.Text);
+            fileINI.WriteKey("EliteMissionValue2", "Dive", TBoxDDEliMisV2.Text);
+            fileINI.WriteKey("EliteMissionValue3", "Dive", TBoxDDEliMisV3.Text);
+            fileINI.WriteKey("EliteObjectiveType1", "Dive", CBoxDDEliObjT1.Text);
+            fileINI.WriteKey("EliteObjectiveType2", "Dive", CBoxDDEliObjT2.Text);
+            fileINI.WriteKey("EliteObjectiveType3", "Dive", CBoxDDEliObjT3.Text);
+            fileINI.WriteKey("EliteObjectiveValue1", "Dive", TBoxDDEliObjV1.Text);
+            fileINI.WriteKey("EliteObjectiveValue2", "Dive", TBoxDDEliObjV2.Text);
+            fileINI.WriteKey("EliteObjectiveValue3", "Dive", TBoxDDEliObjV3.Text);
+            fileINI.WriteKey("EliteWarning1", "Dive", CBoxDDEliWar1.Text);
+            fileINI.WriteKey("EliteWarning2", "Dive", CBoxDDEliWar2.Text);
+            fileINI.WriteKey("EliteWarning3", "Dive", CBoxDDEliWar3.Text);
+            fileINI.WriteKey("EliteAnomaly1", "Dive", CBoxDDEliAno1.Text);
+            fileINI.WriteKey("EliteAnomaly2", "Dive", CBoxDDEliAno2.Text);
+            fileINI.WriteKey("EliteAnomaly3", "Dive", CBoxDDEliAno3.Text);
+        }
     }
 }

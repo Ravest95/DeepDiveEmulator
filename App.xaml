@@ -20,12 +20,7 @@
         <SolidColorBrush x:Key="Brush.Content.Text.Highlighted" Color="#ffff2020"/>
         <!-- Brushes -->
         <SolidColorBrush x:Key="BrushBackgroundEnabled" Color="Red"/>
-        <SolidColorBrush x:Key="BrushBackgroundDisabled" Color="Red"/>
-        <SolidColorBrush x:Key="BrushBorderEnabled" Color="Red"/>
         <SolidColorBrush x:Key="BrushBorderDisabled" Color="Blue"/>
-        <SolidColorBrush x:Key="BrushBorderSelected" Color="Red"/>
-        <SolidColorBrush x:Key="BrushTextEnabled" Color="Red"/>
-        <SolidColorBrush x:Key="BrushTextDisabled" Color="Red"/>
         <!-- Label -->
         <Style TargetType="{x:Type Label}">
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -136,6 +131,31 @@
                                 <Setter Property="Background" Value="{DynamicResource Brush.Content.Background.Disabled}"/>
                                 <Setter Property="Foreground" Value="{DynamicResource Brush.Content.Text.Disabled}"/>
                             </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" Value="{DynamicResource Brush.Content.Border.Highlighted}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Style.Button.1" TargetType="{x:Type Button}">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="{DynamicResource Brush.Content.Background.Enabled}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Brush.Content.Border}"/>
+                <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2,2,2,2" SnapsToDevicePixels="True">
+                            <Grid>
+                                <Image Source="/Resources/BtnRefresh.png"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                    <Setter Property="Background" Value="{DynamicResource Brush.Content.Background.Disabled}"/>
+                                </Trigger>
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter Property="BorderBrush" Value="{DynamicResource Brush.Content.Border.Highlighted}"/>
                             </Trigger>

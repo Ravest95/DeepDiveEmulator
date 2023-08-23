@@ -34,14 +34,16 @@
     {
         private string _Path = "";
         private string _PlayerId = "";
+        private string _Branch = "public";
         private string _PlayerName = "Player";
-        private string _Command = "-dx12 -nohmd";
+        private string _Command = "-nohmd";
         private int _SelectedId = -1;
         private string _SelectedNumber = "";
         private string _Search = "";
 
         public string Path { get { return _Path; } set { _Path = value; } }
         public string PlayerId { get { return _PlayerId; } set { _PlayerId = value; } }
+        public string Branch { get { return _Branch; } set { _Branch = value; } }
         public string PlayerName { get { return _PlayerName; } set { _PlayerName = value; } }
         public string Command { get { return _Command; } set { _Command = value; } }
         public int SelectedId { get { return _SelectedId; } set { _SelectedId = value; } }
