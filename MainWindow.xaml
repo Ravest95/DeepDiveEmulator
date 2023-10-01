@@ -293,7 +293,7 @@
                         </ScrollViewer>
                     </Border>
                     <TabControl Grid.Column="1" Margin="4,4,4,4">
-                        <TabItem Header="Standard">
+                        <TabItem Header="Default">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -380,7 +380,7 @@
                         <RichTextBox x:Name="RTBoxModsDescription" BorderThickness="0" Foreground="#FFE0E0E0" FontSize="14" VerticalScrollBarVisibility="Auto" IsReadOnly="True" Margin="4,4,4,4"/>
                     </Border>
                     <TabControl Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="4,4,4,4">
-                        <TabItem Header="Standard">
+                        <TabItem Header="Default">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -626,7 +626,7 @@
                         </ScrollViewer>
                     </Border>
                     <TabControl Grid.Column="1" Grid.RowSpan="2" Margin="4,4,4,4">
-                        <TabItem Header="Standard">
+                        <TabItem Header="Default">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -748,7 +748,7 @@
                     <Border Margin="4,4,4,4" Padding="4,4,4,4" BorderBrush="{DynamicResource Brush.Content.Border}" BorderThickness="2,2,2,2" Grid.Row="1" SnapsToDevicePixels="true">
                     </Border>
                     <TabControl Margin="4,4,4,4" Grid.Column="1" Grid.RowSpan="2">
-                        <TabItem Header="Standard">
+                        <TabItem Header="Default">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>

@@ -2,7 +2,7 @@
 
 namespace DeepDiveEmulator.Classes
 {
-    public class SrcCBoxBrush
+    public class DataDiveParamBrush
     {
         private string _Name = "";
         private Brush _Brush = new SolidColorBrush(Color.FromArgb(255, 64, 64, 64));

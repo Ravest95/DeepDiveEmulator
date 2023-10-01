@@ -5,13 +5,15 @@ namespace DeepDiveEmulator.Classes
 {
     public class Data
     {
+        private DataDiveParam _DiveParameters = new DataDiveParam();
         private List<DataVersion> _Versions = new List<DataVersion>();
+        private DataVersionParam _VersionParameters = new DataVersionParam();
         private DataURLs _URLs = new DataURLs();
-        private DataVersionParameters _VersionParameters = new DataVersionParameters();
 
+        public DataDiveParam DiveParameters { get { return _DiveParameters; } set { _DiveParameters = value; } }
         public List<DataVersion> Versions { get { return _Versions; } set { _Versions = value; } }
+        public DataVersionParam VersionParameters { get { return _VersionParameters; } set { _VersionParameters = value; } }
         public DataURLs URLs { get { return _URLs; } set { _URLs = value; } }
-        public DataVersionParameters VersionParameters { get { return _VersionParameters; } set { _VersionParameters = value; } }
     }
     public class DataVersion
     {

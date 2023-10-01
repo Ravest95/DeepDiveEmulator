@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -19,6 +18,7 @@ using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Forms.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
@@ -79,6 +79,13 @@ namespace DeepDiveEmulator
         public MainWindow()
         {
             {
+                Process proc = Process.GetCurrentProcess();
+                int count = Process.GetProcesses().Where(p => p.ProcessName == proc.ProcessName).Count();
+
+                if (count > 1)
+                {
+                    App.Current.Shutdown();
+                }
                 InitializeComponent();
             }
         }
@@ -129,7 +136,14 @@ namespace DeepDiveEmulator
         static string PathFileGSEColdClientLoader = Path.Combine(PathFoldGSE, "ColdClientLoader.ini");
         static string PathFileGSESteamClient_Loader = Path.Combine(PathFoldGSE, "steamclient_loader.exe");
         #endregion
-        #region Timers
+        #region Data
+        public static Data Data = new Data();
+        public static Settings SettingsDefault = new Settings();
+        public static Settings SettingsCurrent = new Settings();
+        ObservableCollection<SrcVListVersion> SourceVlistVersions = new ObservableCollection<SrcVListVersion>();
+        ObservableCollection<SrcVListMod> SourceVlistMods = new ObservableCollection<SrcVListMod>();
+        ObservableCollection<SrcVListDive> SourceVlistDives = new ObservableCollection<SrcVListDive>();
+        ObservableCollection<SrcVListEvent> SourceVlistEvents = new ObservableCollection<SrcVListEvent>();
         DispatcherTimer TmrSvcsStatus = new DispatcherTimer();
         DispatcherTimer TmrSvcsStatusRedirects = new DispatcherTimer();
         DispatcherTimer TmrSvcsStatusCertificates = new DispatcherTimer();
@@ -140,20 +154,6 @@ namespace DeepDiveEmulator
         DispatcherTimer TmrEvtsSearch = new DispatcherTimer();
         DispatcherTimer TmrWindPos = new DispatcherTimer();
         DispatcherTimer TmrWindSize = new DispatcherTimer();
-        #endregion
-        #region Data
-        public static Data Data = new Data();
-        public static SrcCBox SorceCBox = new SrcCBox();
-        #endregion
-        #region Sources
-        ObservableCollection<SrcVListVersion> SourceVlistVersions = new ObservableCollection<SrcVListVersion>();
-        ObservableCollection<SrcVListMod> SourceVlistMods = new ObservableCollection<SrcVListMod>();
-        ObservableCollection<SrcVListDive> SourceVlistDives = new ObservableCollection<SrcVListDive>();
-        ObservableCollection<SrcVListEvent> SourceVlistEvents = new ObservableCollection<SrcVListEvent>();
-        #endregion
-        #region Settings
-        public static Settings SettingsDefault = new Settings();
-        public static Settings SettingsCurrent = new Settings();
         #endregion
 
         // Functions.
@@ -343,6 +343,20 @@ namespace DeepDiveEmulator
         }
         #endregion
         #region File Game
+        public void File_Game_WrtKey_E_ENS_VerifyPeer(int inIdVersion, string inValue)
+        {
+            string pathFile;
+            if (inIdVersion >= 0)
+            {
+                pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Data.Versions[inIdVersion].Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\Engine.ini"));
+            }
+            else
+            {
+                pathFile = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(SettingsCurrent.Version.Path), "..\\..\\Saved\\Config\\WindowsNoEditor\\Engine.ini"));
+            }
+            FileINI fileINI = new FileINI(pathFile);
+            fileINI.WriteKey("n.VerifyPeer", "/Script/Engine.NetworkSettings", inValue);
+        }
         public void File_Game_WrtKey_GUS_SFSDUGC_CheckGameversion(int inIdVersion, string inValue)
         {
             if (inIdVersion >= 0)
@@ -715,7 +729,7 @@ namespace DeepDiveEmulator
                                             int? time = fileInfo.ReadKeyInt("Time", "Mod");
                                             if (time != null)
                                             {
-                                                dataMod.Time = time.GetValueOrDefault();
+                                                dataMod.Time = time.Value;
                                             }
                                             string? description = fileInfo.ReadKeyString("Description", "Mod");
                                             if (description != null)
@@ -809,9 +823,9 @@ namespace DeepDiveEmulator
         public void Data_Load_DiveParameters_Anomalies()
         {
             // Clear the list, because it may be reloaded later.
-            SorceCBox.Anomalies = new List<string>();
+            Data.DiveParameters.Anomalies = new List<string>();
             // Add epmty string.
-            SorceCBox.Anomalies.Add("");
+            Data.DiveParameters.Anomalies.Add("");
             // Load from file.
             if (File.Exists(PathFileDataDiveParametersAnomalies) == true)
             {
@@ -820,7 +834,7 @@ namespace DeepDiveEmulator
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
-                        SorceCBox.Anomalies.Add(lines[i]);
+                        Data.DiveParameters.Anomalies.Add(lines[i]);
                     }
                 }
             }
@@ -833,9 +847,9 @@ namespace DeepDiveEmulator
         public void Data_Load_DiveParameters_Missions()
         {
             // Clear the list, because it may be reloaded later.
-            SorceCBox.Missions = new List<string>();
+            Data.DiveParameters.Missions = new List<string>();
             // Add epmty string.
-            SorceCBox.Missions.Add("");
+            Data.DiveParameters.Missions.Add("");
             // Load from file.
             if (File.Exists(PathFileDataDiveParametersMissions) == true)
             {
@@ -844,7 +858,7 @@ namespace DeepDiveEmulator
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
-                        SorceCBox.Missions.Add(lines[i]);
+                        Data.DiveParameters.Missions.Add(lines[i]);
                     }
                 }
             }
@@ -857,9 +871,9 @@ namespace DeepDiveEmulator
         public void Data_Load_DiveParameters_Objectives()
         {
             // Clear the list, because it may be reloaded later.
-            SorceCBox.Objectives = new List<string>();
+            Data.DiveParameters.Objectives = new List<string>();
             // Add epmty string.
-            SorceCBox.Objectives.Add("");
+            Data.DiveParameters.Objectives.Add("");
             // Load from file.
             if (File.Exists(PathFileDataDiveParametersObjectives) == true)
             {
@@ -868,7 +882,7 @@ namespace DeepDiveEmulator
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
-                        SorceCBox.Objectives.Add(lines[i]);
+                        Data.DiveParameters.Objectives.Add(lines[i]);
                     }
                 }
             }
@@ -881,9 +895,9 @@ namespace DeepDiveEmulator
         public void Data_Load_DiveParameters_Regions()
         {
             // Clear the list, because it may be reloaded later.
-            SorceCBox.Regions = new List<string>();
+            Data.DiveParameters.Regions = new List<string>();
             // Add epmty string.
-            SorceCBox.Regions.Add("");
+            Data.DiveParameters.Regions.Add("");
             // Load from file.
             if (File.Exists(PathFileDataDiveParametersRegions) == true)
             {
@@ -892,7 +906,7 @@ namespace DeepDiveEmulator
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
-                        SorceCBox.Regions.Add(lines[i]);
+                        Data.DiveParameters.Regions.Add(lines[i]);
                     }
                 }
             }
@@ -905,9 +919,9 @@ namespace DeepDiveEmulator
         public void Data_Load_DiveParameters_Warnings()
         {
             // Clear the list, because it may be reloaded later.
-            SorceCBox.Warnings = new List<string>();
+            Data.DiveParameters.Warnings = new List<string>();
             // Add epmty string.
-            SorceCBox.Warnings.Add("");
+            Data.DiveParameters.Warnings.Add("");
             // Load from file.
             if (File.Exists(PathFileDataDiveParametersWarnings) == true)
             {
@@ -916,7 +930,7 @@ namespace DeepDiveEmulator
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
-                        SorceCBox.Warnings.Add(lines[i]);
+                        Data.DiveParameters.Warnings.Add(lines[i]);
                     }
                 }
             }
@@ -2054,7 +2068,7 @@ namespace DeepDiveEmulator
             uint? value = fileINI.ReadKeyUInt("Seed", "Dive");
             if (value != null)
             {
-                SettingsCurrent.Dive.Seed = value.GetValueOrDefault();
+                SettingsCurrent.Dive.Seed = value.Value;
             }
             else
             {
@@ -2068,7 +2082,7 @@ namespace DeepDiveEmulator
             bool? value = fileINI.ReadKeyBool("LostDives", "Dive");
             if (value != null)
             {
-                SettingsCurrent.Dive.LostDives = value.GetValueOrDefault();
+                SettingsCurrent.Dive.LostDives = value.Value;
             }
             else
             {
@@ -2120,7 +2134,7 @@ namespace DeepDiveEmulator
             bool? value = fileINI.ReadKeyBool("FreeBeers", "Event");
             if (value != null)
             {
-                SettingsCurrent.Event.FreeBeers = value.GetValueOrDefault();
+                SettingsCurrent.Event.FreeBeers = value.Value;
             }
             else
             {
@@ -2134,7 +2148,7 @@ namespace DeepDiveEmulator
             bool? value = fileINI.ReadKeyBool("LostEvents", "Event");
             if (value != null)
             {
-                SettingsCurrent.Event.LostEvents = value.GetValueOrDefault();
+                SettingsCurrent.Event.LostEvents = value.Value;
             }
             else
             {
@@ -2172,7 +2186,7 @@ namespace DeepDiveEmulator
             uint? value = fileINI.ReadKeyUInt("Seed", "Assignment");
             if (value != null)
             {
-                SettingsCurrent.Assignment.Seed = value.GetValueOrDefault();
+                SettingsCurrent.Assignment.Seed = value.Value;
             }
             else
             {
@@ -2187,7 +2201,7 @@ namespace DeepDiveEmulator
             double? value = fileINI.ReadKeyDouble("PosX", "Common");
             if (value != null)
             {
-                SettingsCurrent.Common.PosX = value.GetValueOrDefault();
+                SettingsCurrent.Common.PosX = value.Value;
             }
             else
             {
@@ -2201,7 +2215,7 @@ namespace DeepDiveEmulator
             double? value = fileINI.ReadKeyDouble("PosY", "Common");
             if (value != null)
             {
-                SettingsCurrent.Common.PosY = value.GetValueOrDefault();
+                SettingsCurrent.Common.PosY = value.Value;
             }
             else
             {
@@ -2215,7 +2229,7 @@ namespace DeepDiveEmulator
             double? value = fileINI.ReadKeyDouble("SizeX", "Common");
             if (value != null)
             {
-                SettingsCurrent.Common.SizeX = value.GetValueOrDefault();
+                SettingsCurrent.Common.SizeX = value.Value;
             }
             else
             {
@@ -2229,7 +2243,7 @@ namespace DeepDiveEmulator
             double? value = fileINI.ReadKeyDouble("SizeY", "Common");
             if (value != null)
             {
-                SettingsCurrent.Common.SizeY = value.GetValueOrDefault();
+                SettingsCurrent.Common.SizeY = value.Value;
             }
             else
             {
@@ -2240,6 +2254,7 @@ namespace DeepDiveEmulator
         #region Game
         public void Game_Save_LaunchEssentials(int inIdVersion)
         {
+            File_Game_WrtKey_E_ENS_VerifyPeer(inIdVersion, "0");
             //
             File_Game_DelSec_GUS_SFSDUGC(inIdVersion);
             //
@@ -3223,57 +3238,57 @@ namespace DeepDiveEmulator
             CBoxDivsLost.IsChecked = SettingsCurrent.Dive.LostDives;
             //
             BoxDivsInfo_Enable(false);
-            CBoxDDNorReg.ItemsSource = SorceCBox.Regions;
+            CBoxDDNorReg.ItemsSource = Data.DiveParameters.Regions;
             CBoxDDNorReg.SelectedIndex = 0;
-            CBoxDDNorMisT1.ItemsSource = SorceCBox.Missions;
+            CBoxDDNorMisT1.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDNorMisT1.SelectedIndex = 0;
-            CBoxDDNorMisT2.ItemsSource = SorceCBox.Missions;
+            CBoxDDNorMisT2.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDNorMisT2.SelectedIndex = 0;
-            CBoxDDNorMisT3.ItemsSource = SorceCBox.Missions;
+            CBoxDDNorMisT3.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDNorMisT3.SelectedIndex = 0;
-            CBoxDDNorObjT1.ItemsSource = SorceCBox.Objectives;
+            CBoxDDNorObjT1.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDNorObjT1.SelectedIndex = 0;
-            CBoxDDNorObjT2.ItemsSource = SorceCBox.Objectives;
+            CBoxDDNorObjT2.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDNorObjT2.SelectedIndex = 0;
-            CBoxDDNorObjT3.ItemsSource = SorceCBox.Objectives;
+            CBoxDDNorObjT3.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDNorObjT3.SelectedIndex = 0;
-            CBoxDDNorWar1.ItemsSource = SorceCBox.Warnings;
+            CBoxDDNorWar1.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDNorWar1.SelectedIndex = 0;
-            CBoxDDNorWar2.ItemsSource = SorceCBox.Warnings;
+            CBoxDDNorWar2.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDNorWar2.SelectedIndex = 0;
-            CBoxDDNorWar3.ItemsSource = SorceCBox.Warnings;
+            CBoxDDNorWar3.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDNorWar3.SelectedIndex = 0;
-            CBoxDDNorAno1.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDNorAno1.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDNorAno1.SelectedIndex = 0;
-            CBoxDDNorAno2.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDNorAno2.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDNorAno2.SelectedIndex = 0;
-            CBoxDDNorAno3.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDNorAno3.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDNorAno3.SelectedIndex = 0;
-            CBoxDDEliReg.ItemsSource = SorceCBox.Regions;
+            CBoxDDEliReg.ItemsSource = Data.DiveParameters.Regions;
             CBoxDDEliReg.SelectedIndex = 0;
-            CBoxDDEliMisT1.ItemsSource = SorceCBox.Missions;
+            CBoxDDEliMisT1.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDEliMisT1.SelectedIndex = 0;
-            CBoxDDEliMisT2.ItemsSource = SorceCBox.Missions;
+            CBoxDDEliMisT2.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDEliMisT2.SelectedIndex = 0;
-            CBoxDDEliMisT3.ItemsSource = SorceCBox.Missions;
+            CBoxDDEliMisT3.ItemsSource = Data.DiveParameters.Missions;
             CBoxDDEliMisT3.SelectedIndex = 0;
-            CBoxDDEliObjT1.ItemsSource = SorceCBox.Objectives;
+            CBoxDDEliObjT1.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDEliObjT1.SelectedIndex = 0;
-            CBoxDDEliObjT2.ItemsSource = SorceCBox.Objectives;
+            CBoxDDEliObjT2.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDEliObjT2.SelectedIndex = 0;
-            CBoxDDEliObjT3.ItemsSource = SorceCBox.Objectives;
+            CBoxDDEliObjT3.ItemsSource = Data.DiveParameters.Objectives;
             CBoxDDEliObjT3.SelectedIndex = 0;
-            CBoxDDEliWar1.ItemsSource = SorceCBox.Warnings;
+            CBoxDDEliWar1.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDEliWar1.SelectedIndex = 0;
-            CBoxDDEliWar2.ItemsSource = SorceCBox.Warnings;
+            CBoxDDEliWar2.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDEliWar2.SelectedIndex = 0;
-            CBoxDDEliWar3.ItemsSource = SorceCBox.Warnings;
+            CBoxDDEliWar3.ItemsSource = Data.DiveParameters.Warnings;
             CBoxDDEliWar3.SelectedIndex = 0;
-            CBoxDDEliAno1.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDEliAno1.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDEliAno1.SelectedIndex = 0;
-            CBoxDDEliAno2.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDEliAno2.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDEliAno2.SelectedIndex = 0;
-            CBoxDDEliAno3.ItemsSource = SorceCBox.Anomalies;
+            CBoxDDEliAno3.ItemsSource = Data.DiveParameters.Anomalies;
             CBoxDDEliAno3.SelectedIndex = 0;
             //
             TmrDivsSearch.Tick += TmrDivsSearch_Tick;
@@ -3711,7 +3726,7 @@ namespace DeepDiveEmulator
         }
         private void CBoxSvcsRedsChange_Click(object sender, RoutedEventArgs e)
         {
-            bool changeRedirects = CBoxSvcsRedsChange.IsChecked.GetValueOrDefault();
+            bool changeRedirects = CBoxSvcsRedsChange.IsChecked.Value;
             Settings_Save_Services_ChangeRedirects(changeRedirects);
         }
         private void BtnSvcsCertsAdd_Click(object sender, RoutedEventArgs e)
@@ -3753,7 +3768,7 @@ namespace DeepDiveEmulator
         }
         private void CBoxSvcsCertsChange_Click(object sender, RoutedEventArgs e)
         {
-            bool changeCerts = CBoxSvcsCertsChange.IsChecked.GetValueOrDefault();
+            bool changeCerts = CBoxSvcsCertsChange.IsChecked.Value;
             Settings_Save_Services_ChangeCertificates(changeCerts);
         }
         private void BtnSvcsServStart_Click(object sender, RoutedEventArgs e)
@@ -3788,7 +3803,7 @@ namespace DeepDiveEmulator
         }
         private void CBoxSvcsServChange_Click(object sender, RoutedEventArgs e)
         {
-            bool startOnLaunch = CBoxSvcsServChange.IsChecked.GetValueOrDefault();
+            bool startOnLaunch = CBoxSvcsServChange.IsChecked.Value;
             Settings_Save_Services_StartServer(startOnLaunch);
         }
         private void TmrSvcsStatus_Tick(object sender, EventArgs e)
@@ -4098,7 +4113,7 @@ namespace DeepDiveEmulator
         }
         private void CBoxDivsLost_Click(object sender, RoutedEventArgs e)
         {
-            bool setting = CBoxDivsLost.IsChecked.GetValueOrDefault();
+            bool setting = CBoxDivsLost.IsChecked.Value;
             Settings_Save_Dive_LostDives(setting);
             VListDivs_Fill();
         }
@@ -4149,12 +4164,12 @@ namespace DeepDiveEmulator
         }
         private void CBoxEvtsFreeBeers_Click(object sender, RoutedEventArgs e)
         {
-            bool freeBeers = CBoxEvtsFreeBeers.IsChecked.GetValueOrDefault();
+            bool freeBeers = CBoxEvtsFreeBeers.IsChecked.Value;
             Settings_Save_Event_FreeBeers(freeBeers);
         }
         private void CBoxEvtsLost_Click(object sender, RoutedEventArgs e)
         {
-            bool setting = CBoxEvtsLost.IsChecked.GetValueOrDefault();
+            bool setting = CBoxEvtsLost.IsChecked.Value;
             Settings_Save_Event_LostEvents(setting);
             VListEvts_Fill();
         }

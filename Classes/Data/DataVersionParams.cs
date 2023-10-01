@@ -2,7 +2,7 @@
 
 namespace DeepDiveEmulator.Classes
 {
-    public class DataVersionParameters
+    public class DataVersionParam
     {
         private List<string> _Branches = new List<string>();
 
